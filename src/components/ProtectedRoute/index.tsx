@@ -6,6 +6,6 @@ export default function ProtectedRoute({
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated } = useUserStore();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  const { accessToken } = useUserStore();
+  return accessToken ? <>{children}</> : <Navigate to="/login" replace />;
 }
