@@ -1,7 +1,6 @@
-// src/routes.tsx
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "@components/ProtectedRoute";
-import Layout from "@/components/Layout/Layout";
+import { Layout } from "@components/Layout";
 import {
   Home,
   Spaces,

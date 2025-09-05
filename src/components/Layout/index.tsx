@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import Navigation from "./Navigation";
+import { BottomNavigationBar } from "../BottomNavigationBar";
 import { Outlet } from "react-router-dom";
 
 const AppContainer = styled.div`
@@ -20,15 +20,13 @@ const MainContent = styled.main`
   padding-bottom: 80px;
 `;
 
-const Layout: React.FC = () => {
+export const Layout: React.FC = () => {
   return (
     <AppContainer>
       <MainContent>
         <Outlet />
       </MainContent>
-      <Navigation />
+      <BottomNavigationBar />
     </AppContainer>
   );
 };
-
-export default Layout;
