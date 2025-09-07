@@ -1,6 +1,5 @@
 import type { NavMenuItem, UserRole } from "../types";
 
-// 공연예술가 메뉴
 const artistMenus: NavMenuItem[] = [
   {
     id: "home",
@@ -9,32 +8,31 @@ const artistMenus: NavMenuItem[] = [
     roles: ["artist"],
   },
   {
-    id: "space-search",
-    label: "공간찾기",
+    id: "spaces",
+    label: "공간 찾기",
     path: "/spaces",
     roles: ["artist"],
   },
   {
     id: "proposals",
-    label: "제안서보기",
+    label: "제안서 보기",
     path: "/proposals",
     roles: ["artist"],
   },
   {
     id: "announcements",
-    label: "공연공고",
+    label: "공연 공고",
     path: "/announcements",
     roles: ["artist"],
   },
   {
-    id: "profile",
+    id: "mypage",
     label: "마이페이지",
-    path: "/profile",
+    path: "/mypage",
     roles: ["artist"],
   },
 ];
 
-// 공간보유자 메뉴
 const spaceMenus: NavMenuItem[] = [
   {
     id: "home",
@@ -43,27 +41,27 @@ const spaceMenus: NavMenuItem[] = [
     roles: ["space"],
   },
   {
-    id: "artist-search",
-    label: "예술가찾기",
+    id: "artists",
+    label: "예술가 찾기",
     path: "/artists",
     roles: ["space"],
   },
   {
     id: "proposals",
-    label: "제안서보기",
+    label: "제안서 보기",
     path: "/proposals",
     roles: ["space"],
   },
   {
     id: "announcements",
-    label: "공연공고",
+    label: "공연 공고",
     path: "/announcements",
     roles: ["space"],
   },
   {
-    id: "profile",
+    id: "mypage",
     label: "마이페이지",
-    path: "/profile",
+    path: "/mypage",
     roles: ["space"],
   },
 ];

@@ -18,7 +18,7 @@ export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       user: null,
-      accessToken: null,
+      accessToken: "mock",
       refreshToken: null,
       setTokens: ({ accessToken, refreshToken }) =>
         set((state) => ({

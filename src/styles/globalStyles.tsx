@@ -8,6 +8,7 @@ export const GlobalStyles: React.FC = () => (
       *::before,
       *::after {
         box-sizing: border-box;
+        margin: 0;
       }
       html,
       body,
