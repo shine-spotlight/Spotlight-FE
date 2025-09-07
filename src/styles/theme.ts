@@ -115,7 +115,9 @@ export const theme = {
     body1: { fontSize: "18px", fontWeight: 500, lineHeight: "22px" },
     body2: { fontSize: "16px", fontWeight: 400, lineHeight: "20px" },
     body3: { fontSize: "14px", fontWeight: 400, lineHeight: "18px" },
-    caption: { fontSize: "12px", fontWeight: 400, lineHeight: "16px" },
+    body4: { fontSize: "12px", fontWeight: 400, lineHeight: "16px" },
+
+    caption: { fontSize: "8px", fontWeight: 400, lineHeight: "12px" },
     buttonLg: { fontSize: "16px", fontWeight: 600, lineHeight: "20px" },
     buttonMd: { fontSize: "14px", fontWeight: 600, lineHeight: "18px" },
     buttonSm: { fontSize: "12px", fontWeight: 600, lineHeight: "16px" },

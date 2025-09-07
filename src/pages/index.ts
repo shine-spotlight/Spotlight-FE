@@ -3,5 +3,5 @@ export * from "./Spaces";
 export * from "./Artists";
 export * from "./Proposals";
 export * from "./Announcements";
-export * from "./mypage";
-export * from "./login";
+export * from "./Mypage";
+export * from "./Login";

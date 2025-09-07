@@ -26,7 +26,7 @@ export const NavItem = styled.button<{ isActive: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 10px 0px;
   border-radius: 8px;
   transition: all 0.2s ease;
   min-width: 60px;
@@ -51,7 +51,7 @@ export const NavIcon = styled.div`
 `;
 
 export const NavLabel = styled.span<{ isActive: boolean }>`
-  ${({ theme }) => theme.typography.caption}
+  ${({ theme }) => theme.typography.body4}
   color: ${({ isActive, theme }) =>
     isActive ? theme.color.brand.solid : theme.color.brand.disabled};
   text-align: center;

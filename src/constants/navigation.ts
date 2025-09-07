@@ -1,6 +1,5 @@
 import type { NavMenuItem, UserRole } from "../types";
 
-// 공연예술가 메뉴
 const artistMenus: NavMenuItem[] = [
   {
     id: "home",
@@ -34,7 +33,6 @@ const artistMenus: NavMenuItem[] = [
   },
 ];
 
-// 공간보유자 메뉴
 const spaceMenus: NavMenuItem[] = [
   {
     id: "home",
