@@ -1,0 +1,17 @@
+{
+  "name": "Spotlight",
+  "start_url": "/",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "",
+      "sizes": "512x512"
+    }
+  ]
+}

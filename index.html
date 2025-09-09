@@ -1,13 +1,39 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Spotlight</title>
+    <meta
+      name="description"
+      content="소규모 공연을 위한 공간-공연예술가 매칭 서비스"
+    />
+    <meta property="og:title" content="Spotlight(스포트라이트)" />
+    <meta
+      property="og:description"
+      content="소규모 공연을 위한 공간-공연예술가 매칭 서비스, SpotLight!"
+    />
+    <meta property="og:image" content="/previewImage.png" />
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("/sw.js").then(
+            function (registration) {
+              console.log(registration);
+            },
+            function (err) {
+              console.log(err);
+            }
+          );
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
