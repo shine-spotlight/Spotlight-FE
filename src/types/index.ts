@@ -84,6 +84,14 @@ export type ArtistUser = User & {
   artist: Artist;
   space?: never;
 };
+
+export type NavMenuItem = {
+  id: string;
+  label: string;
+  path: string;
+  roles: UserRole[];
+};
+
 export type SpaceUser = User & { role: "space"; space: Space; artist?: never };
 
 export type UserWithProfile = ArtistUser | SpaceUser;
