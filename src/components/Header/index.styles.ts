@@ -4,7 +4,7 @@ export const Container = styled.header`
   height: 60px;
   width: 100%;
   background-color: ${({ theme }) => theme.color.background.app};
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); */
   padding: 20px;
   display: flex;
   align-items: flex-start;

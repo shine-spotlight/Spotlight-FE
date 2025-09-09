@@ -12,6 +12,19 @@ export const Container = styled.div`
   cursor: pointer;
 `;
 
+export const WideContainer = styled.div`
+  background: ${({ theme }) => theme.color.background.surface};
+  box-shadow: ${({ theme }) => theme.shadow.sm};
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+`;
+
 export const Image = styled.img`
   aspect-ratio: 1 / 1;
   border-radius: 8px;
@@ -28,7 +41,11 @@ export const TitleText = styled.span`
 export const IconContentContainer = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 8px;
+  > svg {
+    flex: 0 0 auto;
+  }
 `;
 
 export const ContentContainer = styled.div`
@@ -37,11 +54,16 @@ export const ContentContainer = styled.div`
   align-items: flex-start;
   gap: 4px;
   position: relative;
+  width: 100%;
+  min-width: 0;
 `;
 
 export const ContentText = styled.p`
   ${({ theme }) => theme.typography.body4}
   color: ${({ theme }) => theme.color.text.secondary};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const RightSlot = styled.div`
@@ -55,4 +77,20 @@ export const Grid = styled.div`
   gap: 20px;
   width: 100%;
   box-sizing: border-box;
+`;
+
+export const Badge = styled.span<{ $is_accepted: boolean }>`
+  ${({ theme }) => theme.typography.buttonSm};
+  padding: 2px 8px;
+  border-radius: ${({ theme }) => theme.radius.xs};
+  color: ${({ theme, $is_accepted }) =>
+    $is_accepted ? theme.palette.blue[500] : theme.palette.red[500]};
+  background: ${({ theme }) => theme.color.background.surface};
+  border: 1px solid
+    ${({ theme, $is_accepted }) =>
+      $is_accepted ? theme.palette.blue[500] : theme.palette.red[500]};
+  white-space: nowrap;
+  position: absolute;
+  right: 0px;
+  top: 0px;
 `;

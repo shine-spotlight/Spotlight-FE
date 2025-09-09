@@ -38,7 +38,7 @@ export interface User {
   id: number;
   kakao_id: string;
   role: UserRole;
-  phone_number?: number;
+  phone_number?: string;
   created_at: string;
 }
 
@@ -78,3 +78,18 @@ export interface Space {
   created_at: string;
   atmosphere: string; // 분위기 키워드
 }
+
+export type ArtistUser = User & {
+  role: "artist";
+  artist: Artist;
+  space?: never;
+};
+export type SpaceUser = User & { role: "space"; space: Space; artist?: never };
+
+export type UserWithProfile = ArtistUser | SpaceUser;
+
+// 타입 가드
+export const isArtistUser = (u: UserWithProfile): u is ArtistUser =>
+  u.role === "artist";
+export const isSpaceUser = (u: UserWithProfile): u is SpaceUser =>
+  u.role === "space";

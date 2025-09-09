@@ -48,6 +48,12 @@ export const Wrap = styled.div`
   width: 100%;
 `;
 
+export const DateInput = styled.input`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
+
 export const Label = styled.div`
   ${({ theme }) => theme.typography.body2};
   color: ${({ theme }) => theme.color.text.primary};
@@ -86,10 +92,9 @@ export const Input = styled.input`
     background: transparent;
   }
 
-  /* 핸들 */
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    pointer-events: auto; /* 핸들은 드래그 가능 */
+    pointer-events: auto;
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -128,5 +133,58 @@ export const FreeCheckbox = styled.div`
     ${({ theme }) => theme.typography.body3};
     color: ${({ theme }) => theme.color.text.secondary};
     cursor: pointer;
+  }
+`;
+
+export const DateField = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const DateInputWithPadding = styled.input`
+  width: 100%;
+  padding: 10px 12px;
+  padding-left: 40px;
+  border: 1px solid ${({ theme }) => theme.color.border.default};
+  border-radius: ${({ theme }) => theme.radius.xs};
+  color: ${({ theme }) => theme.color.text.primary};
+
+  /* 값이 있을 때 강조 색상 */
+  &[data-has-value="true"] {
+    border-color: ${({ theme }) => theme.palette.sky[500]};
+    color: ${({ theme }) => theme.palette.sky[500]};
+    font-weight: 500;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    pointer-events: none;
+  }
+`;
+
+export const CalendarBtn = styled.button<{
+  $size?: number;
+}>`
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  width: ${(p) => p.$size ?? 16}px;
+  height: ${(p) => p.$size ?? 16}px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: ${({ theme }) => theme.color.text.disabled};
+  }
+
+  [data-has-value="true"] ~ & svg {
+    fill: ${({ theme }) => theme.palette.sky[500]};
   }
 `;
