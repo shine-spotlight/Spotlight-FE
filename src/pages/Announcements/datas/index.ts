@@ -1,4 +1,4 @@
-import type { AnnouncementItemType } from "./types";
+import type { AnnouncementItemType } from "../types";
 
 export const dummyAnnouncements: AnnouncementItemType[] = [
   {

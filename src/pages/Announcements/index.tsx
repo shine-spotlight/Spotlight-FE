@@ -3,7 +3,7 @@ import { useBottomSheet } from "@hooks/useBottomSheet";
 import { Filter } from "@components/Filter";
 import type { AnnouncementFilterType } from "./types";
 import { AnnouncementFilterSheet, AnnouncementCard } from "./components";
-import { dummyAnnouncements } from "./data";
+import { dummyAnnouncements } from "./datas";
 import * as S from "./index.styles";
 
 const defaultFilter: AnnouncementFilterType = {

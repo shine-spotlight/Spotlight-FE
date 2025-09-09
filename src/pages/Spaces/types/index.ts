@@ -3,3 +3,12 @@ export type SpaceFilterType = {
   eventTypes: string[];
   equipments: string[];
 };
+
+export type SpaceItemType = {
+  id: number;
+  name: string;
+  isStar: boolean;
+  img: string;
+  address: string;
+  category: string[];
+};
