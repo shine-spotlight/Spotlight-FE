@@ -5,23 +5,50 @@ import {
   CategoryIcon,
   StarEmptyIcon,
   StarFillIcon,
+  PeopleIcon,
+  DescriptionIcon,
 } from "@assets/svg/common";
 
-type IconKind = "place" | "category";
+type IconKind = "place" | "category" | "people" | "description";
+
+type Variant = "vertical" | "horizontal";
 
 const iconMap: Record<IconKind, React.FC<React.SVGProps<SVGSVGElement>>> = {
   place: PlaceIcon,
   category: CategoryIcon,
+  people: PeopleIcon,
+  description: DescriptionIcon,
+};
+
+type RootProps = {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: Variant;
+  thumbCol?: number;
 };
 
 function Root({
   children,
   onClick,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-}) {
-  return <S.Container onClick={onClick}>{children}</S.Container>;
+  variant = "vertical",
+  thumbCol = 120,
+}: RootProps) {
+  if (variant === "horizontal") {
+    return (
+      <S.WideContainer
+        onClick={onClick}
+        data-variant="horizontal"
+        style={{ gridTemplateColumns: `${thumbCol}px 1fr` }}
+      >
+        {children}
+      </S.WideContainer>
+    );
+  }
+  return (
+    <S.Container onClick={onClick} data-variant="vertical">
+      {children}
+    </S.Container>
+  );
 }
 
 function Grid({ children }: { children: React.ReactNode }) {
@@ -68,6 +95,16 @@ function StarIcon({ isStar }: { isStar: boolean }) {
   );
 }
 
+function RightBadge({ is_accepted }: { is_accepted: boolean | null }) {
+  if (is_accepted == null) {
+    return null;
+  }
+
+  const label = is_accepted ? "수락 완료" : "거절 완료";
+
+  return <S.Badge $is_accepted={is_accepted}>{label}</S.Badge>;
+}
+
 export const Card = Object.assign(Root, {
   Grid,
   Image,
@@ -75,4 +112,5 @@ export const Card = Object.assign(Root, {
   Content,
   IconContent,
   StarIcon,
+  RightBadge,
 });
