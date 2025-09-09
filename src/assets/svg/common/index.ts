@@ -3,9 +3,13 @@ export { default as FindIcon } from "./find.svg?react";
 export { default as HomeIcon } from "./home.svg?react";
 export { default as MypageIcon } from "./mypage.svg?react";
 export { default as ProposalIcon } from "./proposal.svg?react";
+export { default as CalendarColorIcon } from "./calendar-color.svg?react";
 
 export { default as CategoryIcon } from "./category.svg?react";
 export { default as PlaceIcon } from "./place.svg?react";
+export { default as PeopleIcon } from "./people.svg?react";
+export { default as DescriptionIcon } from "./description.svg?react";
+export { default as CalendarIcon } from "./calendar.svg?react";
 
 export { default as StarFillIcon } from "./star-fill.svg?react";
 export { default as StarEmptyIcon } from "./star-empty.svg?react";

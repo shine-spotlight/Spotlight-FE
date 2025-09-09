@@ -65,6 +65,6 @@ export const Footer = styled.div`
   display: flex;
   gap: 20px;
   width: 100%;
-  padding: 20px 0px;
+  padding: 0px 0px 20px;
   margin-bottom: 10px;
 `;

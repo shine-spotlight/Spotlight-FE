@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import BottomSheet from "@components/BottomSheet";
 import * as S from "./index.styles";
 import type { RegionValue } from "@components/RegionPicker";
 import RegionPicker from "@components/RegionPicker";
 import { SelectChip } from "@components/SelectChip";
+import { CalendarColorIcon } from "@assets/svg/common";
 
 type RootProps = {
   isOpen: boolean;
@@ -182,9 +183,47 @@ function PayRange({
   );
 }
 
+type DatePickerProps = {
+  label?: string;
+  value: string | null;
+  onChange: (next: string | null) => void;
+  required?: boolean;
+};
+
+function DatePicker({ value, onChange, required = false }: DatePickerProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const openPicker = () => {
+    if (inputRef.current) {
+      if ("showPicker" in inputRef.current) {
+        inputRef.current.showPicker();
+      }
+    }
+  };
+
+  return (
+    <S.Wrap data-nodrag>
+      <S.DateField>
+        <S.DateInputWithPadding
+          ref={inputRef}
+          type="date"
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || null)}
+          required={required}
+          data-has-value={!!value}
+        />
+        <S.CalendarBtn type="button" onClick={openPicker} $size={16}>
+          <CalendarColorIcon />
+        </S.CalendarBtn>
+      </S.DateField>
+    </S.Wrap>
+  );
+}
+
 export const FilterSheet = Object.assign(Root, {
   Section,
   Chips,
   RegionSelector,
   PayRange,
+  DatePicker,
 });
