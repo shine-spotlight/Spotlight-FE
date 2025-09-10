@@ -1,4 +1,4 @@
-import type { NavMenuItem, UserRole } from "../types";
+import type { NavMenuItem, UserRoleType } from "../types";
 
 const artistMenus: NavMenuItem[] = [
   {
@@ -67,7 +67,7 @@ const spaceMenus: NavMenuItem[] = [
 ];
 
 // 역할별 메뉴 매핑
-export const getMenusByRole = (role: UserRole): NavMenuItem[] => {
+export const getMenusByRole = (role: UserRoleType): NavMenuItem[] => {
   switch (role) {
     case "artist":
       return artistMenus;
