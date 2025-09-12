@@ -1,20 +1,23 @@
-import { useUserStore } from "@stores/userStore";
+import { useAuthStore } from "@stores/authStore";
 import axios from "axios";
-
 import type {
   AxiosInstance,
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
   Method,
-  AxiosResponse,
 } from "axios";
 
-export interface ApiResponse<T> {
+export interface ApiFailure {
+  detail: string;
   code: string;
-  message: string;
-  result?: T;
-  success: boolean;
+  field: string;
 }
+
+export type ApiSuccess<T = Record<string, unknown>> = T;
+
+export type ApiResponse<T = Record<string, unknown>> =
+  | { status: true; data: ApiSuccess<T> }
+  | { status: false; error: ApiFailure };
 
 export const sendRequest = async <T = unknown, D = unknown>(
   instance: AxiosInstance,
@@ -31,24 +34,22 @@ export const sendRequest = async <T = unknown, D = unknown>(
       ...(method.toUpperCase() === "GET" ? { params: data } : { data }),
     };
 
-    const response: AxiosResponse<ApiResponse<T>> = await instance.request(
-      config
-    );
+    const response = await instance.request(config);
 
-    const responseData = response.data;
-
-    return responseData;
+    return { status: true, data: response.data as T };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      console.error(
-        `❌ ${url} [${method}] Error:`,
-        error.response?.data || error.message
-      );
-      throw error;
+      const failure = error.response?.data as ApiFailure;
+      return { status: false, error: failure };
     }
-
-    console.error(`❌ ${url} [${method}] Unknown error:`, error);
-    throw new Error("예상치 못한 오류가 발생했습니다.");
+    return {
+      status: false,
+      error: {
+        detail: "예상치 못한 오류가 발생했습니다.",
+        code: "UNKNOWN",
+        field: "",
+      },
+    };
   }
 };
 
@@ -65,10 +66,10 @@ export const createUrl = (
 export const applyInterceptors = (instance: AxiosInstance): void => {
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = useUserStore.getState().accessToken;
+      const token = useAuthStore.getState().accessToken;
 
       // 로그인 전에는 인터셉터 제외
-      const excludedPaths = ["/kakao/login"];
+      const excludedPaths = ["/users/auth/kakao/login"];
 
       const isExcluded = excludedPaths.some((path) =>
         config.url?.includes(path)

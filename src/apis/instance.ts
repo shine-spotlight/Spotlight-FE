@@ -1,7 +1,7 @@
 import axios from "axios";
 import { applyInterceptors } from "./api";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL + "/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const defaultInstance = axios.create({
   baseURL: BASE_URL,
