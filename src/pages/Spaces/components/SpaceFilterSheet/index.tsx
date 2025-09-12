@@ -19,16 +19,6 @@ export default function SpaceFilterSheet({
   onReset,
   onApply,
 }: Props) {
-  const toggle = (key: "eventTypes" | "equipments", item: string) => {
-    const exists = value[key].includes(item);
-    onChange({
-      ...value,
-      [key]: exists
-        ? value[key].filter((i) => i !== item)
-        : [...value[key], item],
-    });
-  };
-
   return (
     <FilterSheet
       isOpen={isOpen}
@@ -48,7 +38,7 @@ export default function SpaceFilterSheet({
         <FilterSheet.Chips
           items={EVENT_CATEGORIES}
           selected={value.eventTypes}
-          onToggle={(v) => toggle("eventTypes", v)}
+          onChange={(next) => onChange({ ...value, eventTypes: next })}
         />
       </FilterSheet.Section>
 
@@ -56,7 +46,7 @@ export default function SpaceFilterSheet({
         <FilterSheet.Chips
           items={EQUIPMENT_CATEGORIES}
           selected={value.equipments}
-          onToggle={(v) => toggle("equipments", v)}
+          onChange={(next) => onChange({ ...value, equipments: next })}
         />
       </FilterSheet.Section>
     </FilterSheet>

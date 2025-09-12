@@ -16,4 +16,11 @@ export { default as StarEmptyIcon } from "./star-empty.svg?react";
 
 export { default as AlertIcon } from "./alert.svg?react";
 export { default as LogoIcon } from "./logo.svg?react";
+export { default as LogoWhiteIcon } from "./logo-white.svg?react";
+export { default as LogoBlackIcon } from "./logo-black.svg?react";
 export { default as FilterIcon } from "./filter.svg?react";
+export { default as ArrowIcon } from "./arrow.svg?react";
+
+export { default as KakaoLogo } from "./kakao.svg?react";
+
+export { default as PhoneSvg } from "./phone.svg?react";

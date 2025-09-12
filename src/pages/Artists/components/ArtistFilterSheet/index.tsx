@@ -19,16 +19,6 @@ export default function ArtistFilterSheet({
   onReset,
   onApply,
 }: ArtistFilterSheetProps) {
-  const toggle = (key: "eventTypes", item: string) => {
-    const exists = value[key].includes(item);
-    onChange({
-      ...value,
-      [key]: exists
-        ? value[key].filter((i) => i !== item)
-        : [...value[key], item],
-    });
-  };
-
   return (
     <FilterSheet
       isOpen={isOpen}
@@ -48,7 +38,7 @@ export default function ArtistFilterSheet({
         <FilterSheet.Chips
           items={EVENT_CATEGORIES}
           selected={value.eventTypes}
-          onToggle={(v) => toggle("eventTypes", v)}
+          onChange={(next) => onChange({ ...value, eventTypes: next })} // 배열 전체 반영
         />
       </FilterSheet.Section>
 

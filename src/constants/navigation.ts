@@ -4,7 +4,7 @@ const artistMenus: NavMenuItem[] = [
   {
     id: "home",
     label: "홈",
-    path: "/",
+    path: "/home",
     roles: ["artist"],
   },
   {
@@ -37,7 +37,7 @@ const spaceMenus: NavMenuItem[] = [
   {
     id: "home",
     label: "홈",
-    path: "/",
+    path: "/home",
     roles: ["space"],
   },
   {

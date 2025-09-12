@@ -1,12 +1,14 @@
-import { Navigate } from "react-router-dom";
-import { useUserStore } from "@stores/userStore";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthStore } from "@stores/authStore";
 
-export default function ProtectedRoute({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { accessToken } = useUserStore();
+interface ProtectedRouteProps {
+  children?: React.ReactNode;
+}
 
-  return accessToken ? <>{children}</> : <Navigate to="/login" />;
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const verified = useAuthStore((s) => s.socialVerified);
+  if (!verified) {
+    return <Navigate to="/register/verify" replace />;
+  }
+  return <>{children ?? <Outlet />}</>;
 }

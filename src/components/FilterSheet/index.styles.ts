@@ -6,12 +6,6 @@ export const SectionTitle = styled.h3`
   margin-bottom: 12px;
 `;
 
-export const ChipsRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-`;
-
 export const OutlineButton = styled.button`
   ${({ theme }) => theme.typography.buttonLg};
   flex: 1;

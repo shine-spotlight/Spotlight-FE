@@ -1,7 +1,7 @@
 import React from "react";
 import * as S from "./index.styles";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useUserStore } from "../../stores/userStore";
+import { useUserStore } from "@stores/userStore";
 import { getMenusByRole } from "../../constants/navigation";
 import { useTheme } from "@emotion/react";
 import {
@@ -16,13 +16,13 @@ export const BottomNavigationBar: React.FC = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUserStore();
+  const profile = useUserStore((a) => a.profile);
 
-  if (!user) {
+  if (!profile) {
     return null;
   }
 
-  const menus = getMenusByRole(user.role);
+  const menus = getMenusByRole(profile.role);
 
   const handleNavClick = (path: string) => {
     navigate(path);
