@@ -1,59 +1,49 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { UserWithProfile, ArtistUser, SpaceUser } from "@/types";
-import { isArtistUser, isSpaceUser } from "@/types";
-import { mockArtistUser } from "./data";
+import { persist, devtools } from "zustand/middleware";
+import type { UserProfile, UserRoleType } from "@/types";
 
-interface UserState {
-  user: UserWithProfile | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-  setTokens: (tokens: {
-    accessToken?: string | null;
-    refreshToken?: string | null;
-  }) => void;
-  updateArtist: (patch: Partial<ArtistUser>) => void;
-  updateSpace: (patch: Partial<SpaceUser>) => void;
-  setUser: (user: UserWithProfile | null) => void;
-  logout: () => void;
-}
+type UserState = {
+  currentRole: UserRoleType | null;
+  profilesByRole: Partial<Record<UserRoleType, UserProfile>>;
+  onboardedByRole: Record<UserRoleType, boolean>;
+  setCurrentRole: (r: UserRoleType | null) => void;
+  setProfileForRole: (r: UserRoleType, p: UserProfile | null) => void;
+  setOnboardedForRole: (r: UserRoleType, ok: boolean) => void;
+  clear: () => void;
+};
 
 export const useUserStore = create<UserState>()(
-  persist(
-    (set) => ({
-      user: mockArtistUser,
-      accessToken: "accessToken",
-      refreshToken: "refreshToken",
-
-      setTokens: ({ accessToken, refreshToken }) =>
-        set((state) => ({
-          accessToken: accessToken ?? state.accessToken,
-          refreshToken: refreshToken ?? state.refreshToken,
-        })),
-
-      setUser: (user) => set({ user }),
-
-      updateArtist: (patch) =>
-        set((s) => {
-          if (!s.user || !isArtistUser(s.user)) return s;
-          return { user: { ...s.user, ...patch } as ArtistUser };
-        }),
-
-      updateSpace: (patch) =>
-        set((s) => {
-          if (!s.user || !isSpaceUser(s.user)) return s;
-          return { user: { ...s.user, ...patch } as SpaceUser };
-        }),
-
-      logout: () => set({ user: null, accessToken: null, refreshToken: null }),
-    }),
-    {
-      name: "user-storage",
-      partialize: (state) => ({
-        user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
+  devtools(
+    persist(
+      (set) => ({
+        currentRole: null,
+        profilesByRole: {},
+        onboardedByRole: { artist: false, space: false },
+        setCurrentRole: (r) => set({ currentRole: r }),
+        setProfileForRole: (r, p) =>
+          set((s) => ({
+            profilesByRole: p
+              ? { ...s.profilesByRole, [r]: p }
+              : (() => {
+                  const next = { ...s.profilesByRole };
+                  delete next[r];
+                  return next;
+                })(),
+          })),
+        setOnboardedForRole: (r, ok) =>
+          set((s) => ({
+            onboardedByRole: { ...s.onboardedByRole, [r]: ok },
+          })),
+        clear: () =>
+          set({
+            currentRole: null,
+            profilesByRole: {},
+            onboardedByRole: { artist: false, space: false },
+          }),
       }),
-    }
+      {
+        name: "profile-storage",
+      }
+    )
   )
 );

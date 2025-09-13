@@ -65,7 +65,6 @@ export const theme = {
       infoSubtle: palette.sky[50],
       dangerSubtle: palette.red[100],
     },
-
     text: {
       primary: palette.gray[800], // 본문
       secondary: palette.gray[600], // 보조 텍스트
@@ -96,6 +95,10 @@ export const theme = {
       disabled: palette.gray[300],
       disabledText: palette.gray[500],
     },
+  },
+  gradient: {
+    background: `linear-gradient(144deg, ${palette.sky[400]} 0%,  ${palette.sky[700]} 100%)`,
+    white: `linear-gradient(123deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.06) 100%)`,
   },
   radius: {
     xs: "4px",

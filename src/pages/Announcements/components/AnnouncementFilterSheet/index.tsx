@@ -19,16 +19,6 @@ export function AnnouncementFilterSheet({
   onReset,
   onApply,
 }: AnnouncementFilterSheetProps) {
-  const toggle = (key: "eventTypes", item: string) => {
-    const exists = value[key].includes(item as never);
-    onChange({
-      ...value,
-      [key]: exists
-        ? (value[key].filter((i) => i !== item) as never)
-        : ([...value[key], item] as never),
-    });
-  };
-
   return (
     <FilterSheet
       isOpen={isOpen}
@@ -48,7 +38,7 @@ export function AnnouncementFilterSheet({
         <FilterSheet.Chips
           items={EVENT_CATEGORIES}
           selected={value.eventTypes}
-          onToggle={(v) => toggle("eventTypes", v)}
+          onChange={(next) => onChange({ ...value, eventTypes: next })}
         />
       </FilterSheet.Section>
 

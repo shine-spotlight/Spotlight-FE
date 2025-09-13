@@ -3,8 +3,8 @@ import BottomSheet from "@components/BottomSheet";
 import * as S from "./index.styles";
 import type { RegionValue } from "@components/RegionPicker";
 import RegionPicker from "@components/RegionPicker";
-import { SelectChip } from "@components/SelectChip";
 import { CalendarColorIcon } from "@assets/svg/common";
+import SelectChipsGroup from "@components/SelectChipsGroup";
 
 type RootProps = {
   isOpen: boolean;
@@ -58,24 +58,12 @@ function Section({
 type ChipsProps = {
   items: ReadonlyArray<string>;
   selected: ReadonlyArray<string>;
-  onToggle: (val: string) => void;
+  onChange: (val: string[]) => void;
 };
 
-function Chips({ items, selected, onToggle }: ChipsProps) {
+function Chips({ items, selected, onChange }: ChipsProps) {
   return (
-    <S.ChipsRow>
-      {items.map((label) => {
-        const active = selected.includes(label);
-        return (
-          <SelectChip
-            key={label}
-            selected={active}
-            onClick={() => onToggle(label)}
-            label={label}
-          />
-        );
-      })}
-    </S.ChipsRow>
+    <SelectChipsGroup items={items} selected={selected} onChange={onChange} />
   );
 }
 

@@ -8,5 +8,6 @@ declare module "@emotion/react" {
     radius: AppTheme["radius"];
     shadow: AppTheme["shadow"];
     typography: AppTheme["typography"];
+    gradient: AppTheme["gradient"];
   }
 }
