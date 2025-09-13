@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, devtools } from "zustand/middleware";
 
 interface AuthState {
   accessToken: string | null;
@@ -14,21 +14,23 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      accessToken: null,
-      refreshToken: null,
-      socialVerified: false,
-      setTokens: ({ accessToken, refreshToken }) =>
-        set((s) => ({
-          accessToken: accessToken ?? s.accessToken,
-          refreshToken: refreshToken ?? s.refreshToken,
-        })),
-      setSocialVerified: (ok) => set({ socialVerified: ok }),
+  devtools(
+    persist(
+      (set) => ({
+        accessToken: null,
+        refreshToken: null,
+        socialVerified: false,
+        setTokens: ({ accessToken, refreshToken }) =>
+          set((s) => ({
+            accessToken: accessToken ?? s.accessToken,
+            refreshToken: refreshToken ?? s.refreshToken,
+          })),
+        setSocialVerified: (ok) => set({ socialVerified: ok }),
 
-      clear: () =>
-        set({ accessToken: null, refreshToken: null, socialVerified: false }),
-    }),
-    { name: "auth-storage" }
+        clear: () =>
+          set({ accessToken: null, refreshToken: null, socialVerified: false }),
+      }),
+      { name: "auth-storage" }
+    )
   )
 );

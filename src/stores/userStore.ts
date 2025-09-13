@@ -1,27 +1,49 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { UserProfile } from "@/types";
-import { mockArtists } from "./data";
+import { persist, devtools } from "zustand/middleware";
+import type { UserProfile, UserRoleType } from "@/types";
 
 type UserState = {
-  profile: UserProfile | null;
-  onboarded: boolean;
-  setProfile: (p: UserProfile | null) => void;
-  setOnboarded: (ok: boolean) => void;
+  currentRole: UserRoleType | null;
+  profilesByRole: Partial<Record<UserRoleType, UserProfile>>;
+  onboardedByRole: Record<UserRoleType, boolean>;
+  setCurrentRole: (r: UserRoleType | null) => void;
+  setProfileForRole: (r: UserRoleType, p: UserProfile | null) => void;
+  setOnboardedForRole: (r: UserRoleType, ok: boolean) => void;
   clear: () => void;
 };
 
 export const useUserStore = create<UserState>()(
-  persist(
-    (set) => ({
-      profile: mockArtists[0],
-      onboarded: false,
-      setProfile: (p) => set({ profile: p }),
-      setOnboarded: (ok) => set({ onboarded: ok }),
-      clear: () => set({ profile: null }),
-    }),
-    {
-      name: "profile-storage",
-    }
+  devtools(
+    persist(
+      (set) => ({
+        currentRole: null,
+        profilesByRole: {},
+        onboardedByRole: { artist: false, space: false },
+        setCurrentRole: (r) => set({ currentRole: r }),
+        setProfileForRole: (r, p) =>
+          set((s) => ({
+            profilesByRole: p
+              ? { ...s.profilesByRole, [r]: p }
+              : (() => {
+                  const next = { ...s.profilesByRole };
+                  delete next[r];
+                  return next;
+                })(),
+          })),
+        setOnboardedForRole: (r, ok) =>
+          set((s) => ({
+            onboardedByRole: { ...s.onboardedByRole, [r]: ok },
+          })),
+        clear: () =>
+          set({
+            currentRole: null,
+            profilesByRole: {},
+            onboardedByRole: { artist: false, space: false },
+          }),
+      }),
+      {
+        name: "profile-storage",
+      }
+    )
   )
 );

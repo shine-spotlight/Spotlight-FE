@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useUserStore } from "@stores/userStore";
 import * as S from "./index.styles";
-import type { UserRoleType } from "@types";
 import { dummyArtistProposalData, dummySpaceProposalData } from "./data";
 import { ProposalCardCol, ProposalsTabs, StatusFilter } from "./components";
 
@@ -10,8 +9,7 @@ import { STATUS_FILTERS } from "./constants";
 import { filterByStatusLabel } from "./utils/filterByStatusLabel";
 
 export const Proposals: React.FC = () => {
-  const profile = useUserStore((p) => p.profile);
-  const role: UserRoleType = (profile?.role as UserRoleType) ?? "artist";
+  const role = useUserStore((p) => p.currentRole);
 
   const [tab, setTab] = useState<ProposalsTab>("received");
 

@@ -16,13 +16,14 @@ export const BottomNavigationBar: React.FC = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const profile = useUserStore((a) => a.profile);
+  const profile = useUserStore((a) => a.profilesByRole);
+  const role = useUserStore((a) => a.currentRole);
 
   if (!profile) {
     return null;
   }
 
-  const menus = getMenusByRole(profile.role);
+  const menus = getMenusByRole(role);
 
   const handleNavClick = (path: string) => {
     navigate(path);

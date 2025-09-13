@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage, devtools } from "zustand/middleware";
 import type { RegistrationDraft } from "@pages/Registration/types/draft";
 import type { ArtistStep, SpaceStep } from "@pages/Registration/types/steps";
 import { ARTIST_STEP, SPACE_STEP } from "@pages/Registration/types/steps";
@@ -81,7 +81,7 @@ function pruneDraft(draft: RegistrationDraft | null): RegistrationDraft | null {
 }
 
 function sanitizePayload(
-  role: "artist" | "space",
+  role: UserRoleType,
   step: ArtistStep | SpaceStep,
   payload: unknown
 ) {
@@ -109,115 +109,123 @@ type RegistrationDraftState = {
 };
 
 export const useRegistrationDraftStore = create<RegistrationDraftState>()(
-  persist(
-    (set) => ({
-      draft: null,
-      chooseRole: (role) =>
-        set(() => {
-          const updatedAt = new Date().toISOString();
-          if (role === "artist") {
+  devtools(
+    persist(
+      (set) => ({
+        draft: null,
+        chooseRole: (role) =>
+          set(() => {
+            const updatedAt = new Date().toISOString();
+            if (role === "artist") {
+              return {
+                draft: {
+                  role: "artist",
+                  currentStep: ARTIST_STEP.Basic,
+                  data: {},
+                  updatedAt,
+                } as ArtistDraft,
+              };
+            }
             return {
               draft: {
-                role: "artist",
-                currentStep: ARTIST_STEP.Basic,
+                role: "space",
+                currentStep: SPACE_STEP.Business,
                 data: {},
-                updatedAt,
-              } as ArtistDraft,
-            };
-          }
-          return {
-            draft: {
-              role: "space",
-              currentStep: SPACE_STEP.Business,
-              data: {},
-              updatedAt,
-            } as SpaceDraft,
-          };
-        }),
-
-      updateCurrentStepData: (data) =>
-        set((state) => {
-          const d = state.draft;
-          if (!d) return state;
-          const updatedAt = new Date().toISOString();
-
-          if (d.role === "artist") {
-            const step = d.currentStep as ArtistStep;
-            const safe = sanitizePayload(
-              "artist",
-              step,
-              data
-            ) as ArtistStepData[ArtistStep];
-            return {
-              draft: {
-                ...d,
-                data: { ...d.data, [step]: safe },
-                updatedAt,
-              } as ArtistDraft,
-            };
-          } else {
-            const step = d.currentStep as SpaceStep;
-            const safe = sanitizePayload(
-              "space",
-              step,
-              data
-            ) as SpaceStepData[SpaceStep];
-            return {
-              draft: {
-                ...d,
-                data: { ...d.data, [step]: safe },
                 updatedAt,
               } as SpaceDraft,
             };
-          }
-        }),
+          }),
 
-      nextStep: () =>
-        set((state) => {
-          const d = state.draft;
-          if (!d) return state;
+        updateCurrentStepData: (data) =>
+          set((state) => {
+            const d = state.draft;
+            if (!d) return state;
+            const updatedAt = new Date().toISOString();
 
-          const updatedAt = new Date().toISOString();
+            if (d.role === "artist") {
+              const step = d.currentStep as ArtistStep;
+              const safe = sanitizePayload(
+                "artist",
+                step,
+                data
+              ) as ArtistStepData[ArtistStep];
+              return {
+                draft: {
+                  ...d,
+                  data: { ...d.data, [step]: safe },
+                  updatedAt,
+                } as ArtistDraft,
+              };
+            } else {
+              const step = d.currentStep as SpaceStep;
+              const safe = sanitizePayload(
+                "space",
+                step,
+                data
+              ) as SpaceStepData[SpaceStep];
+              return {
+                draft: {
+                  ...d,
+                  data: { ...d.data, [step]: safe },
+                  updatedAt,
+                } as SpaceDraft,
+              };
+            }
+          }),
 
-          if (d.role === "artist") {
-            const next = nextOf(ARTIST_STEP_ORDER, d.currentStep as ArtistStep);
-            return next
-              ? ({ draft: { ...d, currentStep: next, updatedAt } } as const)
-              : state; // 마지막이면 그대로
-          } else {
-            const next = nextOf(SPACE_STEP_ORDER, d.currentStep as SpaceStep);
-            return next
-              ? ({ draft: { ...d, currentStep: next, updatedAt } } as const)
-              : state;
-          }
-        }),
-      prevStep: () =>
-        set((state) => {
-          const d = state.draft;
-          if (!d) return state;
+        nextStep: () =>
+          set((state) => {
+            const d = state.draft;
+            if (!d) return state;
 
-          const updatedAt = new Date().toISOString();
+            const updatedAt = new Date().toISOString();
 
-          if (d.role === "artist") {
-            const prev = prevOf(ARTIST_STEP_ORDER, d.currentStep as ArtistStep);
-            return prev
-              ? ({ draft: { ...d, currentStep: prev, updatedAt } } as const)
-              : state;
-          } else {
-            const prev = prevOf(SPACE_STEP_ORDER, d.currentStep as SpaceStep);
-            return prev
-              ? ({ draft: { ...d, currentStep: prev, updatedAt } } as const)
-              : state;
-          }
-        }),
-      clear: () => set({ draft: null }),
-    }),
-    {
-      name: "registration-draft",
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        draft: pruneDraft(state.draft),
+            if (d.role === "artist") {
+              const next = nextOf(
+                ARTIST_STEP_ORDER,
+                d.currentStep as ArtistStep
+              );
+              return next
+                ? ({ draft: { ...d, currentStep: next, updatedAt } } as const)
+                : state; // 마지막이면 그대로
+            } else {
+              const next = nextOf(SPACE_STEP_ORDER, d.currentStep as SpaceStep);
+              return next
+                ? ({ draft: { ...d, currentStep: next, updatedAt } } as const)
+                : state;
+            }
+          }),
+        prevStep: () =>
+          set((state) => {
+            const d = state.draft;
+            if (!d) return state;
+
+            const updatedAt = new Date().toISOString();
+
+            if (d.role === "artist") {
+              const prev = prevOf(
+                ARTIST_STEP_ORDER,
+                d.currentStep as ArtistStep
+              );
+              return prev
+                ? ({ draft: { ...d, currentStep: prev, updatedAt } } as const)
+                : state;
+            } else {
+              const prev = prevOf(SPACE_STEP_ORDER, d.currentStep as SpaceStep);
+              return prev
+                ? ({ draft: { ...d, currentStep: prev, updatedAt } } as const)
+                : state;
+            }
+          }),
+        clear: () => set({ draft: null }),
       }),
-    }
+      {
+        name: "registration-draft",
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          draft: pruneDraft(state.draft),
+        }),
+      }
+    )
   )
 );

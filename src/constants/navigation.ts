@@ -67,7 +67,7 @@ const spaceMenus: NavMenuItem[] = [
 ];
 
 // 역할별 메뉴 매핑
-export const getMenusByRole = (role: UserRoleType): NavMenuItem[] => {
+export const getMenusByRole = (role: UserRoleType | null): NavMenuItem[] => {
   switch (role) {
     case "artist":
       return artistMenus;

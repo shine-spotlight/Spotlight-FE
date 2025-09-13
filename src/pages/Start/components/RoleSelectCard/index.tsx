@@ -4,7 +4,7 @@ import { ArtistRoleIcon, SpaceRoleIcon } from "@assets/svg/role";
 import { useNavigate } from "react-router-dom";
 import { useRegistrationDraftStore } from "@/stores/registrationStore";
 import { useAuthStore } from "@stores/authStore";
-
+import { useUserStore } from "@stores/userStore";
 interface RoleSelectCard {
   role: UserRoleType;
 }
@@ -13,6 +13,7 @@ export const RoleSelectCard = ({ role }: RoleSelectCard) => {
   const navigate = useNavigate();
   const verified = useAuthStore((s) => s.socialVerified);
   const chooseRole = useRegistrationDraftStore((s) => s.chooseRole);
+  const setCurrentRole = useUserStore((s) => s.setCurrentRole);
 
   const iconMap: Record<
     UserRoleType,
@@ -30,6 +31,7 @@ export const RoleSelectCard = ({ role }: RoleSelectCard) => {
   const Icon = iconMap[role];
 
   const handleClick = () => {
+    setCurrentRole(role);
     chooseRole(role);
 
     if (!verified) {

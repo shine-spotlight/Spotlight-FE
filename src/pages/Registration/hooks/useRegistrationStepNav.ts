@@ -4,7 +4,7 @@ import { useRegistrationDraftStore } from "@stores/registrationStore";
 import type { ArtistStep, SpaceStep } from "../types/steps";
 import type { ArtistStepData, SpaceStepData } from "../types/payloads";
 import { useUserStore } from "@stores/userStore";
-import { mockArtists } from "@stores/data";
+import { mockArtists, mockSpaces } from "@stores/data";
 
 type StepPayload = ArtistStepData[ArtistStep] | SpaceStepData[SpaceStep];
 
@@ -61,10 +61,14 @@ export function useRegistrationStepNav() {
 
       await submitFn(cur); // 서버에서 받아온 유저 데이터를 저장하기
 
-      useUserStore.getState().setProfile(mockArtists[0]);
-      useUserStore.getState().setOnboarded(true);
+      if (cur.role == "artist") {
+        useUserStore.getState().setProfileForRole(cur.role, mockArtists[0]);
+      } else {
+        useUserStore.getState().setProfileForRole(cur.role, mockSpaces[0]);
+      }
+      useUserStore.getState().setOnboardedForRole(cur.role, true);
 
-      console.log(useUserStore.getState().profile);
+      console.log(useUserStore.getState().profilesByRole);
       navigate("/home", { replace: true });
 
       setTimeout(() => {
