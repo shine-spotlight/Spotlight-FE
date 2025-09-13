@@ -21,7 +21,13 @@ import {
   ArtistPortfolioForm,
   ArtistPayForm,
 } from "@pages/Registration/components/artist";
-import { SpaceBusinessForm } from "@pages/Registration/components/space";
+
+import {
+  SpaceBusinessForm,
+  SpaceAddressCapacityForm,
+  SpaceVenueBasicForm,
+  SpaceCategoryForm,
+} from "@pages/Registration/components/space";
 
 export const router = createBrowserRouter([
   {
@@ -79,30 +85,30 @@ export const router = createBrowserRouter([
               </StepGuard>
             ),
           },
-          // {
-          //   path: "space/address",
-          //   element: (
-          //     <StepGuard role="space" step={SPACE_STEP.AddressCapacity}>
-          //       <SpaceAddressForm />
-          //     </StepGuard>
-          //   ),
-          // },
-          // {
-          //   path: "space/venue",
-          //   element: (
-          //     <StepGuard role="space" step={SPACE_STEP.VenueBasic}>
-          //       <SpaceVenueForm />
-          //     </StepGuard>
-          //   ),
-          // },
-          // {
-          //   path: "space/category",
-          //   element: (
-          //     <StepGuard role="space" step={SPACE_STEP.Category}>
-          //       <SpaceCategoryForm />
-          //     </StepGuard>
-          //   ),
-          // },
+          {
+            path: "space/address",
+            element: (
+              <StepGuard role="space" step={SPACE_STEP.AddressCapacity}>
+                <SpaceAddressCapacityForm />
+              </StepGuard>
+            ),
+          },
+          {
+            path: "space/venue",
+            element: (
+              <StepGuard role="space" step={SPACE_STEP.VenueBasic}>
+                <SpaceVenueBasicForm />
+              </StepGuard>
+            ),
+          },
+          {
+            path: "space/category",
+            element: (
+              <StepGuard role="space" step={SPACE_STEP.Category}>
+                <SpaceCategoryForm />
+              </StepGuard>
+            ),
+          },
         ],
       },
       {

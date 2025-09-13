@@ -5,6 +5,7 @@ export const Section = styled.section`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
 `;
 
 export const Title = styled.h3`

@@ -23,7 +23,7 @@ export type ArtistProfile = {
   region: string[];
   desiredPay: number;
   isFreeAllowed: boolean;
-  phoneNumber?: string;
+  phoneNumber: string;
   createdAt: string;
 };
 
@@ -46,7 +46,7 @@ export type SpaceProfile = {
   placeRegion?: string;
   placeImageUrl?: string;
   equipments: string[];
-  phoneNumber?: string;
+  phoneNumber: string;
   createdAt: Date;
 };
 

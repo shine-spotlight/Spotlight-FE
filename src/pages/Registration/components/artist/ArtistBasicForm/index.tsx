@@ -5,7 +5,7 @@ import FormSection from "../../FormSection";
 import { EVENT_CATEGORIES, EQUIPMENT_CATEGORIES } from "@constants/categories";
 import ActionFooter from "@components/ActionFooter";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
-import * as S from "../index.styles";
+import * as S from "../../index.styles";
 import { useRegistrationDraftStore } from "@stores/registrationStore";
 import { ARTIST_STEP } from "@pages/Registration/types/steps";
 import type { ArtistBasicPayload } from "@pages/Registration/types/payloads";

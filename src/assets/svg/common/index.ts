@@ -24,3 +24,5 @@ export { default as ArrowIcon } from "./arrow.svg?react";
 export { default as KakaoLogo } from "./kakao.svg?react";
 
 export { default as PhoneSvg } from "./phone.svg?react";
+
+export { default as HelpIcon } from "./help.svg?react";

@@ -90,3 +90,61 @@ export const LinkButton = styled.button`
   cursor: pointer;
   ${({ theme }) => theme.typography.buttonMd}
 `;
+
+export const OutlineButton = styled.button`
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: 1px solid ${({ theme }) => theme.color.brand.solid};
+  background: transparent;
+  color: ${({ theme }) => theme.color.brand.solid};
+  font-size: 13px;
+  font-weight: 700;
+
+  &:disabled {
+    border-color: ${({ theme }) => theme.color.brand.disabled};
+    color: ${({ theme }) => theme.color.brand.disabled};
+  }
+`;
+
+export const HelperAction = styled.button`
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  color: ${({ theme }) => theme.palette.gray[300]};
+  ${({ theme }) => theme.typography.body4};
+  padding: 0;
+`;
+
+export const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid ${({ theme }) => theme.color.border.default};
+  margin: 16px 0;
+`;
+
+export const UploaderRow = styled.div`
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+export const Checkbox = styled.div`
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  label {
+    ${({ theme }) => theme.typography.body3};
+    color: ${({ theme }) => theme.color.text.secondary};
+    cursor: pointer;
+  }
+`;

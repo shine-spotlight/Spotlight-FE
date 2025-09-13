@@ -18,4 +18,5 @@ export const Container = styled.div`
   }
   max-width: 500px;
   position: fixed;
+  z-index: 1;
 `;

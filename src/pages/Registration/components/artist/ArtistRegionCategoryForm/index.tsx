@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import FormSection from "../../FormSection";
 import ActionFooter from "@components/ActionFooter";
-import * as S from "../index.styles";
+import * as S from "../../index.styles";
 import { useRegistrationDraftStore } from "@stores/registrationStore";
 import { ARTIST_STEP } from "@pages/Registration/types/steps";
 import type { ArtistRegionCategoryPayload } from "@pages/Registration/types/payloads";

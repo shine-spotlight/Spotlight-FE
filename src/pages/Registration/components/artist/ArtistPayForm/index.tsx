@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import FormSection from "../../FormSection";
 import ActionFooter from "@components/ActionFooter";
-import * as S from "../index.styles";
+import * as S from "../../index.styles";
 import { useRegistrationDraftStore } from "@stores/registrationStore";
 import { ARTIST_STEP } from "@pages/Registration/types/steps";
 import type { ArtistPayPayload } from "@pages/Registration/types/payloads";
@@ -34,7 +34,7 @@ export function ArtistPayForm() {
     saveAndGoPrev(form);
   }, [form, saveAndGoPrev]);
 
-  const nextDisabled = !form.isFreeAllowed && form.desiredPay <= 0;
+  const ready = form.isFreeAllowed || form.desiredPay > 0;
 
   return (
     <S.Container>
@@ -54,7 +54,7 @@ export function ArtistPayForm() {
       <ActionFooter
         variant="double"
         nextLabel="완료"
-        nextDisabled={nextDisabled}
+        nextDisabled={!ready}
         onNext={onSubmit}
         onPrev={onPrev}
       />
