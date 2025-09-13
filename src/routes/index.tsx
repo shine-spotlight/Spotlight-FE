@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "@components/ProtectedRoute";
 import { Layout } from "@components/Layout";
-import { ProtectedRegistrationLayout } from "@pages/Registration/components/ProtectedRegistrationLayout";
+import ProtectedRegistrationLayout from "@pages/Registration/components/ProtectedRegistrationLayout";
 import {
   Home,
   Spaces,
@@ -11,7 +11,7 @@ import {
   Mypage,
   Start,
 } from "@pages";
-import { KakaoVerify } from "@pages/Registration/components/KakaoVerify";
+import KakaoVerify from "@pages/Registration/components/KakaoVerify";
 import { StepGuard } from "@guards/StepGuard";
 import { ARTIST_STEP, SPACE_STEP } from "@pages/Registration/types/steps";
 import RegisterIndexRedirect from "@pages/Registration/components/RegisterIndexRedirect";
@@ -21,13 +21,13 @@ import {
   ArtistPortfolioForm,
   ArtistPayForm,
 } from "@pages/Registration/components/artist";
-
 import {
   SpaceBusinessForm,
   SpaceAddressCapacityForm,
   SpaceVenueBasicForm,
   SpaceCategoryForm,
 } from "@pages/Registration/components/space";
+import KakaoBridge from "@pages/Registration/components/KakaoBridge";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +35,7 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <Start /> },
+      { path: "login/auth/kakao", element: <KakaoBridge /> },
       { path: "register/verify", element: <KakaoVerify /> },
       {
         path: "register",
