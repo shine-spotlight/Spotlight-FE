@@ -12,7 +12,7 @@ const defaultFilter: AnnouncementFilterType = {
   date: null,
 };
 
-export const Announcements: React.FC = () => {
+const Announcements: React.FC = () => {
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<AnnouncementFilterType>(defaultFilter);
 
@@ -53,3 +53,5 @@ export const Announcements: React.FC = () => {
     </>
   );
 };
+
+export default Announcements;

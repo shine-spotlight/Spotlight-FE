@@ -9,7 +9,7 @@ import { ARTIST_STEP_MESSAGES } from "@pages/Registration/constants/messages";
 import RegionPicker from "@components/RegionPicker";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
 
-export function ArtistRegionForm() {
+function ArtistRegionForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveAndGoNext, saveAndGoPrev } = useRegistrationStepNav();
 
@@ -53,3 +53,5 @@ export function ArtistRegionForm() {
     </S.Container>
   );
 }
+
+export default ArtistRegionForm;

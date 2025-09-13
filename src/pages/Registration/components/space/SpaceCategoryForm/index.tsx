@@ -9,7 +9,7 @@ import type { SpaceCategoryPayload } from "@pages/Registration/types/payloads";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
 import { EVENT_CATEGORIES } from "@constants/categories";
 
-export function SpaceCategoryForm() {
+export default function SpaceCategoryForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveCurrent, saveAndGoPrev, submitAll } = useRegistrationStepNav();
 

@@ -12,7 +12,7 @@ const defaultFilter: SpaceFilterType = {
   equipments: [],
 };
 
-export const Spaces: React.FC = () => {
+const Spaces: React.FC = () => {
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<SpaceFilterType>(defaultFilter);
 
@@ -49,3 +49,5 @@ export const Spaces: React.FC = () => {
     </>
   );
 };
+
+export default Spaces;

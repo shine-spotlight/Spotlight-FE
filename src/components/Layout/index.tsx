@@ -8,7 +8,7 @@ export const Layout: React.FC = () => {
   const location = useLocation();
   const shouldHide =
     location.pathname === "/" ||
-    location.pathname === "/login" ||
+    location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/register");
 
   return (

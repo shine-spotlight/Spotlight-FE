@@ -8,7 +8,7 @@ import type { ProposalsTab, StatusFilterType } from "./types";
 import { STATUS_FILTERS } from "./constants";
 import { filterByStatusLabel } from "./utils/filterByStatusLabel";
 
-export const Proposals: React.FC = () => {
+const Proposals: React.FC = () => {
   const role = useUserStore((p) => p.currentRole);
 
   const [tab, setTab] = useState<ProposalsTab>("received");
@@ -49,3 +49,5 @@ export const Proposals: React.FC = () => {
     </>
   );
 };
+
+export default Proposals;
