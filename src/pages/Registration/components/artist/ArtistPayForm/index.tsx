@@ -7,10 +7,13 @@ import { ARTIST_STEP } from "@pages/Registration/types/steps";
 import type { ArtistPayPayload } from "@pages/Registration/types/payloads";
 import { ARTIST_STEP_MESSAGES } from "@pages/Registration/constants/messages";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
+import { setArtistInfo } from "@apis/artists";
 import NumberStepper from "../../NumberStepper";
+import { buildArtistInfoFromSteps } from "@pages/Registration/utils";
 
-export function ArtistPayForm() {
+function ArtistPayForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
+  const getDraft = useRegistrationDraftStore.getState;
   const { saveCurrent, saveAndGoPrev, submitAll } = useRegistrationStepNav();
 
   const initial =
@@ -26,9 +29,14 @@ export function ArtistPayForm() {
   const onSubmit = useCallback(() => {
     saveCurrent(form);
     submitAll(async () => {
-      // 요청 함수
+      const cur = getDraft().draft;
+      if (!cur || cur.role !== "artist")
+        throw new Error("등록 진행 상태가 유효하지 않습니다.");
+
+      const dto = buildArtistInfoFromSteps(cur.data);
+      await setArtistInfo(dto);
     });
-  }, [form, saveCurrent, submitAll]);
+  }, [form, saveCurrent, submitAll, getDraft]);
 
   const onPrev = useCallback(() => {
     saveAndGoPrev(form);
@@ -61,3 +69,5 @@ export function ArtistPayForm() {
     </S.Container>
   );
 }
+
+export default ArtistPayForm;

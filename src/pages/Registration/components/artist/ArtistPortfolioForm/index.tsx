@@ -9,7 +9,7 @@ import { ARTIST_STEP_MESSAGES } from "@pages/Registration/constants/messages";
 import ProfileAvatarPicker from "../../ProfileAvatarPicker";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
 
-export function ArtistPortfolioForm() {
+function ArtistPortfolioForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveAndGoNext, saveAndGoPrev } = useRegistrationStepNav();
 
@@ -57,7 +57,7 @@ export function ArtistPortfolioForm() {
       <S.Headline>{ARTIST_STEP_MESSAGES.Portfolio}</S.Headline>
       <S.ContentContainer>
         <FormSection
-          title="프로필 사진(선택)"
+          title="프로필 사진"
           helper="[팀/이름]을 나타내는 사진을 등록해주세요!"
         >
           <ProfileAvatarPicker
@@ -127,3 +127,5 @@ export function ArtistPortfolioForm() {
     </S.Container>
   );
 }
+
+export default ArtistPortfolioForm;

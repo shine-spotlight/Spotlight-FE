@@ -11,7 +11,7 @@ import { ARTIST_STEP } from "@pages/Registration/types/steps";
 import type { ArtistBasicPayload } from "@pages/Registration/types/payloads";
 import { ARTIST_STEP_MESSAGES } from "@pages/Registration/constants/messages";
 
-export function ArtistBasicForm() {
+function ArtistBasicForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveAndGoNext } = useRegistrationStepNav();
 
@@ -84,3 +84,5 @@ export function ArtistBasicForm() {
     </S.Container>
   );
 }
+
+export default ArtistBasicForm;

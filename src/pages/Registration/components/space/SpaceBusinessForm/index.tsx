@@ -9,7 +9,7 @@ import FormSection from "../../FormSection";
 import { HelpIcon } from "@assets/svg/common";
 import { formatBusinessNumber } from "@utils/formatBusinessNumber";
 
-export function SpaceBusinessForm() {
+export default function SpaceBusinessForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveAndGoNext } = useRegistrationStepNav();
 

@@ -92,7 +92,7 @@ function sanitizePayload(
     }
     return p;
   }
-  // 공간 쪽도 필요시 동일하게 처리
+  //TODO: 공간 쪽도 필요시 동일하게 처리
   return payload;
 }
 

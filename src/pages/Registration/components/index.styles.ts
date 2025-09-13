@@ -148,3 +148,8 @@ export const Checkbox = styled.div`
     cursor: pointer;
   }
 `;
+
+export const SubTitle = styled.span`
+  ${({ theme }) => theme.typography.buttonMd};
+  color: ${({ theme }) => theme.color.text.secondary};
+`;

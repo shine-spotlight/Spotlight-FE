@@ -9,7 +9,7 @@ import AddressSearchSheet from "../../AddressSearchSheet";
 import * as S from "../../index.styles";
 import * as L from "./index.styles";
 
-export function SpaceAddressCapacityForm() {
+export default function SpaceAddressCapacityForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveAndGoNext, saveAndGoPrev } = useRegistrationStepNav();
 

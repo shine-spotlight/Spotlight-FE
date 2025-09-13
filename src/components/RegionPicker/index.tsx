@@ -2,10 +2,16 @@ import React, { useMemo, useState } from "react";
 import * as S from "./index.styles";
 import regionsData from "@assets/json/region.json";
 
-type Sgg = string;
-type Sido = { code: string; name: string; sgg: Sgg[] };
+type Sido = {
+  code: string;
+  name: string;
+  sigungu: string[];
+};
 
-export type RegionValue = { sido: string; sgg?: string };
+export type RegionValue = {
+  sido: string;
+  sigungu?: string | null;
+};
 
 type Props = {
   value: RegionValue[];
@@ -26,19 +32,19 @@ const RegionPicker: React.FC<Props> = ({
     [sidos, activeSidoCode]
   );
 
-  const isSelected = (sido: string, sgg?: string) =>
-    value.some((v) => v.sido === sido && v.sgg === sgg);
+  const isSelected = (sido: string, sigungu?: string) =>
+    value.some((v) => v.sido === sido && v.sigungu === sigungu);
 
-  const toggle = (sido: string, sgg?: string) => {
-    const exists = isSelected(sido, sgg);
+  const toggle = (sido: string, sigungu?: string) => {
+    const exists = isSelected(sido, sigungu);
     if (multiple) {
       onChange(
         exists
-          ? value.filter((v) => !(v.sido === sido && v.sgg === sgg))
-          : [...value, { sido, sgg }]
+          ? value.filter((v) => !(v.sido === sido && v.sigungu === sigungu))
+          : [...value, { sido, sigungu }]
       );
     } else {
-      onChange(exists ? [] : [{ sido, sgg }]);
+      onChange(exists ? [] : [{ sido, sigungu }]);
     }
   };
 
@@ -53,10 +59,11 @@ const RegionPicker: React.FC<Props> = ({
       <S.ChipsRow>
         {value.map((v, i) => (
           <S.Chip
-            key={`${v.sido}-${v.sgg ?? "ALL"}`}
+            key={`${v.sido}-${v.sigungu ?? "ALL"}`}
             onClick={() => removeChip(i)}
           >
-            {v.sgg ? `${v.sido} ${v.sgg}` : `${v.sido} 전체`} <span>✕</span>
+            {v.sigungu ? `${v.sido} ${v.sigungu}` : `${v.sido} 전체`}{" "}
+            <span>✕</span>
           </S.Chip>
         ))}
       </S.ChipsRow>
@@ -88,7 +95,7 @@ const RegionPicker: React.FC<Props> = ({
             {isSelected(activeSido.name, undefined) && <S.Check>✓</S.Check>}
           </S.SggItem>
 
-          {activeSido.sgg.map((g) => (
+          {activeSido.sigungu.map((g) => (
             <S.SggItem
               key={g}
               type="button"

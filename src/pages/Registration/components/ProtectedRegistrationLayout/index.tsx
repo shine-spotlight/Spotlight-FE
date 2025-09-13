@@ -12,7 +12,7 @@ import { USER_ROLE_TYPE_LABELS } from "@constants/user";
 import { Topbar } from "@components/Topbar";
 import { useNavigate } from "react-router-dom";
 
-export function ProtectedRegistrationLayout() {
+export default function ProtectedRegistrationLayout() {
   const navigate = useNavigate();
   const draft = useRegistrationDraftStore((s) => s.draft);
   const verified = useAuthStore((s) => s.socialVerified);

@@ -13,7 +13,7 @@ const defaultFilter: ArtistFilterType = {
   freeOnly: false,
 };
 
-export const Artists: React.FC = () => {
+const Artists: React.FC = () => {
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<ArtistFilterType>(defaultFilter);
 
@@ -55,3 +55,5 @@ export const Artists: React.FC = () => {
     </>
   );
 };
+
+export default Artists;

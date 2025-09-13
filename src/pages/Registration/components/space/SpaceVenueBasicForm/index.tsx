@@ -12,7 +12,7 @@ import { EQUIPMENT_CATEGORIES, SPACE_CATEGORIES } from "@constants/categories";
 import { AmbienceInput } from "../../AmbienceInput";
 import NumberStepper from "../../NumberStepper";
 
-export function SpaceVenueBasicForm() {
+export default function SpaceVenueBasicForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const { saveAndGoNext, saveAndGoPrev } = useRegistrationStepNav();
 
@@ -51,7 +51,6 @@ export function SpaceVenueBasicForm() {
   return (
     <S.Container>
       <S.Headline>공연 공간에 대한 정보를 입력해주세요!</S.Headline>
-
       <S.ContentContainer>
         <FormSection
           title="공간 사진"
@@ -79,7 +78,6 @@ export function SpaceVenueBasicForm() {
             rows={5}
           />
         </FormSection>
-
         <FormSection title="공간 카테고리" helper="하나만 선택 가능합니다.">
           <SelectChipsGroup
             items={SPACE_CATEGORIES}
@@ -123,11 +121,7 @@ export function SpaceVenueBasicForm() {
               alignItems: "center",
             }}
           >
-            <div
-              style={{ color: "var(--text-secondary, #6b7280)", fontSize: 14 }}
-            >
-              좌석 기준
-            </div>
+            <S.SubTitle>좌석 기준</S.SubTitle>
             <NumberStepper
               value={form.capacitySeated}
               onChange={(n) => setForm((p) => ({ ...p, capacitySeated: n }))}
@@ -135,11 +129,7 @@ export function SpaceVenueBasicForm() {
               max={100}
               unit="명"
             />
-            <div
-              style={{ color: "var(--text-secondary, #6b7280)", fontSize: 14 }}
-            >
-              스탠딩 기준
-            </div>
+            <S.SubTitle>스탠딩 기준</S.SubTitle>
             <NumberStepper
               value={form.capacityStanding}
               onChange={(n) => setForm((p) => ({ ...p, capacityStanding: n }))}
@@ -161,7 +151,6 @@ export function SpaceVenueBasicForm() {
           />
         </FormSection>
       </S.ContentContainer>
-
       <ActionFooter
         variant="double"
         prevLabel="이전"

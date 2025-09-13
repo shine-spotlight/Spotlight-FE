@@ -69,7 +69,7 @@ export const applyInterceptors = (instance: AxiosInstance): void => {
       const token = useAuthStore.getState().accessToken;
 
       // 로그인 전에는 인터셉터 제외
-      const excludedPaths = ["/users/auth/kakao/login"];
+      const excludedPaths = ["/users/auth/kakao/callback/"];
 
       const isExcluded = excludedPaths.some((path) =>
         config.url?.includes(path)
@@ -78,7 +78,7 @@ export const applyInterceptors = (instance: AxiosInstance): void => {
       if (isExcluded) return config;
 
       if (token) {
-        config.headers.set("Authorization", `Bearer ${token}`);
+        config.headers.set("Authorization", `Token ${token}`);
         return config;
       }
       return config;
