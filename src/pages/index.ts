@@ -5,3 +5,5 @@ export { default as Proposals } from "./Proposals";
 export { default as Announcements } from "./Announcements";
 export { default as Mypage } from "./Mypage";
 export { default as Start } from "./Start";
+export { default as ArtistDetail } from "./ArtistDetail";
+export { default as SpaceDetail } from "./SpaceDetail";

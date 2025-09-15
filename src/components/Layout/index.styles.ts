@@ -10,15 +10,15 @@ export const AppContainer = styled.div`
   flex-direction: column;
 `;
 
-export const MainContent = styled.main<{ $shouldHide: boolean }>`
+export const MainContent = styled.main<{ $shouldShow: boolean }>`
   flex: 1;
   padding: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  ${({ $shouldHide }) =>
-    !$shouldHide
+  ${({ $shouldShow }) =>
+    $shouldShow
       ? `padding-top: 60px;
   padding-bottom: 90px;`
       : ""}

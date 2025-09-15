@@ -11,7 +11,14 @@ export const Topbar: React.FC<TopbarProps> = ({ title, goBack }) => {
   return (
     <S.Container>
       {title}
-      {goBack !== null && <ArrowIcon onClick={goBack} width={20} height={20} />}
+      {goBack !== null && (
+        <ArrowIcon
+          onClick={goBack}
+          width={20}
+          height={20}
+          style={{ cursor: "pointer" }}
+        />
+      )}
     </S.Container>
   );
 };

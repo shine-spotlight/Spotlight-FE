@@ -8,6 +8,7 @@ const STATE_KEY = "kakao_oauth_state";
 
 export type KakaoLoginResponse = {
   accessToken: string;
+  isOnboarding: boolean;
   user: {
     id: number;
     kakao_id: string;

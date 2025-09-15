@@ -10,6 +10,10 @@ export { default as PlaceIcon } from "./place.svg?react";
 export { default as PeopleIcon } from "./people.svg?react";
 export { default as DescriptionIcon } from "./description.svg?react";
 export { default as CalendarIcon } from "./calendar.svg?react";
+export { default as EquipmentIcon } from "./equipment.svg?react";
+export { default as MoodIcon } from "./mood.svg?react";
+export { default as LinkIcon } from "./link.svg?react";
+export { default as PayIcon } from "./pay.svg?react";
 
 export { default as StarFillIcon } from "./star-fill.svg?react";
 export { default as StarEmptyIcon } from "./star-empty.svg?react";
