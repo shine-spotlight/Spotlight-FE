@@ -130,25 +130,6 @@ export const UploaderRow = styled.div`
   flex-wrap: wrap;
 `;
 
-export const Checkbox = styled.div`
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
-
-  label {
-    ${({ theme }) => theme.typography.body3};
-    color: ${({ theme }) => theme.color.text.secondary};
-    cursor: pointer;
-  }
-`;
-
 export const SubTitle = styled.span`
   ${({ theme }) => theme.typography.buttonMd};
   color: ${({ theme }) => theme.color.text.secondary};

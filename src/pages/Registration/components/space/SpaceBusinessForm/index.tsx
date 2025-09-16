@@ -7,7 +7,7 @@ import * as S from "../../index.styles";
 import ActionFooter from "@components/ActionFooter";
 import FormSection from "../../FormSection";
 import { HelpIcon } from "@assets/svg/common";
-import { formatBusinessNumber } from "@utils/formatBusinessNumber";
+import { formatBusinessNumber, formatPhoneNumber } from "@utils/formatNumber";
 
 export default function SpaceBusinessForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
@@ -17,15 +17,24 @@ export default function SpaceBusinessForm() {
     draft.data[SPACE_STEP.Business]) as SpaceBusinessPayload | undefined;
 
   const [form, setForm] = useState<SpaceBusinessPayload>({
-    businessNumber: initial?.businessNumber ?? 0,
+    businessNumber: initial?.businessNumber ?? "",
+    phoneNumber: initial?.phoneNumber ?? "",
   });
 
   const bnText = formatBusinessNumber(String(form.businessNumber || ""));
-  const valid = /^\d{3}-\d{2}-\d{5}$/.test(bnText); // "000-00-00000" 패턴 검사
+  const phoneText = formatPhoneNumber(String(form.phoneNumber || ""));
 
-  const onChangeText = (v: string) => {
+  const bnValid = /^\d{3}-\d{2}-\d{5}$/.test(bnText); // "000-00-00000" 패턴 검사
+  const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(phoneText); // "000-0000-0000" 패턴 검사
+
+  const onChangeBusinessNumber = (v: string) => {
     const onlyNum = v.replace(/\D/g, "").slice(0, 10);
-    setForm({ businessNumber: Number(onlyNum) || 0 });
+    setForm((prev) => ({ ...prev, businessNumber: onlyNum }));
+  };
+
+  const onChangePhoneNumber = (v: string) => {
+    const onlyNum = v.replace(/\D/g, "").slice(0, 11);
+    setForm((prev) => ({ ...prev, phoneNumber: onlyNum }));
   };
 
   const onNext = useCallback(() => {
@@ -44,19 +53,31 @@ export default function SpaceBusinessForm() {
             inputMode="numeric"
             placeholder="사업자등록번호를 입력하세요."
             value={bnText}
-            onChange={(e) => onChangeText(e.target.value)}
+            onChange={(e) => onChangeBusinessNumber(e.target.value)}
           />
           <S.HelperAction type="button">
             <HelpIcon height={16} width={16} />
             사업자등록을 하지 않으셨나요?
           </S.HelperAction>
         </FormSection>
+
+        <FormSection
+          title="휴대폰 번호"
+          helper="개인 휴대폰 번호를 입력하세요."
+        >
+          <S.Input
+            inputMode="numeric"
+            placeholder="휴대폰 번호를 입력하세요."
+            value={phoneText}
+            onChange={(e) => onChangePhoneNumber(e.target.value)}
+          />
+        </FormSection>
       </S.ContentContainer>
 
       <ActionFooter
         variant="single"
         nextLabel="다음으로"
-        nextDisabled={!valid}
+        nextDisabled={!bnValid || !phoneValid}
         onNext={onNext}
       />
     </S.Container>

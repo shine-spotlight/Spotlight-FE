@@ -4,7 +4,9 @@ export type ArtistBasicPayload = {
   name: string;
   description: string;
   members: number;
+  phoneNumber: string;
   categories: string[];
+  customCategory?: string;
   equipments: string[];
 };
 export type ArtistRegionCategoryPayload = { regions: RegionValue[] };
@@ -23,13 +25,18 @@ export type ArtistStepData = {
 };
 
 /** 공간 payload들 */
-export type SpaceBusinessPayload = { businessNumber: number };
+export type SpaceBusinessPayload = {
+  businessNumber: string;
+  phoneNumber: string;
+};
 
 export type SpaceAddressCapacityPayload = {
   placeName: string;
   address: string;
   kakaoMapLink?: string;
+  postalCode: string;
 };
+
 export type SpaceVenueBasicPayload = {
   placeImage: string;
   description: string;

@@ -8,9 +8,16 @@ import { SPACE_STEP } from "@pages/Registration/types/steps";
 import type { SpaceCategoryPayload } from "@pages/Registration/types/payloads";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
 import { EVENT_CATEGORIES } from "@constants/categories";
+import { buildSpaceInfoFromSteps } from "@pages/Registration/utils";
+import { setSpaceInfo } from "@apis/spaces";
+import { toCamelCase } from "@utils/caseConvert";
+import type { SpaceDetailResponse } from "@models/space/space.dto";
+import type { SpaceProfile } from "@models/space/space.type";
+import { setUserPhone } from "@apis/users";
 
 export default function SpaceCategoryForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
+  const getDraft = useRegistrationDraftStore.getState;
   const { saveCurrent, saveAndGoPrev, submitAll } = useRegistrationStepNav();
 
   const initial =
@@ -31,9 +38,17 @@ export default function SpaceCategoryForm() {
   const onComplete = useCallback(() => {
     saveCurrent(form);
     submitAll(async () => {
-      // 요청 함수
+      const cur = getDraft().draft;
+      if (!cur || cur.role !== "space") {
+        throw new Error("등록 진행 상태가 유효하지 않습니다.");
+      }
+      const dto = buildSpaceInfoFromSteps(cur.data);
+      await setUserPhone(dto.phone_number);
+
+      const savedProfile = await setSpaceInfo(dto);
+      return toCamelCase<SpaceDetailResponse, SpaceProfile>(savedProfile);
     });
-  }, [form, saveCurrent, submitAll]);
+  }, [form, saveCurrent, submitAll, getDraft]);
 
   return (
     <S.Container>

@@ -10,6 +10,7 @@ import { useRegistrationDraftStore } from "@stores/registrationStore";
 import { ARTIST_STEP } from "@pages/Registration/types/steps";
 import type { ArtistBasicPayload } from "@pages/Registration/types/payloads";
 import { ARTIST_STEP_MESSAGES } from "@pages/Registration/constants/messages";
+import { formatPhoneNumber } from "@utils/formatNumber";
 
 function ArtistBasicForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
@@ -23,6 +24,7 @@ function ArtistBasicForm() {
   const [form, setForm] = useState<ArtistBasicPayload>({
     name: initial?.name ?? "",
     description: initial?.description ?? "",
+    phoneNumber: initial?.phoneNumber ?? "",
     members: initial?.members ?? 1,
     categories: initial?.categories ?? [],
     equipments: initial?.equipments ?? [],
@@ -31,6 +33,15 @@ function ArtistBasicForm() {
   const onNext = useCallback(() => {
     saveAndGoNext(form);
   }, [form, saveAndGoNext]);
+
+  const phoneText = formatPhoneNumber(String(form.phoneNumber || ""));
+
+  const phoneValid = /^\d{3}-\d{4}-\d{4}$/.test(phoneText); // "000-0000-0000" 패턴 검사
+
+  const onChangePhoneNumber = (v: string) => {
+    const onlyNum = v.replace(/\D/g, "").slice(0, 11);
+    setForm((prev) => ({ ...prev, phoneNumber: onlyNum }));
+  };
 
   return (
     <S.Container>
@@ -49,6 +60,14 @@ function ArtistBasicForm() {
             placeholder="자신을 나타내는 소개글을 간단히 작성해주세요!"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+        </FormSection>
+        <FormSection title="휴대폰 번호">
+          <S.Input
+            inputMode="numeric"
+            placeholder="휴대폰 번호를 입력하세요."
+            value={phoneText}
+            onChange={(e) => onChangePhoneNumber(e.target.value)}
           />
         </FormSection>
         <FormSection title="인원수">
@@ -78,7 +97,7 @@ function ArtistBasicForm() {
       <ActionFooter
         variant="single"
         nextLabel="다음으로"
-        nextDisabled={!form.name}
+        nextDisabled={!form.name || !phoneValid}
         onNext={onNext}
       />
     </S.Container>

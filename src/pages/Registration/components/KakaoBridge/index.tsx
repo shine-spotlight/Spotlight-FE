@@ -9,34 +9,30 @@ import * as S from "./index.styles";
 export default function KakaoBridge() {
   const navigate = useNavigate();
   const currentRole = useUserStore((s) => s.currentRole);
-
   const qs = useMemo(() => new URLSearchParams(window.location.search), []);
   const code = qs.get("code");
   const state = qs.get("state");
 
-  const { status, progress, token } = useKakaoExchange(code, state);
+  const { status, progress, token, nextPath } = useKakaoExchange(code, state);
 
-  const doneRef = useRef(false);
+  const jumpedRef = useRef(false);
 
   useEffect(() => {
-    if (status !== "success") return;
-    if (!token) return;
-    if (doneRef.current) return;
-    doneRef.current = true;
+    if (!nextPath || jumpedRef.current) return;
+    jumpedRef.current = true;
 
     (async () => {
       try {
-        if (currentRole) {
-          await setUserRole(currentRole);
+        if (token && currentRole) {
+          await setUserRole(currentRole).catch(() => {});
         }
-      } catch (e) {
-        console.error("setUserRole 실패(진행 계속):", e);
       } finally {
         window.history.replaceState(null, "", location.pathname);
-        navigate("/register", { replace: true });
+        navigate(nextPath, { replace: true });
       }
     })();
-  }, [status, token, currentRole, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextPath]);
 
   const isError = status === "error";
 
@@ -55,17 +51,10 @@ export default function KakaoBridge() {
             : "카카오 로그인 처리 중…"}
         </S.Title>
         <S.Hint>창을 닫지 말고 잠시만 기다려주세요.</S.Hint>
-        <S.Row>
-          <S.GhostButton onClick={() => navigate("/", { replace: true })}>
-            홈으로
-          </S.GhostButton>
-          <S.PrimaryButton
-            disabled={!isError && status !== "success"}
-            onClick={() => (window.location.href = "/register")}
-          >
-            회원가입 계속
-          </S.PrimaryButton>
-        </S.Row>
+
+        <S.GhostButton onClick={() => navigate("/", { replace: true })}>
+          홈으로
+        </S.GhostButton>
       </S.Card>
     </S.Wrap>
   );

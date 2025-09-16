@@ -1,4 +1,5 @@
-import type { NavMenuItem, UserRoleType } from "../types";
+import type { NavMenuItem } from "../types";
+import type { UserRoleType } from "@models/user/user.type";
 
 const artistMenus: NavMenuItem[] = [
   {

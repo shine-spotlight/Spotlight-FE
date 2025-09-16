@@ -28,6 +28,7 @@ export default function SpaceAddressCapacityForm() {
     address: initial?.address ?? "",
     placeName: initial?.placeName ?? "",
     kakaoMapLink: initial?.kakaoMapLink ?? "",
+    postalCode: initial?.postalCode ?? "",
   });
 
   // 다음 버튼 활성화

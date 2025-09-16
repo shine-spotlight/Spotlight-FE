@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRegistrationDraftStore } from "@stores/registrationStore";
 import { ARTIST_STEP, SPACE_STEP } from "@pages/Registration/types/steps";
@@ -22,14 +22,20 @@ export default function RegisterIndexRedirect() {
   const draft = useRegistrationDraftStore((s) => s.draft);
   const verified = useAuthStore((s) => s.socialVerified);
   const nav = useNavigate();
+  const redirectedRef = useRef(false);
 
   useEffect(() => {
+    // 이미 리다이렉트가 진행 중이면 무시
+    if (redirectedRef.current) return;
+
     if (!draft) {
+      redirectedRef.current = true;
       nav("/home", { replace: true });
       return;
     }
 
     if (!verified) {
+      redirectedRef.current = true;
       nav("/register/verify", { replace: true });
       return;
     }
@@ -39,6 +45,7 @@ export default function RegisterIndexRedirect() {
         ? ARTIST_PATH[draft.currentStep]
         : SPACE_PATH[draft.currentStep];
 
+    redirectedRef.current = true;
     nav(`/register/${path}`, { replace: true });
   }, [draft, nav, verified]);
 
