@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { exchangeCode, validateState } from "@apis/users";
 import { useAuthStore } from "@stores/authStore";
 import { useUserStore } from "@stores/userStore";
+import { setUserRole } from "@apis/users";
 
 export type BridgeStatus =
   | "idle"
   | "validating"
   | "exchanging"
   | "success"
-  | "error";
+  | "error"
+  | "role_mismatch";
 
 type NextRoute = "/register" | "/home" | "/";
 
@@ -21,6 +23,7 @@ export function useKakaoExchange(code: string | null, state: string | null) {
   const setTokens = useAuthStore((s) => s.setTokens);
   const setSocialVerified = useAuthStore((s) => s.setSocialVerified);
   const currentRole = useUserStore((s) => s.currentRole);
+  const setCurrentRole = useUserStore((s) => s.setCurrentRole);
   const setOnboardedForRole = useUserStore((s) => s.setOnboardedForRole);
   const ranRef = useRef(false);
 
@@ -60,6 +63,7 @@ export function useKakaoExchange(code: string | null, state: string | null) {
 
         const accessToken: string | undefined = res.accessToken;
         const isOnboarding: boolean = !!res.isOnboarding;
+        const userRole = res.user?.role;
 
         if (!accessToken) {
           throw new Error("로그인 토큰이 응답에 없습니다.");
@@ -69,11 +73,35 @@ export function useKakaoExchange(code: string | null, state: string | null) {
         setToken(accessToken);
         setSocialVerified(true);
 
-        if (isOnboarding) {
-          setNextPath("/register");
+        // role 검증 로직
+        if (userRole !== null) {
+          // 이미 role이 있는 경우
+          if (userRole === currentRole) {
+            // 동일한 role이면 그대로 진행
+            if (isOnboarding) {
+              setNextPath("/register");
+            } else {
+              setOnboardedForRole(currentRole, true);
+              setNextPath("/home");
+            }
+          } else {
+            // 다른 role로 이미 회원가입되어 있음
+            setProgress(100);
+            setStatus("role_mismatch");
+            setCurrentRole(null);
+            setNextPath("/");
+            return;
+          }
         } else {
-          setOnboardedForRole(currentRole, true);
-          setNextPath("/home");
+          setUserRole(currentRole).catch(() => {});
+
+          // role이 null인 경우 - KakaoBridge에서 setUserRole 호출
+          if (isOnboarding) {
+            setNextPath("/register");
+          } else {
+            setOnboardedForRole(currentRole, true);
+            setNextPath("/home");
+          }
         }
 
         setProgress(100);
