@@ -28,7 +28,7 @@ postingInstance.defaults.baseURL += "/postings";
 applyInterceptors(postingInstance);
 
 const suggestingInstance = axios.create(defaultInstance.defaults);
-suggestingInstance.defaults.baseURL += "/suggestings";
+suggestingInstance.defaults.baseURL += "/suggestions";
 applyInterceptors(suggestingInstance);
 
 const likeInstance = axios.create(defaultInstance.defaults);
