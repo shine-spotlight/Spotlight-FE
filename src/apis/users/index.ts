@@ -1,6 +1,6 @@
 import { sendRequest } from "@apis/api";
 import { userInstance } from "@apis/instance";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 
 const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID!;
 const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;

@@ -1,74 +1,98 @@
 import * as S from "./index.styles";
-// import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Topbar } from "@components/Topbar";
-// import { useNavigate } from "react-router-dom";
-import { ProfileDetail } from "@components/ProfileDetail";
-import { mockArtists } from "@stores/data";
 import ActionFooter from "@components/ActionFooter";
-import { useNavigate } from "react-router-dom";
+import { useArtistDetailQuery } from "@queries/artists";
+import { ProfileDetail } from "@components/ProfileDetail";
 
 const ArtistDetail = () => {
-  // const { id } = useParams();
-  // const navigate = useNavigate();
-  const artistDetail = mockArtists[0];
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  // id 파싱 & 유효성
+  const artistId = Number(id ?? NaN);
+  const hasValidId = Number.isFinite(artistId);
+
+  // 훅은 항상 호출, enabled로 제어
+  const { data, isLoading } = useArtistDetailQuery(artistId, {
+    enabled: hasValidId,
+  });
+
+  if (isLoading) {
+    return (
+      <S.Container>
+        <Topbar title="공연 예술가 상세" goBack={() => navigate("/artists")} />
+        <div>불러오는 중…</div>
+      </S.Container>
+    );
+  }
+
+  if (!data) {
+    return <Navigate to="/404" replace />;
+  }
+
+  const title = data.name;
+  const description = data.bio;
+  const img = data.profileImageUrl || ""; // 문자열 단일 필드라고 가정
+  const categories = Array.isArray(data.categories) ? data.categories : [];
+  const region =
+    Array.isArray(data.region) && data.region.length
+      ? data.region.join(", ")
+      : "정보 없음";
+  const equipments =
+    Array.isArray(data.equipments) && data.equipments.length
+      ? data.equipments.join(", ")
+      : "정보 없음";
+  const members =
+    typeof data.numberOfMembers === "number" ? data.numberOfMembers : 0;
+  const pay =
+    typeof data.desiredPay === "number"
+      ? `${data.desiredPay}만 원`
+      : "정보 없음";
+  const portfolioLinks = Array.isArray(data.portfolioLinks)
+    ? data.portfolioLinks
+    : [];
 
   return (
     <S.Container>
       <Topbar title="공연 예술가 상세" goBack={() => navigate("/artists")} />
       <ProfileDetail>
-        <ProfileDetail.Media image="https://d1z7ls0lpgvz0q.cloudfront.net/media/artist/image/web/Untitled-6_uk6PZyA.png" />
+        <ProfileDetail.Media image={img} />
         <ProfileDetail.Header
-          title={artistDetail.name}
-          description={artistDetail.bio}
+          title={title}
+          description={description}
           isStar={true}
         />
         <ProfileDetail.Section title="희망 공연 카테고리">
-          <ProfileDetail.Tags
-            items={artistDetail.categoryName ? artistDetail.categoryName : []}
-          />
+          <ProfileDetail.Tags items={categories} />
         </ProfileDetail.Section>
         <ProfileDetail.Section title="상세 정보">
           <ProfileDetail.IconContent
             icon="people"
             label="인원수"
-            content={`${artistDetail.numberOfMembers}명`}
+            content={`${members}명`}
           />
           <ProfileDetail.IconContent
             icon="place"
             label="활동 지역"
-            content={
-              artistDetail.region.length > 0
-                ? artistDetail.region
-                    .map((r) => `${r.sido} ${r.sigungu ?? ""}`)
-                    .join(", ")
-                : "정보 없음"
-            }
+            content={region}
           />
           <ProfileDetail.IconContent
             icon="equipment"
             label="필요 장비"
-            content={
-              artistDetail.equipments.length > 0
-                ? artistDetail.equipments.map((r) => `${r}`).join(", ")
-                : "정보 없음"
-            }
+            content={equipments}
           />
           <ProfileDetail.IconContent
             icon="pay"
             label="공연 페이"
-            content={`${artistDetail.desiredPay}만 원`}
+            content={`${pay}만 원`}
           />
         </ProfileDetail.Section>
-        <ProfileDetail.Section title="포트폴리오 자료">
-          <ProfileDetail.PortfolioLink
-            links={[
-              "https://www.notion.so/71b124a7a4964210b79178b4ca23ec71",
-              "https://www.notion.so/71b124a7a4964210b79178b4ca23ec71",
-              "https://www.notion.so/71b124a7a4964210b79178b4ca23ec71",
-            ]}
-          />
-        </ProfileDetail.Section>
+        {portfolioLinks.length > 0 && (
+          <ProfileDetail.Section title="포트폴리오 자료">
+            <ProfileDetail.PortfolioLink links={portfolioLinks} />
+          </ProfileDetail.Section>
+        )}
       </ProfileDetail>
       <ActionFooter
         variant="single"

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useBottomSheet } from "@hooks/useBottomSheet";
 import { SpaceCardGrid } from "./components";
 import { Filter } from "@components/Filter";
+import { useSpacesQuery } from "@queries/spaces";
 import SpaceFilterSheet from "./components/SpaceFilterSheet";
 import * as S from "./index.styles";
 import type { SpaceFilterType } from "./types";
@@ -13,6 +14,7 @@ const defaultFilter: SpaceFilterType = {
 };
 
 const Spaces: React.FC = () => {
+  const { data } = useSpacesQuery();
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<SpaceFilterType>(defaultFilter);
 
@@ -44,7 +46,8 @@ const Spaces: React.FC = () => {
           onReset={handleReset}
           onApply={handleApply}
         />
-        <SpaceCardGrid />
+
+        <SpaceCardGrid data={data ? data : []} />
       </S.Container>
     </>
   );

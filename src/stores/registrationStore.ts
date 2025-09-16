@@ -11,7 +11,7 @@ import {
   SPACE_STEP_ORDER,
   ARTIST_STEP_ORDER,
 } from "@pages/Registration/types/steps";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 import type { SpaceVenueBasicPayload } from "@pages/Registration/types/payloads";
 import type { ArtistPortfolioPayload } from "@pages/Registration/types/payloads";
 import type { ArtistDraft, SpaceDraft } from "@pages/Registration/types/draft";
@@ -98,7 +98,6 @@ function sanitizePayload(
 
 type RegistrationDraftState = {
   draft: RegistrationDraft | null;
-
   chooseRole: (role: UserRoleType) => void;
   updateCurrentStepData: (
     data: ArtistStepData[ArtistStep] | SpaceStepData[SpaceStep]
