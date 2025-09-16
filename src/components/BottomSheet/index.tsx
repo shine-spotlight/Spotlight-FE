@@ -1,24 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import styled from "@emotion/styled";
+import { AnimatePresence } from "framer-motion";
 import * as S from "./index.styles";
-
-const MotionSheet = styled(motion.section)`
-  position: relative;
-  z-index: 10000;
-  width: 100%;
-  max-width: 500px;
-  background: ${({ theme }) => theme.color.background.surface};
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.24);
-  max-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overscroll-behavior: contain;
-  touch-action: none;
-  will-change: transform;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-`;
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -164,7 +146,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             exit={{ opacity: 0 }}
             onMouseDown={handleOverlayDown}
           />
-          <MotionSheet
+          <S.MotionSheet
             initial={{ y: closedY, opacity: 0 }} // 아래에서 등장
             animate={{ y: openY, opacity: 1 }} // 첫 스냅으로
             exit={{ y: closedY, opacity: 0 }} // 아래로 퇴장
@@ -200,7 +182,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             {title ? <S.Header>{title}</S.Header> : null}
             <S.Content ref={contentRef}>{children}</S.Content>
             {footer ? <S.Footer>{footer}</S.Footer> : null}
-          </MotionSheet>
+          </S.MotionSheet>
         </S.Wrap>
       )}
     </AnimatePresence>

@@ -4,7 +4,7 @@ import {
   type ArtistStep,
   type SpaceStep,
 } from "../types/steps";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 import type {
   ArtistStepData,
   ArtistBasicPayload,
@@ -12,8 +12,16 @@ import type {
   ArtistPortfolioPayload,
   ArtistPayPayload,
 } from "@pages/Registration/types/payloads";
+import type {
+  SpaceStepData,
+  SpaceBusinessPayload,
+  SpaceVenueBasicPayload,
+  SpaceAddressCapacityPayload,
+  SpaceCategoryPayload,
+} from "@pages/Registration/types/payloads";
 import type { RegistrationDraft } from "../types/draft";
-import type { ArtistInfoRequest } from "@apis/artists";
+import type { ArtistPOSTRequest } from "@models/artist/artist.dto";
+import type { SpacePOSTRequest } from "@models/space/space.dto";
 
 export const createInitialDraft = (role: UserRoleType): RegistrationDraft => {
   const now = new Date().toISOString();
@@ -25,57 +33,85 @@ export const createInitialDraft = (role: UserRoleType): RegistrationDraft => {
   return { role: "space", currentStep: first, data: {}, updatedAt: now };
 };
 
-/** 라벨 -> 카테고리ID 매핑 (백엔드와 동일한 ID 테이블로 맞춰주세요) */
-const ARTIST_CATEGORY_LABEL_TO_ID: Record<string, number> = {
-  밴드: 1,
-  싱어송라이터: 2,
-  재즈: 3,
-  악기연주: 4,
-};
-
-function resolveCategoryId(categories: string[]): number {
-  const label = categories?.[0];
-  if (!label) throw new Error("카테고리를 1개 선택해주세요.");
-  const id = ARTIST_CATEGORY_LABEL_TO_ID[label];
-  if (!id) throw new Error(`'${label}' 카테고리 ID 매핑이 없습니다.`);
-  return id;
-}
-
 function toRegionPayload(
   regions: NonNullable<ArtistRegionCategoryPayload["regions"]>
-): ArtistInfoRequest["region"] {
-  const r = regions?.[0];
-  if (!r) throw new Error("활동 지역을 1개 이상 선택해주세요.");
-  return { sido: r.sido, sigungu: r.sigungu ?? null };
+): string[] {
+  if (!Array.isArray(regions) || regions.length === 0) {
+    throw new Error("활동 지역을 1개 이상 선택해주세요.");
+  }
+  // "시/도 + 시군구"를 공백으로 이어붙임, sigungu 없으면 시/도만
+  const list = regions
+    .map((r) => [r.sido, r.sigungu ?? ""].join(" ").trim())
+    .filter(Boolean);
+
+  if (list.length === 0) {
+    throw new Error("활동 지역을 1개 이상 선택해주세요.");
+  }
+  return Array.from(new Set(list));
 }
 
-/** Step 데이터들을 하나의 서버 DTO로 병합 */
+// Artist의 Step 데이터들을 하나의 서버 DTO로 병합
 export function buildArtistInfoFromSteps(
   data: Partial<ArtistStepData>
-): ArtistInfoRequest {
-  const basic = data.Basic as ArtistBasicPayload | undefined;
-  const region = data.RegionCategory as ArtistRegionCategoryPayload | undefined;
-  const pf = data.Portfolio as ArtistPortfolioPayload | undefined;
-  const pay = data.Pay as ArtistPayPayload | undefined;
+): ArtistPOSTRequest {
+  const basic = data.Basic as ArtistBasicPayload;
+  const region = data.RegionCategory as ArtistRegionCategoryPayload;
+  const pf = data.Portfolio as ArtistPortfolioPayload;
+  const pay = data.Pay as ArtistPayPayload;
 
   if (!basic) throw new Error("기본 정보가 없습니다.");
   if (!region) throw new Error("지역 정보가 없습니다.");
   if (!pay) throw new Error("페이 정보가 없습니다.");
 
-  const category_id = resolveCategoryId(basic.categories);
   const regionPayload = toRegionPayload(region.regions ?? []);
 
   return {
-    user: 1,
     name: basic.name,
-    bio: basic.description || null,
+    bio: basic.description || "",
     number_of_members: basic.members,
-    category_id,
-    // custom_category: 필요 시만 셋
-    portfolio_links: pf?.portfolioLinks?.length ? pf.portfolioLinks : undefined,
+    phone_number: basic.phoneNumber,
+    categories: basic.categories,
+    custom_category: basic.customCategory || null,
+    equipments: basic.equipments,
+    portfolio_links: pf?.portfolioLinks?.length ? pf.portfolioLinks : [],
     profile_image_url: pf?.profileImageUrl || null,
     region: regionPayload,
-    desired_pay: pay.isFreeAllowed ? null : pay.desiredPay || null,
+    desired_pay: pay.desiredPay,
     is_free_allowed: !!pay.isFreeAllowed,
+  };
+}
+
+// Space의 Step 데이터들을 하나의 서버 DTO로 병합
+export function buildSpaceInfoFromSteps(
+  data: Partial<SpaceStepData>
+): SpacePOSTRequest {
+  const business = data.Business as SpaceBusinessPayload;
+  const address = data.AddressCapacity as
+    | SpaceAddressCapacityPayload
+    | undefined;
+  const basic = data.VenueBasic as SpaceVenueBasicPayload;
+  const category = data.Category as SpaceCategoryPayload;
+
+  if (!business) throw new Error("사업자등록번호가 없습니다.");
+  if (!address) throw new Error("장소 주소가 없습니다.");
+  if (!basic) throw new Error("기본 정보가 없습니다.");
+  if (!category) throw new Error("희망 공연 카테고리가 없습니다.");
+
+  return {
+    place_name: address.placeName,
+    address: address.address,
+    postal_code: address.postalCode,
+    kakao_map_link: address.kakaoMapLink,
+    categories_display: basic.categories,
+    preferred_categories: category.preferredCategories,
+    preferred_categories_display: category.preferredCategories,
+    description: basic.description,
+    capacity_seated: basic.capacitySeated,
+    capacity_standing: basic.capacityStanding,
+    business_registration_number: business.businessNumber,
+    atmosphere: basic.atmosphere,
+    place_image_url: basic.placeImage,
+    equipments_display: basic.equipments,
+    phone_number: business.phoneNumber,
   };
 }

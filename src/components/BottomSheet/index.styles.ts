@@ -59,6 +59,17 @@ export const Content = styled.div`
   width: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+
+  /* 크롬, 사파리 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 파이어폭스 */
+  scrollbar-width: none;
+
+  /* IE */
+  -ms-overflow-style: none;
 `;
 
 export const Footer = styled.div`
@@ -67,4 +78,21 @@ export const Footer = styled.div`
   width: 100%;
   padding: 0px 0px 20px;
   margin-bottom: 10px;
+`;
+
+export const MotionSheet = styled(motion.section)`
+  position: relative;
+  z-index: 10000;
+  width: 100%;
+  max-width: 500px;
+  background: ${({ theme }) => theme.color.background.surface};
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.24);
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: contain;
+  touch-action: none;
+  will-change: transform;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
 `;

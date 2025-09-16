@@ -1,5 +1,5 @@
 import { MenuList } from "../MenuList";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 
 interface RoleMenusProps {
   role: UserRoleType;
