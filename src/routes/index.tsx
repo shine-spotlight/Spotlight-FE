@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "@components/ProtectedRoute";
 import { Layout } from "@components/Layout";
 import ProtectedRegistrationLayout from "@pages/Registration/components/ProtectedRegistrationLayout";
@@ -12,6 +12,8 @@ import {
   Start,
   ArtistDetail,
   SpaceDetail,
+  AnnouncementDetail,
+  NotFound,
 } from "@pages";
 import KakaoVerify from "@pages/Registration/components/KakaoVerify";
 import { StepGuard } from "@guards/StepGuard";
@@ -124,11 +126,12 @@ export const router = createBrowserRouter([
           { path: "artists/:id", element: <ArtistDetail /> },
           { path: "proposals", element: <Proposals /> },
           { path: "announcements", element: <Announcements /> },
+          { path: "announcements/:id", element: <AnnouncementDetail /> },
           { path: "mypage", element: <Mypage /> },
         ],
       },
 
-      { path: "*", element: <Navigate to="/" replace /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
