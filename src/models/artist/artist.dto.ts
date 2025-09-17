@@ -4,14 +4,18 @@ export type ArtistProfileDTO = {
   bio: string;
   number_of_members: number;
   categories: string[];
+  categories_display?: string[];
   custom_category?: string | null;
   equipments: string[];
+  equipments_display?: string[];
   portfolio_links: string[];
   profile_image_url?: string | null;
+  profile_image: File | null;
   region: string[];
   desired_pay: number;
   is_free_allowed: boolean;
   phone_number: string;
+  is_liked?: boolean;
 };
 
 // Artist Request 타입

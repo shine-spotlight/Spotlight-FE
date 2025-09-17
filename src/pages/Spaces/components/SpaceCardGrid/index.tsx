@@ -35,7 +35,7 @@ export function SpaceCardGrid({ data }: SpaceCardGridProps) {
           >
             <Card.Image src={imgSrc} alt={title} />
             <Card.Content>
-              <Card.StarIcon isStar={true} />
+              <Card.StarIcon isStar={item.isLiked ?? false} />
               <Card.Title>{title}</Card.Title>
               <Card.IconContent type="place">{address}</Card.IconContent>
               <Card.IconContent type="category">{categories}</Card.IconContent>

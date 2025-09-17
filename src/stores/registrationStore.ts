@@ -31,7 +31,7 @@ const prevOf = <S extends ArtistStep | SpaceStep>(
   return i > 0 ? order[i - 1] : null;
 };
 
-const looksLikeDataUrl = (v?: string | null) =>
+const looksLikeDataUrl = (v?: string | File | null) =>
   !!v && typeof v === "string" && v.startsWith("data:");
 
 function pruneDraft(draft: RegistrationDraft | null): RegistrationDraft | null {
@@ -44,9 +44,9 @@ function pruneDraft(draft: RegistrationDraft | null): RegistrationDraft | null {
       | ArtistPortfolioPayload
       | undefined;
     if (port) {
-      if (looksLikeDataUrl(port.profileImageUrl)) {
+      if (looksLikeDataUrl(port.profileImage)) {
         // data URL은 저장하지 않음 (미리보기 전용은 컴포넌트 state로만)
-        port.profileImageUrl = "";
+        port.profileImage = null;
       }
       // 링크가 과도하게 많으면 절단 (선택)
       if (
@@ -68,9 +68,10 @@ function pruneDraft(draft: RegistrationDraft | null): RegistrationDraft | null {
       | SpaceVenueBasicPayload
       | undefined;
     if (venue) {
-      // 예: 공간 이미지도 data URL이면 제거
-      // (필드명이 placeImageUrl 등이라면 여기에 맞춰 제거)
-      // if (looksLikeDataUrl(venue.placeImageUrl)) venue.placeImageUrl = undefined;
+      if (looksLikeDataUrl(venue.placeImage)) {
+        // data URL은 저장하지 않음 (미리보기 전용은 컴포넌트 state로만)
+        venue.placeImage = null;
+      }
       data[SPACE_STEP.VenueBasic] = venue;
     }
 
@@ -87,12 +88,18 @@ function sanitizePayload(
 ) {
   if (role === "artist" && step === ARTIST_STEP.Portfolio) {
     const p = payload as ArtistPortfolioPayload;
-    if (looksLikeDataUrl(p?.profileImageUrl)) {
-      return { ...p, profileImageUrl: "" } as ArtistPortfolioPayload;
+    if (looksLikeDataUrl(p?.profileImage)) {
+      return { ...p, profileImage: null } as ArtistPortfolioPayload;
     }
     return p;
   }
-  //TODO: 공간 쪽도 필요시 동일하게 처리
+  if (role === "space" && step === SPACE_STEP.VenueBasic) {
+    const p = payload as SpaceVenueBasicPayload;
+    if (looksLikeDataUrl(p?.placeImage)) {
+      return { ...p, placeImage: null } as SpaceVenueBasicPayload;
+    }
+    return p;
+  }
   return payload;
 }
 

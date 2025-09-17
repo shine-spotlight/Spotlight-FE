@@ -12,7 +12,7 @@ export type ArtistBasicPayload = {
 export type ArtistRegionCategoryPayload = { regions: RegionValue[] };
 
 export type ArtistPortfolioPayload = {
-  profileImageUrl: string;
+  profileImage: File | null;
   portfolioLinks: string[];
 };
 export type ArtistPayPayload = { desiredPay: number; isFreeAllowed: boolean };
@@ -38,7 +38,7 @@ export type SpaceAddressCapacityPayload = {
 };
 
 export type SpaceVenueBasicPayload = {
-  placeImage: string;
+  placeImage: File | null;
   description: string;
   categories: string[];
   isOkayNoise: boolean;

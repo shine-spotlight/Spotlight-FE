@@ -40,7 +40,7 @@ notificationInstance.defaults.baseURL += "/notifications";
 applyInterceptors(notificationInstance);
 
 const pointInstance = axios.create(defaultInstance.defaults);
-pointInstance.defaults.baseURL += "/point";
+pointInstance.defaults.baseURL += "/points";
 applyInterceptors(pointInstance);
 
 const demandInstance = axios.create(defaultInstance.defaults);

@@ -64,6 +64,35 @@ export const sendRequest = async <T = unknown, D = unknown>(
       const failure = error.response?.data as ApiFailure;
       const statusCode = error.response?.status;
 
+      // 401 에러 처리 - 팝업 표시 후 시작 페이지로 리다이렉트
+      if (statusCode === 401) {
+        // 인증 상태 초기화
+        useAuthStore.getState().clear();
+
+        // 에러 팝업 표시
+        const { setErrorTitle, setErrorMessage, setButtonLabel } =
+          useErrorStore.getState();
+        setErrorTitle("인증 필요");
+        setErrorMessage("로그인 후 시도하세요");
+        setButtonLabel("확인");
+
+        // 확인 버튼 클릭 시 시작 페이지로 이동하는 핸들러 설정
+        const originalResetError = useErrorStore.getState().resetError;
+        useErrorStore.setState({
+          resetError: () => {
+            originalResetError();
+            window.location.href = "/";
+          },
+        });
+
+        errorToThrow = {
+          detail: "로그인 후 시도하세요",
+          code: "UNAUTHORIZED",
+          field: "",
+        };
+        throw errorToThrow;
+      }
+
       // 404 에러는 팝업을 띄우지 않고 그대로 throw
       if (statusCode === 404) {
         errorToThrow = failure || {
@@ -88,12 +117,17 @@ export const sendRequest = async <T = unknown, D = unknown>(
       };
     }
 
-    // 404가 아닌 에러만 전역 에러 상태 설정
-    const { setErrorTitle, setErrorMessage, setButtonLabel } =
-      useErrorStore.getState();
-    setErrorTitle("요청 실패");
-    setErrorMessage(errorToThrow.detail);
-    setButtonLabel("확인");
+    // 404와 401이 아닌 에러만 전역 에러 상태 설정
+    if (
+      errorToThrow.code !== "NOT_FOUND" &&
+      errorToThrow.code !== "UNAUTHORIZED"
+    ) {
+      const { setErrorTitle, setErrorMessage, setButtonLabel } =
+        useErrorStore.getState();
+      setErrorTitle("요청 실패");
+      setErrorMessage(errorToThrow.detail);
+      setButtonLabel("확인");
+    }
 
     throw errorToThrow;
   }

@@ -5,13 +5,16 @@ export type ArtistProfile = {
   name: string;
   bio?: string;
   numberOfMembers: number;
-  categories: string[];
+  // categories: string[];
+  categoriesDisplay: string[];
   customCategory?: string;
-  equipments: string[];
+  // equipments: string[];
+  equipmentsDisplay: string[];
   portfolioLinks: string[];
   profileImageUrl?: string;
   region: string[];
   desiredPay: number;
   isFreeAllowed: boolean;
   phoneNumber?: string;
+  isLiked?: boolean;
 };

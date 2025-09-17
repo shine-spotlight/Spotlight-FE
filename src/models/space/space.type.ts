@@ -6,7 +6,9 @@ export type SpaceProfile = {
   address: string;
   postalCode?: string;
   kakaoMapLink?: string;
+  // categories: string[];
   categoriesDisplay: string[];
+  // preferredCategories: string[];
   preferredCategoriesDisplay: string[];
   customCategory?: string;
   description?: string;
@@ -14,7 +16,9 @@ export type SpaceProfile = {
   capacityStanding: number;
   businessRegistrationNumber: string;
   atmosphere: string[];
-  placeImageUrl?: string;
+  placeImageUrl?: string[];
+  // equipments: string[];
   equipmentsDisplay: string[];
   phoneNumber?: string;
+  isLiked?: boolean;
 };

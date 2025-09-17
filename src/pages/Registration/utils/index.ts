@@ -109,7 +109,7 @@ export function buildSpaceInfoFromSteps(
     capacity_standing: basic.capacityStanding,
     business_registration_number: business.businessNumber,
     atmosphere: basic.atmosphere,
-    place_image: basic.placeImage,
+    place_image: basic.placeImage ? [basic.placeImage] : [],
     equipments: basic.equipments,
     phone_number: business.phoneNumber,
   };

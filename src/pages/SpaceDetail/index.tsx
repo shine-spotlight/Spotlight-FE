@@ -1,13 +1,19 @@
 import * as S from "./index.styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Topbar } from "@components/Topbar";
 import { useSpaceDetailQuery } from "@queries/spaces";
 import { ProfileDetail } from "@components/ProfileDetail";
 import ActionFooter from "@components/ActionFooter";
 import NotFound from "@pages/NotFound";
+import ProposalSheet from "@components/ProposalSheet";
+import ConfirmModal from "@components/ConfirmModal";
+import { useBottomSheet } from "@hooks/useBottomSheet";
 
 const SpaceDetail = () => {
+  const { isOpen, open, close } = useBottomSheet();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -41,66 +47,42 @@ const SpaceDetail = () => {
     return <NotFound />;
   }
 
-  const title = data.placeName ?? "이름 없음";
-  const description = data.description ?? "설명 없음";
-  const img =
-    Array.isArray(data.placeImageUrl) && data.placeImageUrl[0]
-      ? data.placeImageUrl[0]
-      : "";
-  const categories = Array.isArray(data.preferredCategoriesDisplay)
-    ? data.preferredCategoriesDisplay
-    : [];
-  const place_categories = Array.isArray(data.categoriesDisplay)
-    ? data.categoriesDisplay
-    : [];
-  const address = data.address ?? "주소 정보 없음";
-  const atmosphere =
-    Array.isArray(data.atmosphere) && data.atmosphere.length
-      ? data.atmosphere.map((v) => `#${v}`).join(", ")
-      : "정보 없음";
-  const equipments =
-    Array.isArray(data.equipmentsDisplay) && data.equipmentsDisplay.length
-      ? data.equipmentsDisplay.join(", ")
-      : "정보 없음";
-  const seated =
-    typeof data.capacitySeated === "number" ? data.capacitySeated : 0;
-  const standing =
-    typeof data.capacityStanding === "number" ? data.capacityStanding : 0;
-
   return (
     <S.Container>
       <Topbar title="공간 보유자 상세" goBack={() => navigate("/spaces")} />
       <ProfileDetail>
-        <ProfileDetail.Media image={img} />
+        <ProfileDetail.Media
+          image={data.placeImageUrl ? data.placeImageUrl[0] : ""}
+        />
         <ProfileDetail.Header
-          title={title}
-          description={description}
+          title={data.placeName}
+          description={data.description}
           isStar
-          categories={place_categories}
+          categories={data.categoriesDisplay}
         />
         <ProfileDetail.Section title="희망 공연 카테고리">
-          <ProfileDetail.Tags items={categories} />
+          <ProfileDetail.Tags items={data.preferredCategoriesDisplay} />
         </ProfileDetail.Section>
         <ProfileDetail.Section title="공간 정보">
           <ProfileDetail.IconContent
             icon="place"
             label="주소"
-            content={address}
+            content={data.address}
           />
           <ProfileDetail.IconContent
             icon="mood"
             label="분위기"
-            content={atmosphere}
+            content={data.atmosphere}
           />
           <ProfileDetail.IconContent
             icon="equipment"
             label="보유 장비"
-            content={equipments}
+            content={data.equipmentsDisplay}
           />
           <ProfileDetail.IconContent
             icon="people"
             label="수용 인원"
-            content={`좌석 ${seated}명, 스탠딩 ${standing}명`}
+            content={`좌석 ${data.capacitySeated}명, 스탠딩 ${data.capacityStanding}명`}
           />
         </ProfileDetail.Section>
       </ProfileDetail>
@@ -108,7 +90,27 @@ const SpaceDetail = () => {
         variant="single"
         nextLabel="제안서 보내기"
         nextDisabled={false}
-        onNext={() => {}}
+        onNext={() => setIsConfirmModalOpen(true)}
+      />
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={() => {
+          setIsConfirmModalOpen(false);
+          open();
+        }}
+        title="제안서를 보내시겠습니까?"
+        message="제안서 보내기 1회 당 100포인트가 차감됩니다."
+        confirmLabel="확인"
+        cancelLabel="취소"
+      />
+      <ProposalSheet
+        isOpen={isOpen}
+        onClose={close}
+        onSubmit={(text) => {
+          console.log("제안서 내용:", text);
+          close();
+        }}
       />
     </S.Container>
   );
