@@ -1,55 +1,7 @@
 import styled from "@emotion/styled";
 
-export const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  padding: 20px;
-`;
-
-export const Modal = styled.div`
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 100%;
-  max-height: 80vh;
-  overflow: hidden;
-  animation: modalSlideIn 0.2s ease-out;
-
-  @keyframes modalSlideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-`;
-
-export const Header = styled.div`
-  padding: 24px 24px 16px;
-  border-bottom: 1px solid #f0f0f0;
-`;
-
-export const Title = styled.h2`
-  margin: 0;
-  ${({ theme }) => theme.typography.h2};
-  color: ${({ theme }) => theme.color.text.primary};
-  text-align: center;
-`;
-
 export const Content = styled.div`
-  padding: 20px 24px;
+  padding: 0;
 `;
 
 export const Message = styled.p`
@@ -61,7 +13,6 @@ export const Message = styled.p`
 `;
 
 export const Footer = styled.div`
-  padding: 16px 24px 24px;
   display: flex;
   justify-content: center;
 `;
