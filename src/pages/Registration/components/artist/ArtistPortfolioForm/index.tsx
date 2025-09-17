@@ -21,7 +21,7 @@ function ArtistPortfolioForm() {
       : undefined;
 
   const [form, setForm] = useState<ArtistPortfolioPayload>({
-    profileImageUrl: initial?.profileImageUrl ?? "",
+    profileImage: initial?.profileImage ?? null,
     portfolioLinks: initial?.portfolioLinks ?? [],
   });
   const [urlInput, setUrlInput] = useState("");
@@ -52,24 +52,26 @@ function ArtistPortfolioForm() {
     saveAndGoPrev(form);
   }, [form, saveAndGoPrev]);
 
+  const ready = form.profileImage;
+
   return (
     <S.Container>
       <S.Headline>{ARTIST_STEP_MESSAGES.Portfolio}</S.Headline>
       <S.ContentContainer>
         <FormSection
           title="프로필 사진"
-          helper="[팀/이름]을 나타내는 사진을 등록해주세요!"
+          helper="자신을 나타내는 사진을 등록해주세요!"
         >
           <ProfileAvatarPicker
-            value={form.profileImageUrl ?? null}
-            onChange={(url) =>
-              setForm((prev) => ({ ...prev, profileImageUrl: url ?? "" }))
+            value={form.profileImage}
+            onChange={(file) =>
+              setForm((prev) => ({ ...prev, profileImage: file }))
             }
             size={240}
           />
         </FormSection>
         <FormSection
-          title="포트폴리오 URL"
+          title="포트폴리오 URL(선택)"
           helper="여러 개를 추가할 수 있어요."
         >
           <div style={{ display: "flex", gap: 8 }}>
@@ -120,7 +122,7 @@ function ArtistPortfolioForm() {
       <ActionFooter
         variant="double"
         nextLabel="다음"
-        nextDisabled={!form.profileImageUrl}
+        nextDisabled={!ready}
         onNext={onNext}
         onPrev={onPrev}
       />

@@ -31,16 +31,15 @@ export default function SpaceAddressCapacityForm() {
     postalCode: initial?.postalCode ?? "",
   });
 
-  // 다음 버튼 활성화
-  const valid =
+  const ready =
     zipcode.trim().length > 0 &&
     form.address.trim().length > 0 &&
     form.placeName.trim().length > 0;
 
   const onNext = useCallback(() => {
-    // zipcode는 전송하지 않음
+    form.address = form.address + " " + addressDetail;
     saveAndGoNext(form);
-  }, [form, saveAndGoNext]);
+  }, [form, saveAndGoNext, addressDetail]);
 
   const onPrev = useCallback(() => {
     saveAndGoPrev(form);
@@ -107,7 +106,7 @@ export default function SpaceAddressCapacityForm() {
         variant="double"
         prevLabel="이전"
         nextLabel="다음"
-        nextDisabled={!valid}
+        nextDisabled={!ready}
         onPrev={onPrev}
         onNext={onNext}
       />

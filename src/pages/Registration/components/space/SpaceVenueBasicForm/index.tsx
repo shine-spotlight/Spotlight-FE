@@ -25,7 +25,7 @@ export default function SpaceVenueBasicForm() {
       : undefined;
 
   const [form, setForm] = useState<SpaceVenueBasicPayload>({
-    placeImage: initial?.placeImage ?? "",
+    placeImage: initial?.placeImage ?? null,
     description: initial?.description ?? "",
     categories: initial?.categories ?? [],
     atmosphere: initial?.atmosphere ?? [],
@@ -35,7 +35,7 @@ export default function SpaceVenueBasicForm() {
     equipments: initial?.equipments ?? [],
   });
 
-  const canNext =
+  const ready =
     form.description.trim().length > 0 &&
     form.categories.length > 0 &&
     form.capacitySeated >= 0 &&
@@ -58,10 +58,8 @@ export default function SpaceVenueBasicForm() {
           helper="공간을 촬영한 사진을 업로드 해주세요."
         >
           <ProfileAvatarPicker
-            value={form.placeImage || null}
-            onChange={(url) =>
-              setForm((p) => ({ ...p, placeImage: url ?? "" }))
-            }
+            value={form.placeImage}
+            onChange={(file) => setForm((p) => ({ ...p, placeImage: file }))}
             size={220}
           />
         </FormSection>
@@ -145,7 +143,7 @@ export default function SpaceVenueBasicForm() {
         prevLabel="이전"
         nextLabel="다음"
         prevDisabled={false}
-        nextDisabled={!canNext}
+        nextDisabled={!ready}
         onPrev={onPrev}
         onNext={onNext}
       />

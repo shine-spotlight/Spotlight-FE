@@ -41,6 +41,8 @@ export default function SpaceBusinessForm() {
     saveAndGoNext(form);
   }, [form, saveAndGoNext]);
 
+  const ready = bnValid && phoneValid;
+
   return (
     <S.Container>
       <S.Headline>사업자등록번호를 입력해주세요!</S.Headline>
@@ -77,7 +79,7 @@ export default function SpaceBusinessForm() {
       <ActionFooter
         variant="single"
         nextLabel="다음으로"
-        nextDisabled={!bnValid || !phoneValid}
+        nextDisabled={!ready}
         onNext={onNext}
       />
     </S.Container>

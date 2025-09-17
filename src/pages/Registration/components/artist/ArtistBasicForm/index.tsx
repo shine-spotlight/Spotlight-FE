@@ -43,6 +43,14 @@ function ArtistBasicForm() {
     setForm((prev) => ({ ...prev, phoneNumber: onlyNum }));
   };
 
+  const ready =
+    form.name &&
+    phoneValid &&
+    form.phoneNumber &&
+    form.description &&
+    form.members &&
+    form.categories;
+
   return (
     <S.Container>
       <S.Headline>{ARTIST_STEP_MESSAGES.Basic}</S.Headline>
@@ -97,7 +105,7 @@ function ArtistBasicForm() {
       <ActionFooter
         variant="single"
         nextLabel="다음으로"
-        nextDisabled={!form.name || !phoneValid}
+        nextDisabled={!ready}
         onNext={onNext}
       />
     </S.Container>

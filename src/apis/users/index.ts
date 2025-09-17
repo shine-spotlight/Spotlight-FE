@@ -9,6 +9,8 @@ const STATE_KEY = "kakao_oauth_state";
 export type KakaoLoginResponse = {
   accessToken: string;
   isOnboarding: boolean;
+  is_artistonboarding: boolean | null;
+  is_spaceonboarding: boolean | null;
   user: {
     id: number;
     kakao_id: string;
@@ -57,4 +59,9 @@ export function setUserPhone(phoneNumber: string) {
   return sendRequest(userInstance, "POST", "/phone/", {
     phone_number: phoneNumber,
   });
+}
+
+// 내 정보 조회
+export function getUserInfo() {
+  return sendRequest<KakaoLoginResponse>(userInstance, "GET", "/me/");
 }

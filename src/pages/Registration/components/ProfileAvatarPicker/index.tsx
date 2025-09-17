@@ -2,8 +2,8 @@ import React, { useRef } from "react";
 import * as S from "./index.styles";
 
 type Props = {
-  value?: string | null;
-  onChange: (next: string | null) => void;
+  value: File | null;
+  onChange: (file: File | null) => void;
   size?: number;
   disabled?: boolean;
 };
@@ -21,13 +21,8 @@ export default function ProfileAvatarPicker({
     inputRef.current?.click();
   };
 
-  const handleFile = async (file: File) => {
-    // 간단하게 dataURL 미리보기 (업로드 API가 있으면 그 결과 URL을 onChange로 올려주세요)
-    const reader = new FileReader();
-    reader.onload = () => {
-      onChange((reader.result as string) ?? null);
-    };
-    reader.readAsDataURL(file);
+  const handleFile = (file: File) => {
+    onChange(file);
   };
 
   const onInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -36,10 +31,31 @@ export default function ProfileAvatarPicker({
     e.currentTarget.value = "";
   };
 
+  const handleClear = () => {
+    onChange(null);
+  };
+
   const stop = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
+
+  // File 객체를 미리보기 URL로 변환
+  const previewUrl = React.useMemo(() => {
+    if (value instanceof File) {
+      return URL.createObjectURL(value);
+    }
+    return null;
+  }, [value]);
+
+  // 컴포넌트 언마운트 시 URL 정리
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   return (
     <S.CircleContainer>
@@ -48,9 +64,9 @@ export default function ProfileAvatarPicker({
         onClick={openPicker}
         data-disabled={disabled ? "true" : "false"}
       >
-        {value ? (
+        {previewUrl ? (
           <>
-            <S.Preview src={value} alt="프로필 이미지" />
+            <S.Preview src={previewUrl} alt="프로필 이미지" />
             <S.Overlay className="overlay">
               <S.OverlayActions>
                 <S.OverlayBtn
@@ -66,6 +82,19 @@ export default function ProfileAvatarPicker({
                 >
                   변경
                 </S.OverlayBtn>
+                <S.OverlayBtn
+                  type="button"
+                  onClick={(e) => {
+                    stop(e);
+                    handleClear();
+                  }}
+                  onTouchStart={(e) => {
+                    stop(e);
+                    handleClear();
+                  }}
+                >
+                  삭제
+                </S.OverlayBtn>
               </S.OverlayActions>
             </S.Overlay>
           </>
@@ -79,7 +108,7 @@ export default function ProfileAvatarPicker({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/png,image/jpeg"
         capture="environment"
         style={{ display: "none" }}
         onChange={onInputChange}

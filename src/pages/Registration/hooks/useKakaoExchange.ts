@@ -62,8 +62,6 @@ export function useKakaoExchange(code: string | null, state: string | null) {
         setProgress(95);
 
         const accessToken: string | undefined = res.accessToken;
-        const isOnboarding: boolean = !!res.isOnboarding;
-        const userRole = res.user?.role;
 
         if (!accessToken) {
           throw new Error("로그인 토큰이 응답에 없습니다.");
@@ -73,37 +71,66 @@ export function useKakaoExchange(code: string | null, state: string | null) {
         setToken(accessToken);
         setSocialVerified(true);
 
-        // role 검증 로직
-        if (userRole !== null) {
-          // 이미 role이 있는 경우
-          if (userRole === currentRole) {
-            // 동일한 role이면 그대로 진행
-            if (isOnboarding) {
-              setNextPath("/register");
-            } else {
-              setOnboardedForRole(currentRole, true);
-              setNextPath("/home");
+        const userRole = res.user?.role;
+
+        // true/null => 회원가입 로직 미완료, false => 회원가입 로직 완료
+        const artistFlag = res.is_artistonboarding;
+        const spaceFlag = res.is_spaceonboarding;
+
+        const needs = (flag: boolean | null | undefined) => !(flag === false);
+        const artistNeeds = needs(artistFlag);
+        const spaceNeeds = needs(spaceFlag);
+
+        // ---------- 미스매치 판단 이전에 온보딩 상태로 예외 처리 ----------
+        // 두 롤 모두 미완료이면 어떤 롤에도 고정되지 않은 상태로 판단한다.
+        // currentRole로 role 설정 후 /register 진행
+        const bothNotFinished = artistNeeds && spaceNeeds;
+
+        if (userRole !== null && userRole !== currentRole) {
+          if (bothNotFinished) {
+            // 서버에 role이 기록되어 있지만 아직 양쪽 모두 온보딩 미완료라면
+            // -> currentRole로 덮어써서 온보딩 시작 허용
+            try {
+              await setUserRole(currentRole);
+            } catch {
+              /* empty */
             }
+            setOnboardedForRole(currentRole, false);
+            setNextPath("/register");
+            setProgress(100);
+            setStatus("success");
+            return;
           } else {
-            // 다른 role로 이미 회원가입되어 있음
+            // 한쪽이라도 완료(false) 상태가 있고, 서버 role과 currentRole이 다르면 진짜 미스매치
             setProgress(100);
             setStatus("role_mismatch");
             setCurrentRole(null);
             setNextPath("/");
             return;
           }
-        } else {
-          setUserRole(currentRole).catch(() => {});
+        }
 
-          // role이 null인 경우 - KakaoBridge에서 setUserRole 호출
-          if (isOnboarding) {
-            setNextPath("/register");
-          } else {
-            setOnboardedForRole(currentRole, true);
-            setNextPath("/home");
+        if (userRole === null) {
+          // 서버 role이 없다면 현재 선택한 role을 서버에 기록
+          try {
+            await setUserRole(currentRole);
+          } catch {
+            /* empty */
           }
         }
 
+        // 현재 role에 맞는 온보딩 플래그만 선택
+        const roleFlag = currentRole === "artist" ? artistFlag : spaceFlag;
+        const needsOnboarding = needs(roleFlag);
+        setOnboardedForRole(currentRole, !needsOnboarding);
+
+        if (needsOnboarding) {
+          setOnboardedForRole(currentRole, false);
+          setNextPath("/register");
+        } else {
+          setOnboardedForRole(currentRole, true);
+          setNextPath("/home");
+        }
         setProgress(100);
         setStatus("success");
       } catch {

@@ -32,6 +32,8 @@ function ArtistRegionForm() {
     saveAndGoPrev(form);
   }, [form, saveAndGoPrev]);
 
+  const ready = form.regions;
+
   return (
     <S.Container>
       <S.Headline>{ARTIST_STEP_MESSAGES.RegionCategory}</S.Headline>
@@ -46,7 +48,7 @@ function ArtistRegionForm() {
       <ActionFooter
         variant="double"
         nextLabel="다음"
-        nextDisabled={!form.regions}
+        nextDisabled={!ready}
         onNext={onNext}
         onPrev={onPrev}
       />
