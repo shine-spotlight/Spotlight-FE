@@ -19,11 +19,26 @@ export const Image = styled.img`
   display: block;
 `;
 
+export const PosterImage = styled.img`
+  width: 100%;
+  object-fit: cover;
+  border-radius: ${({ theme }) => theme.radius.sm};
+  display: block;
+`;
+
 export const Header = styled.header`
   position: relative;
   display: grid;
   gap: 10px;
   width: 100%;
+`;
+
+export const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-right: 28px;
 `;
 
 export const Title = styled.h1`
@@ -106,7 +121,7 @@ export const IconRow = styled.div`
 `;
 
 export const RowContent = styled.div`
-  flex: 0 0 60px;
+  flex: 0 0 80px;
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.color.text.secondary};
 `;
@@ -121,12 +136,22 @@ export const TagRow = styled.div`
   flex-wrap: wrap;
   gap: 8px;
 `;
+
 export const Tag = styled.span`
   ${({ theme }) => theme.typography.buttonSm};
   padding: 2px 8px;
   border-radius: ${({ theme }) => theme.radius.xs};
   border: 1px solid ${({ theme }) => theme.palette.blue[500]};
   color: ${({ theme }) => theme.palette.blue[500]};
+  background: ${({ theme }) => theme.color.background.surface};
+`;
+
+export const RedTag = styled.span`
+  ${({ theme }) => theme.typography.buttonSm};
+  padding: 2px 8px;
+  border-radius: ${({ theme }) => theme.radius.xs};
+  border: 1px solid ${({ theme }) => theme.palette.red[500]};
+  color: ${({ theme }) => theme.palette.red[500]};
   background: ${({ theme }) => theme.color.background.surface};
 `;
 

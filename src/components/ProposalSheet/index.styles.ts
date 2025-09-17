@@ -1,16 +1,16 @@
 import styled from "@emotion/styled";
 
 export const SectionTitle = styled.h3`
-  ${({ theme }) => theme?.typography?.h3 ?? ""};
+  ${({ theme }) => theme.typography.h3};
   margin: 0 0 12px;
-  color: ${({ theme }) => theme?.color?.text?.primary ?? "#111"};
+  color: ${({ theme }) => theme.color.text.primary};
 `;
 
 export const Tips = styled.p`
-  ${({ theme }) => theme?.typography?.body2 ?? ""};
-  margin: 0 0 24px;
-  color: ${({ theme }) => theme?.color?.text?.primary ?? "#9aa1a9"};
+  ${({ theme }) => theme.typography.body3};
+  color: ${({ theme }) => theme.color.text.secondary};
   line-height: 1.6;
+  word-break: keep-all;
 `;
 
 export const TextareaWrapper = styled.div`
@@ -28,16 +28,17 @@ export const Textarea = styled.textarea`
   resize: vertical;
   background: transparent;
   font: inherit;
-  color: ${({ theme }) => theme?.color?.text?.primary ?? "#111"};
+  color: ${({ theme }) => theme.color.text.primary};
+  ${({ theme }) => theme.typography.body3};
+  word-break: keep-all;
 
   ::placeholder {
-    color: ${({ theme }) => theme?.color?.text?.secondary ?? "#b9c0c7"};
+    color: ${({ theme }) => theme.color.text.secondary};
   }
 `;
 
 export const FooterBar = styled.div`
   width: 100%;
-  padding: 0 4px;
 `;
 
 export const PrimaryButton = styled.button`

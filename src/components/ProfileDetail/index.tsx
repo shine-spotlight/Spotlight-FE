@@ -9,9 +9,20 @@ import {
   PayIcon,
   StarEmptyIcon,
   StarFillIcon,
+  CategoryIcon,
+  CalendarIcon,
 } from "@assets/svg/common";
+import { printList } from "@utils/printList";
 
-type IconKind = "place" | "people" | "link" | "pay" | "mood" | "equipment";
+type IconKind =
+  | "place"
+  | "people"
+  | "link"
+  | "pay"
+  | "mood"
+  | "equipment"
+  | "category"
+  | "calendar";
 
 const iconMap: Record<IconKind, React.FC<React.SVGProps<SVGSVGElement>>> = {
   place: PlaceIcon,
@@ -20,6 +31,8 @@ const iconMap: Record<IconKind, React.FC<React.SVGProps<SVGSVGElement>>> = {
   mood: MoodIcon,
   link: LinkIcon,
   equipment: EquipmentIcon,
+  category: CategoryIcon,
+  calendar: CalendarIcon,
 };
 
 type RootProps = {
@@ -37,22 +50,67 @@ function Media({
   image: string;
   alt?: string;
 }) {
-  return <S.Image src={image} alt={alt} />;
+  const defaultImageUrl = "/defaultImage.png";
+  const [imgSrc, setImgSrc] = React.useState(image || defaultImageUrl);
+  return (
+    <S.Image
+      src={imgSrc}
+      alt={alt}
+      onError={() => {
+        if (imgSrc !== defaultImageUrl) {
+          setImgSrc(defaultImageUrl);
+        }
+      }}
+    />
+  );
+}
+
+function Poster({
+  image,
+  alt = "공고 이미지",
+}: {
+  image: string;
+  alt?: string;
+}) {
+  const defaultImageUrl = "/defaultImage.png";
+  const [imgSrc, setImgSrc] = React.useState(image || defaultImageUrl);
+  return (
+    <S.PosterImage
+      src={imgSrc}
+      alt={alt}
+      onError={() => {
+        if (imgSrc !== defaultImageUrl) {
+          setImgSrc(defaultImageUrl);
+        }
+      }}
+    />
+  );
 }
 
 function Header({
   title,
   description,
   isStar,
+  categories,
 }: {
   title: string;
   description?: string;
   isStar: boolean;
+  categories?: string[];
 }) {
   return (
     <S.Header>
-      <S.Title>{title}</S.Title>
-      {isStar && <StarIcon isStar={isStar} />}
+      <S.TitleRow>
+        <S.Title>{title}</S.Title>
+        {!!categories?.length && (
+          <S.TagRow>
+            {categories.map((t) => (
+              <S.RedTag key={t}>{t}</S.RedTag>
+            ))}
+          </S.TagRow>
+        )}
+      </S.TitleRow>
+      <StarIcon isStar={isStar} />
       {description && <S.Description>{description}</S.Description>}
     </S.Header>
   );
@@ -91,9 +149,7 @@ function IconContent({
       <IconRow icon={icon}>{label}</IconRow>
       {isArray ? (
         <S.ContentList>
-          {(content as Array<string | number>).map((item, i) => (
-            <S.ContentText key={`${label}-${i}`}>{String(item)}</S.ContentText>
-          ))}
+          <S.ContentText>{printList(content)}</S.ContentText>
         </S.ContentList>
       ) : (
         <S.ContentText>{content}</S.ContentText>
@@ -108,7 +164,6 @@ function IconRow({
 }: {
   icon: IconKind;
   children: React.ReactNode;
-  withDivider?: boolean;
 }) {
   const Icon = iconMap[icon];
   return (
@@ -120,7 +175,7 @@ function IconRow({
 }
 
 function StarIcon({ isStar }: { isStar: boolean }) {
-  return isStar ? (
+  return isStar === true ? (
     <S.RightSlot>
       <StarFillIcon width={21} height={21} />
     </S.RightSlot>
@@ -176,4 +231,5 @@ export const ProfileDetail = Object.assign(Root, {
   IconRow,
   Tags,
   PortfolioLink,
+  Poster,
 });

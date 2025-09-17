@@ -7,3 +7,5 @@ export { default as Mypage } from "./Mypage";
 export { default as Start } from "./Start";
 export { default as ArtistDetail } from "./ArtistDetail";
 export { default as SpaceDetail } from "./SpaceDetail";
+export { default as AnnouncementDetail } from "./AnnouncementDetail";
+export { default as NotFound } from "./NotFound";
