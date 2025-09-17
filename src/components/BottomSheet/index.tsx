@@ -28,6 +28,9 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const justOpenedRef = useRef(false);
   const draggingRef = useRef(false);
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
+    null
+  );
 
   const calculatedHeight = useMemo(() => {
     // 최대 높이 제한 (화면의 80% 이하로 제한)
@@ -95,7 +98,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     justOpenedRef.current = true;
     setTimeout(() => {
       justOpenedRef.current = false;
-    }, 300); // 300ms 후에 플래그 해제
+    }, 500); // 500ms 후에 플래그 해제
 
     return () => {
       document.body.style.overflow = prev;
@@ -109,9 +112,45 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     return () => window.removeEventListener("keydown", h);
   }, [isOpen, onClose]);
 
-  const handleOverlayDown = () => {
-    if (justOpenedRef.current) return; // 열자마자 닫힘 방지
-    if (draggingRef.current) return; // 드래그 중 닫힘 방지
+  // 터치 시작 처리
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (justOpenedRef.current) return;
+    if (draggingRef.current) return;
+
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
+    };
+  };
+
+  // 터치 종료 처리
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+    if (justOpenedRef.current) return;
+    if (draggingRef.current) return;
+
+    const touch = e.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    const deltaTime = Date.now() - touchStartRef.current.time;
+
+    // 터치가 너무 짧거나 움직임이 크면 무시 (스크롤이나 드래그로 판단)
+    if (deltaTime < 100 || deltaX > 10 || deltaY > 10) {
+      touchStartRef.current = null;
+      return;
+    }
+
+    // 정적인 터치 (클릭으로 판단)만 닫기 처리
+    onClose();
+    touchStartRef.current = null;
+  };
+
+  // 마우스 다운 처리 (데스크톱용)
+  const handleMouseDown = () => {
+    if (justOpenedRef.current) return;
+    if (draggingRef.current) return;
     onClose();
   };
 
@@ -144,7 +183,9 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
-            onMouseDown={handleOverlayDown}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           />
           <S.MotionSheet
             initial={{ y: closedY, opacity: 0 }} // 아래에서 등장
@@ -163,12 +204,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             onDragEnd={handleDragEnd}
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
             onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
+            onTouchStart={(e: React.TouchEvent) => e.stopPropagation()}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "20px",
-              padding: "0 20px",
               maxHeight: vh * 0.8,
             }}
             onPointerDownCapture={(e) => {

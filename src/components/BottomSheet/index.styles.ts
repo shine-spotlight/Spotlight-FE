@@ -16,6 +16,9 @@ export const Overlay = styled(motion.div)`
   inset: 0;
   z-index: 9999;
   background: rgba(0, 0, 0, 0.3);
+  /* 터치 반응성 개선 */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export const Sheet = styled(motion.section)`
@@ -32,7 +35,7 @@ export const Sheet = styled(motion.section)`
   display: flex;
   flex-direction: column;
   overscroll-behavior: contain;
-  touch-action: none;
+  touch-action: pan-y;
   will-change: transform;
 
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
@@ -44,6 +47,13 @@ export const Grabber = styled.div`
   border-radius: 999px;
   margin: 10px auto 8px;
   background: ${({ theme }) => theme.color.border.subtle};
+  /* 터치 영역 확대 */
+  margin: 8px;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 `;
 
 export const Header = styled.h3`
@@ -59,6 +69,9 @@ export const Content = styled.div`
   width: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  /* 터치 스크롤 개선 */
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 
   /* 크롬, 사파리 */
   &::-webkit-scrollbar {
@@ -92,7 +105,13 @@ export const MotionSheet = styled(motion.section)`
   display: flex;
   flex-direction: column;
   overscroll-behavior: contain;
-  touch-action: none;
+  touch-action: pan-y;
   will-change: transform;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  /* 터치 반응성 개선 */
+  -webkit-tap-highlight-color: transparent;
+
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
 `;
