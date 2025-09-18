@@ -13,16 +13,24 @@ import { usePostingDetailQuery } from "@queries/postings";
 import { useState, useEffect } from "react";
 import { useGlobalLoading } from "@hooks/useGlobalLoading";
 import { formatDate } from "@utils/formatDate";
+import { usePostPostingSuggestionMutation } from "@queries/postings";
+import { useUserStore } from "@stores/userStore";
+
 const AnnouncementDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: announcementDetail, isLoading } = usePostingDetailQuery(
-    Number(id)
-  );
+  const postingId = Number(id);
+  const { data: announcementDetail, isLoading } =
+    usePostingDetailQuery(postingId);
   useGlobalLoading(isLoading, "공연 공고를 조회중입니다...");
   const navigate = useNavigate();
   const { isOpen, open, close } = useBottomSheet();
+  const currentRole = useUserStore((s) => s.currentRole);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const { mutateAsync: sendSuggestion, isPending: isSending } =
+    usePostPostingSuggestionMutation(postingId);
+
+  useGlobalLoading(isSending, "제안서를 보내는 중입니다...");
 
   useEffect(() => {
     if (!isLoading && !announcementDetail) {
@@ -90,40 +98,43 @@ const AnnouncementDetail = () => {
           />
         </ProfileDetail>
 
-        <ActionFooter
-          variant="single"
-          nextLabel="공연 제안서 보내기"
-          nextDisabled={false}
-          onNext={() => setIsConfirmModalOpen(true)}
-        />
+        {currentRole == "artist" && (
+          <>
+            <ActionFooter
+              variant="single"
+              nextLabel="공연 제안서 보내기"
+              nextDisabled={false}
+              onNext={() => setIsConfirmModalOpen(true)}
+            />
 
-        <ConfirmModal
-          isOpen={isConfirmModalOpen}
-          onClose={() => setIsConfirmModalOpen(false)}
-          onConfirm={() => {
-            setIsConfirmModalOpen(false);
-            open();
-          }}
-          title="제안서를 보내시겠습니까?"
-          message="제안서 보내기 1회 당 100포인트가 차감됩니다."
-          confirmLabel="확인"
-          cancelLabel="취소"
-        />
-        <ProposalSheet
-          isOpen={isOpen}
-          onClose={close}
-          onSubmit={(text) => {
-            console.log("제안서 내용:", text);
-            close();
-            setIsSuccessModalOpen(true);
-          }}
-        />
-
-        <ProposalSuccessModal
-          isOpen={isSuccessModalOpen}
-          onClose={() => setIsSuccessModalOpen(false)}
-          deductedPoints={100}
-        />
+            <ConfirmModal
+              isOpen={isConfirmModalOpen}
+              onClose={() => setIsConfirmModalOpen(false)}
+              onConfirm={() => {
+                setIsConfirmModalOpen(false);
+                open();
+              }}
+              title="제안서를 보내시겠습니까?"
+              message="제안서 보내기 1회 당 100포인트가 차감됩니다."
+              confirmLabel="확인"
+              cancelLabel="취소"
+            />
+            <ProposalSheet
+              isOpen={isOpen}
+              onClose={close}
+              onSubmit={async (text) => {
+                await sendSuggestion(text.trim());
+                close();
+                setIsSuccessModalOpen(true);
+              }}
+            />
+            <ProposalSuccessModal
+              isOpen={isSuccessModalOpen}
+              onClose={() => setIsSuccessModalOpen(false)}
+              deductedPoints={100}
+            />
+          </>
+        )}
       </S.Container>
     </>
   );

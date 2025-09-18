@@ -3,7 +3,7 @@ export type SuggestionPostRequest = {
   artist?: number | null;
   space?: number | null;
   message: string;
-  is_free_allowed: boolean;
+  is_free_allowed?: boolean;
 };
 
 // Suggestion Response 타입
