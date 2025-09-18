@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import BottomSheet from "../BottomSheet";
 import { useUserStore } from "@stores/userStore";
 import * as S from "./index.styles";
