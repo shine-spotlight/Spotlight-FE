@@ -1,6 +1,7 @@
 import { Card } from "@components/Card";
 import * as S from "./index.styles";
 import type { Suggestion } from "@models/suggestion/suggestion.type";
+import { getOpponentDisplayName } from "@pages/Proposals/utils/getOpponentDisplayName";
 
 interface ProposalCardColProps {
   items: Suggestion[];
@@ -19,10 +20,10 @@ export function ProposalCardCol({ items, onItemClick }: ProposalCardColProps) {
         >
           <Card.Image
             src={item.opponentImage}
-            alt={item.spaceObj ?? item.artistObj}
+            alt={getOpponentDisplayName(item)}
           />
           <Card.Content>
-            <Card.Title>{item.spaceObj ?? item.artistObj} </Card.Title>
+            <Card.Title>{getOpponentDisplayName(item)} </Card.Title>
             {item.message && (
               <Card.IconContent type="description">
                 {item.message}

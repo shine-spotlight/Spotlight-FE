@@ -1,16 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { UseQueryOptions, QueryKey } from "@tanstack/react-query";
-import { getPostingDetail, getPostingList, postPosting } from "@apis/postings";
+import { suggestionsKeys } from "./suggestions";
+import {
+  getPostingDetail,
+  getPostingList,
+  postPostingSuggestion,
+} from "@apis/postings";
 import type {
   PostingDetailResponse,
   PostingListResponse,
 } from "@models/posting/posting.dto";
-import type { Posting, PostingForm } from "@models/posting/posting.type";
-import { toCamelCase, toSnakeCase } from "@utils/caseConvert";
+import type { Posting } from "@models/posting/posting.type";
+import { toCamelCase } from "@utils/caseConvert";
 
 export const postingsKeys = {
   list: ["posting-list"] as const,
   detail: (id: number) => ["posting-detail", id] as const,
+  suggestionSent: (id: number) => ["posting-suggestion-sent", id] as const, // 선택 키
 };
 
 // 목록
@@ -51,13 +57,15 @@ export function usePostingDetailQuery(
   });
 }
 
-export function usePostPostingMutation() {
+export function usePostPostingSuggestionMutation(postingId: number) {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: PostingForm) => postPosting(toSnakeCase(payload)),
+    mutationFn: (message: string) => postPostingSuggestion(postingId, message),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: postingsKeys.list });
+      qc.invalidateQueries({ queryKey: postingsKeys.detail(postingId) });
+      qc.invalidateQueries({ queryKey: suggestionsKeys.sent });
+      qc.invalidateQueries({ queryKey: suggestionsKeys.received });
     },
   });
 }

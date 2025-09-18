@@ -43,3 +43,4 @@ const ProposalSuccessModal: React.FC<ProposalSuccessModalProps> = ({
 export default ProposalSuccessModal;
 
 
+

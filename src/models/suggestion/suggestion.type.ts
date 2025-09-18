@@ -1,11 +1,14 @@
+type ArtistRef = { id: number; name: string };
+type SpaceRef = { id: number; placeName: string };
+
 // Suggestion 내부 모델
 export type Suggestion = {
   id: number;
   senderType: "artist" | "space";
   artist: number | null;
   space: number | null;
-  artistObj: string;
-  spaceObj: string;
+  artistObj: ArtistRef | null;
+  spaceObj: SpaceRef | null;
   posting: number | null;
   message: string;
   isFreeAllowed: boolean | null;

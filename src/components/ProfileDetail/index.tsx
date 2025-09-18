@@ -87,16 +87,54 @@ function Poster({
   );
 }
 
+function StarButton({
+  isStar,
+  onToggle,
+  disabled,
+}: {
+  isStar: boolean;
+  onToggle: () => void;
+  disabled?: boolean;
+  title?: string;
+}) {
+  const Icon = isStar ? StarFillIcon : StarEmptyIcon;
+  return (
+    <S.RightSlot>
+      <button
+        type="button"
+        aria-pressed={isStar}
+        disabled={disabled}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        style={{
+          background: "transparent",
+          border: 0,
+          padding: 0,
+          cursor: disabled ? "not-allowed" : "pointer",
+        }}
+      >
+        <Icon width={21} height={21} />
+      </button>
+    </S.RightSlot>
+  );
+}
+
 function Header({
   title,
   description,
   isStar,
   categories,
+  onToggle,
+  disabled,
 }: {
   title: string;
   description?: string;
   isStar: boolean;
   categories?: string[];
+  onToggle: () => void;
+  disabled?: boolean;
 }) {
   return (
     <S.Header>
@@ -110,7 +148,7 @@ function Header({
           </S.TagRow>
         )}
       </S.TitleRow>
-      <StarIcon isStar={isStar} />
+      <StarButton isStar={isStar} onToggle={onToggle} disabled={disabled} />
       {description && <S.Description>{description}</S.Description>}
     </S.Header>
   );
@@ -171,18 +209,6 @@ function IconRow({
       <Icon width={18} height={18} />
       <S.RowContent>{children}</S.RowContent>
     </S.IconRow>
-  );
-}
-
-function StarIcon({ isStar }: { isStar: boolean }) {
-  return isStar === true ? (
-    <S.RightSlot>
-      <StarFillIcon width={21} height={21} />
-    </S.RightSlot>
-  ) : (
-    <S.RightSlot>
-      <StarEmptyIcon width={21} height={21} />
-    </S.RightSlot>
   );
 }
 

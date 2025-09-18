@@ -16,8 +16,7 @@ export type Posting = {
 };
 
 // 작성 폼에서 쓰는 타입
-export type PostingForm = {
-  spaceId: number;
+export type PostingPost = {
   title: string;
   description: string;
   postingImage?: File | null;

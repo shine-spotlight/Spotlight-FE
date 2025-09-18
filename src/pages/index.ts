@@ -8,4 +8,6 @@ export { default as Start } from "./Start";
 export { default as ArtistDetail } from "./ArtistDetail";
 export { default as SpaceDetail } from "./SpaceDetail";
 export { default as AnnouncementDetail } from "./AnnouncementDetail";
+export { default as PostingCreate } from "./PostingCreate";
 export { default as NotFound } from "./NotFound";
+export { default as Likes } from "./LikeList";

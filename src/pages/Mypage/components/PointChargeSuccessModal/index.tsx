@@ -1,5 +1,5 @@
 import React from "react";
-import BaseModal from "@components/BaseModal";
+import CheckModal from "@components/CheckModal";
 import * as S from "./index.styles";
 
 export interface PointChargeSuccessModalProps {
@@ -11,26 +11,21 @@ export interface PointChargeSuccessModalProps {
 export const PointChargeSuccessModal: React.FC<
   PointChargeSuccessModalProps
 > = ({ isOpen, onClose, chargedAmount }) => {
+  const message = (
+    <>
+      <S.Amount>{chargedAmount.toLocaleString()} P</S.Amount>가
+      <br />
+      성공적으로 충전되었습니다!
+    </>
+  );
   return (
-    <BaseModal
+    <CheckModal
       isOpen={isOpen}
       onClose={onClose}
       title="충전 완료"
-      showCloseButton={false}
+      message={message}
+      confirmLabel="확인"
       closeOnOverlayClick={true}
-    >
-      <S.Content>
-        <S.SuccessIcon>✓</S.SuccessIcon>
-        <S.Message>
-          <S.Amount>{chargedAmount.toLocaleString()} P</S.Amount>가
-          <br />
-          성공적으로 충전되었습니다!
-        </S.Message>
-      </S.Content>
-
-      <S.Footer>
-        <S.Button onClick={onClose}>확인</S.Button>
-      </S.Footer>
-    </BaseModal>
+    />
   );
 };

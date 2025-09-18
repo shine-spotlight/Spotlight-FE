@@ -13,7 +13,9 @@ import {
   ArtistDetail,
   SpaceDetail,
   AnnouncementDetail,
+  PostingCreate,
   NotFound,
+  Likes,
 } from "@pages";
 import KakaoVerify from "@pages/Registration/components/KakaoVerify";
 import { StepGuard } from "@guards/StepGuard";
@@ -127,7 +129,9 @@ export const router = createBrowserRouter([
           { path: "proposals", element: <Proposals /> },
           { path: "announcements", element: <Announcements /> },
           { path: "announcements/:id", element: <AnnouncementDetail /> },
+          { path: "posting/create", element: <PostingCreate /> },
           { path: "mypage", element: <Mypage /> },
+          { path: "likes", element: <Likes /> },
         ],
       },
 
