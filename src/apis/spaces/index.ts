@@ -41,11 +41,12 @@ export function setSpaceInfo(space: SpacePOSTRequest) {
 
   if (space.place_region) formData.append("place_region", space.place_region);
 
-  if (space.place_image) {
-    // place_image가 File 객체인 경우
-    if (space.place_image instanceof File) {
-      formData.append("place_image", space.place_image);
-    }
+  if (Array.isArray(space.place_image)) {
+    space.place_image.forEach((file) => {
+      if (file instanceof File) {
+        formData.append("place_image", file); // 서버에서 여러 파일을 받도록
+      }
+    });
   }
 
   return sendRequest<SpaceDetailResponse>(
