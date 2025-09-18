@@ -20,6 +20,7 @@ export type SuggestionDTO = {
   is_accepted: boolean;
   is_read: boolean;
   receiver_phone: string;
+  opponent_image: string;
   created_at: string;
   updated_at: string;
 };

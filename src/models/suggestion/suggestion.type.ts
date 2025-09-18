@@ -12,6 +12,7 @@ export type Suggestion = {
   isAccepted: boolean | null;
   isRead: boolean;
   receiverPhone: string;
+  opponentImage: string;
   createdAt: string;
   updatedAt: string;
 };

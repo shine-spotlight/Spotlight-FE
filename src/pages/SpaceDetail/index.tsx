@@ -5,10 +5,10 @@ import { Topbar } from "@components/Topbar";
 import { useSpaceDetailQuery } from "@queries/spaces";
 import { ProfileDetail } from "@components/ProfileDetail";
 import ActionFooter from "@components/ActionFooter";
-import NotFound from "@pages/NotFound";
 import ProposalSheet from "@components/ProposalSheet";
 import ConfirmModal from "@components/ConfirmModal";
 import { useBottomSheet } from "@hooks/useBottomSheet";
+import { useGlobalLoading } from "@hooks/useGlobalLoading";
 
 const SpaceDetail = () => {
   const { isOpen, open, close } = useBottomSheet();
@@ -20,9 +20,11 @@ const SpaceDetail = () => {
   const spaceId = Number(id);
   const hasValidId = Number.isFinite(spaceId);
 
-  const { data, isLoading, error } = useSpaceDetailQuery(spaceId, {
+  const { data, isLoading } = useSpaceDetailQuery(spaceId, {
     enabled: hasValidId,
   });
+
+  useGlobalLoading(isLoading, "공간 정보를 조회 중입니다...");
 
   useEffect(() => {
     if (!hasValidId) {
@@ -30,22 +32,13 @@ const SpaceDetail = () => {
     }
   }, [hasValidId, navigate]);
 
-  if (!hasValidId) {
-    return null;
-  }
+  useEffect(() => {
+    if (!isLoading && !data) {
+      navigate("/404", { replace: true });
+    }
+  }, [isLoading, data, navigate]);
 
-  if (isLoading) {
-    return (
-      <S.Container>
-        <Topbar title="공간 보유자 상세" goBack={() => navigate("/spaces")} />
-        <div>불러오는 중…</div>
-      </S.Container>
-    );
-  }
-
-  if (error || !data) {
-    return <NotFound />;
-  }
+  if (!hasValidId || isLoading || !data) return null;
 
   return (
     <S.Container>
