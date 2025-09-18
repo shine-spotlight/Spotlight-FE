@@ -1,27 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getLikeList, toggleLikeArtist, toggleLikeSpace } from "@apis/likes";
-import type { SpaceListResponse } from "@models/space/space.dto";
-import type { ArtistListResponse } from "@models/artist/artist.dto";
-import type { ArtistProfile } from "@models/artist/artist.type";
-import type { SpaceProfile } from "@models/space/space.type";
+import type { LikeListResponse } from "@models/like/like.dto";
+import type { Like } from "@models/like/like.type";
 import { toCamelCase } from "@utils/caseConvert";
 import { artistsKeys } from "@queries/artists";
 import { spacesKeys } from "@queries/spaces";
-
+import type { ArtistProfile } from "@models/artist/artist.type";
+import type { SpaceProfile } from "@models/space/space.type";
 export const likesKeys = {
   list: ["likes", "list"] as const,
 };
 
 // 찜 목록 조회
 export function useLikesQuery() {
-  return useQuery<SpaceProfile[] | ArtistProfile[], Error>({
+  return useQuery<Like[], Error>({
     queryKey: likesKeys.list,
     queryFn: async () => {
       const res = await getLikeList();
-      return toCamelCase<
-        SpaceListResponse | ArtistListResponse,
-        SpaceProfile[] | ArtistProfile[]
-      >(res);
+      return toCamelCase<LikeListResponse, Like[]>(res);
     },
     staleTime: 60_000,
   });
