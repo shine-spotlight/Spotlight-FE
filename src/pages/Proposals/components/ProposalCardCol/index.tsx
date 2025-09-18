@@ -23,17 +23,6 @@ export function ProposalCardCol({ items, onItemClick }: ProposalCardColProps) {
           />
           <Card.Content>
             <Card.Title>{item.spaceObj ?? item.artistObj} </Card.Title>
-            <Card.IconContent type="category">없음</Card.IconContent>
-
-            {/* {item.spaceAddress && (
-              <Card.IconContent type="place">{item}</Card.IconContent>
-            )}
-            {item.members && (
-              <Card.IconContent type="people">
-                {item.members}명
-              </Card.IconContent>
-            )} */}
-
             {item.message && (
               <Card.IconContent type="description">
                 {item.message}
