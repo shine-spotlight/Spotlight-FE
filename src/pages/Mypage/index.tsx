@@ -15,7 +15,6 @@ const Mypage: React.FC = () => {
   const [isChargeModalOpen, setIsChargeModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [chargedAmount, setChargedAmount] = useState(0);
-  const pointByRole = useUserStore((s) => s.pointByRole);
   const { data: profile, isLoading } = useUserOverview();
   const chargePointMutation = useChargePointMutation();
   useGlobalLoading(isLoading, "내 프로필을 불러오는 중입니다...");
@@ -58,7 +57,7 @@ const Mypage: React.FC = () => {
           <ProfileCard
             role="artist"
             name={profile.name}
-            point={pointByRole[currentRole]}
+            point={profile.point}
             onEditProfile={() => {}}
             onPointHistory={() => {}}
             onPointCharge={handleCharge}

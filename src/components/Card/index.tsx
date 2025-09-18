@@ -95,14 +95,35 @@ function Content({ children }: { children: React.ReactNode }) {
   return <S.ContentContainer>{children}</S.ContentContainer>;
 }
 
-function StarIcon({ isStar }: { isStar: boolean }) {
-  return isStar ? (
+function StarButton({
+  isStar,
+  onToggle,
+  disabled,
+}: {
+  isStar: boolean;
+  onToggle: () => void;
+  disabled?: boolean;
+}) {
+  const Icon = isStar ? StarFillIcon : StarEmptyIcon;
+  return (
     <S.RightSlot>
-      <StarFillIcon width={21} height={21} />
-    </S.RightSlot>
-  ) : (
-    <S.RightSlot>
-      <StarEmptyIcon width={21} height={21} />
+      <button
+        type="button"
+        aria-pressed={isStar}
+        disabled={disabled}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        style={{
+          background: "transparent",
+          border: 0,
+          padding: 0,
+          cursor: disabled ? "not-allowed" : "pointer",
+        }}
+      >
+        <Icon width={21} height={21} />
+      </button>
     </S.RightSlot>
   );
 }
@@ -123,6 +144,6 @@ export const Card = Object.assign(Root, {
   Title,
   Content,
   IconContent,
-  StarIcon,
   RightBadge,
+  StarButton,
 });

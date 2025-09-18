@@ -1,6 +1,6 @@
 import * as S from "./index.styles";
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { Topbar } from "@components/Topbar";
 import { useSpaceDetailQuery } from "@queries/spaces";
 import { ProfileDetail } from "@components/ProfileDetail";
@@ -9,10 +9,14 @@ import ProposalSheet from "@components/ProposalSheet";
 import ConfirmModal from "@components/ConfirmModal";
 import { useBottomSheet } from "@hooks/useBottomSheet";
 import { useGlobalLoading } from "@hooks/useGlobalLoading";
+import { useSuggestToSpaceMutation } from "@queries/suggestions";
+import CheckModal from "@components/CheckModal";
+import { useLike } from "@hooks/useLike";
 
 const SpaceDetail = () => {
   const { isOpen, open, close } = useBottomSheet();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isConfirmFinishOpen, setIsConfirmFinishOpen] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -23,22 +27,23 @@ const SpaceDetail = () => {
   const { data, isLoading } = useSpaceDetailQuery(spaceId, {
     enabled: hasValidId,
   });
+  const { suggest, isPending } = useSuggestToSpaceMutation(spaceId);
+  useGlobalLoading(
+    isLoading || isPending,
+    isPending
+      ? "제안서를 보내는 중입니다..."
+      : "공간 정보를 조회하는 중입니다..."
+  );
 
-  useGlobalLoading(isLoading, "공간 정보를 조회 중입니다...");
+  const {
+    liked,
+    toggle,
+    isPending: likeIsPending,
+  } = useLike({ spaceId }, { initialLiked: data?.isLiked });
 
-  useEffect(() => {
-    if (!hasValidId) {
-      navigate("/404", { replace: true });
-    }
-  }, [hasValidId, navigate]);
+  if (!isLoading && !data) return <Navigate to="/404" replace />;
 
-  useEffect(() => {
-    if (!isLoading && !data) {
-      navigate("/404", { replace: true });
-    }
-  }, [isLoading, data, navigate]);
-
-  if (!hasValidId || isLoading || !data) return null;
+  if (isLoading || !data) return null;
 
   return (
     <S.Container>
@@ -50,8 +55,10 @@ const SpaceDetail = () => {
         <ProfileDetail.Header
           title={data.placeName}
           description={data.description}
-          isStar
           categories={data.categoriesDisplay}
+          isStar={liked}
+          onToggle={toggle}
+          disabled={likeIsPending}
         />
         <ProfileDetail.Section title="희망 공연 카테고리">
           <ProfileDetail.Tags items={data.preferredCategoriesDisplay} />
@@ -100,10 +107,27 @@ const SpaceDetail = () => {
       <ProposalSheet
         isOpen={isOpen}
         onClose={close}
-        onSubmit={(text) => {
-          console.log("제안서 내용:", text);
-          close();
+        onSubmit={async (text) => {
+          try {
+            await suggest(text);
+            close();
+            setIsConfirmFinishOpen(true);
+          } catch {
+            /* empty */
+          }
         }}
+      />
+      <CheckModal
+        isOpen={isConfirmFinishOpen}
+        onClose={() => setIsConfirmFinishOpen(false)}
+        title="제안서 전송 완료!"
+        message={
+          <>
+            <b>포인트 100 차감</b>
+            <br /> 제안서 전송이 성공적으로 완료되었습니다!
+          </>
+        }
+        confirmLabel="확인"
       />
     </S.Container>
   );
