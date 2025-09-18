@@ -47,7 +47,7 @@ const SpaceDetail = () => {
 
   return (
     <S.Container>
-      <Topbar title="공간 보유자 상세" goBack={() => navigate("/spaces")} />
+      <Topbar title="공간 보유자 상세" goBack={() => navigate(-1)} />
       <ProfileDetail>
         <ProfileDetail.Media
           image={data.placeImageUrl ? data.placeImageUrl[0] : ""}
@@ -100,7 +100,7 @@ const SpaceDetail = () => {
           open();
         }}
         title="제안서를 보내시겠습니까?"
-        message="제안서 보내기 1회 당 100포인트가 차감됩니다."
+        message="제안서 보내기 1회 당 1000포인트가 차감됩니다."
         confirmLabel="확인"
         cancelLabel="취소"
       />

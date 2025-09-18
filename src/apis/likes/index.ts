@@ -1,15 +1,10 @@
 import { sendRequest } from "@apis/api";
 import { likeInstance } from "@apis/instance";
-import type { SpaceListResponse } from "@models/space/space.dto";
-import type { ArtistListResponse } from "@models/artist/artist.dto";
+import type { LikeListResponse } from "@models/like/like.dto";
 
 // 찜한 목록 조회
 export function getLikeList() {
-  return sendRequest<SpaceListResponse | ArtistListResponse>(
-    likeInstance,
-    "GET",
-    `/`
-  );
+  return sendRequest<LikeListResponse>(likeInstance, "GET", `/`);
 }
 
 // 아티스트 찜 토글

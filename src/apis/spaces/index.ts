@@ -1,5 +1,6 @@
-import { sendRequest } from "@apis/api";
+import { sendRequest, createUrl } from "@apis/api";
 import { spaceInstance } from "@apis/instance";
+import type { SpaceFilter } from "@models/space/space.type";
 import type {
   SpacePOSTRequest,
   SpaceListResponse,
@@ -68,6 +69,20 @@ export function getSpaceList() {
 // space 상세 조회
 export function getSpaceDetail(id: string) {
   return sendRequest<SpaceDetailResponse>(spaceInstance, "GET", `/${id}/`);
+}
+
+// space 필터링 목록 조회
+export function getFilteredSpaceList(filter: SpaceFilter) {
+  const url = createUrl("/filter/", {
+    region: filter.region && filter.region.length ? filter.region : undefined,
+    categories:
+      filter.categories && filter.categories.length
+        ? filter.categories
+        : undefined,
+    cap_min: typeof filter.capMin === "number" ? filter.capMin : undefined,
+    cap_max: typeof filter.capMax === "number" ? filter.capMax : undefined,
+  });
+  return sendRequest<SpaceListResponse>(spaceInstance, "GET", url);
 }
 
 // space - 내 프로필 조회

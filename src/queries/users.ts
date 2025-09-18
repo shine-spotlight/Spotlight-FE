@@ -32,6 +32,7 @@ export function useUserProfileQuery() {
     },
     enabled: !!currentRole,
     staleTime: 60_000,
+    placeholderData: (prev) => prev,
   });
 
   useEffect(() => {

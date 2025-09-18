@@ -1,3 +1,4 @@
+import type { RegionValue } from "@types";
 // Artist 내부 모델
 export type ArtistProfile = {
   id: number;
@@ -17,4 +18,12 @@ export type ArtistProfile = {
   isFreeAllowed: boolean;
   phoneNumber?: string;
   isLiked?: boolean;
+};
+
+export type ArtistFilter = {
+  region?: string[];
+  categories?: string[];
+  payMin?: number;
+  payMax?: number;
+  regions?: RegionValue[];
 };

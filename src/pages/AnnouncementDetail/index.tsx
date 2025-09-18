@@ -115,7 +115,7 @@ const AnnouncementDetail = () => {
                 open();
               }}
               title="제안서를 보내시겠습니까?"
-              message="제안서 보내기 1회 당 100포인트가 차감됩니다."
+              message="제안서 보내기 1회 당 1000포인트가 차감됩니다."
               confirmLabel="확인"
               cancelLabel="취소"
             />

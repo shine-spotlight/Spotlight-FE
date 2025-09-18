@@ -45,7 +45,7 @@ const ArtistDetail = () => {
 
   return (
     <S.Container>
-      <Topbar title="공연 예술가 상세" goBack={() => navigate("/artists")} />
+      <Topbar title="공연 예술가 상세" goBack={() => navigate(-1)} />
       <ProfileDetail>
         <ProfileDetail.Media
           image={data.profileImageUrl ? data.profileImageUrl[0] : ""}
@@ -54,7 +54,6 @@ const ArtistDetail = () => {
         <ProfileDetail.Header
           title={data.name}
           description={data.bio}
-          categories={data.categoriesDisplay}
           isStar={liked}
           onToggle={toggle}
           disabled={likeIsPending}

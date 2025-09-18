@@ -136,10 +136,31 @@ export const sendRequest = async <T = unknown, D = unknown>(
 // 동적 URL 생성
 export const createUrl = (
   path: string,
-  params: Record<string, string> = {}
+  params: Record<
+    string,
+    string | number | Array<string | number> | undefined
+  > = {}
 ): string => {
-  const query = new URLSearchParams(params).toString();
-  return `${path}${query ? `?${query}` : ""}`;
+  const usp = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, val]) => {
+    if (val == null) return;
+
+    if (Array.isArray(val)) {
+      const filtered = val.map(String).filter(Boolean);
+      if (filtered.length === 0) return;
+      // usp.set(key, filtered.join("&"));
+      // 만약 서버가 반복 파라미터를 원한다면 아래를 사용:
+      filtered.forEach((v) => usp.append(key, v));
+    } else {
+      const v = String(val);
+      if (v.trim() === "") return;
+      usp.set(key, v);
+    }
+  });
+
+  const q = usp.toString();
+  return `${path}${q ? `?${q}` : ""}`;
 };
 
 // 인터셉터 적용

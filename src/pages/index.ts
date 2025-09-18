@@ -11,3 +11,4 @@ export { default as AnnouncementDetail } from "./AnnouncementDetail";
 export { default as PostingCreate } from "./PostingCreate";
 export { default as NotFound } from "./NotFound";
 export { default as Likes } from "./LikeList";
+export { default as ProposalDetail } from "./ProposalDetail";
