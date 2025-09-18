@@ -42,6 +42,13 @@ export const Wrap = styled.div`
   width: 100%;
 `;
 
+export const DatePickerWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+`;
+
 export const DateInput = styled.input`
   display: flex;
   width: 100%;
@@ -52,6 +59,13 @@ export const Label = styled.div`
   ${({ theme }) => theme.typography.body2};
   color: ${({ theme }) => theme.color.text.primary};
   margin-bottom: 12px;
+  white-space: nowrap;
+`;
+
+export const DateLabel = styled.p`
+  ${({ theme }) => theme.typography.buttonSm};
+  color: ${({ theme }) => theme.color.text.secondary};
+  white-space: nowrap;
 `;
 
 export const Track = styled.div`
@@ -108,25 +122,6 @@ export const Input = styled.input`
   }
   &[data-upper] {
     z-index: 2;
-  }
-`;
-
-export const FreeCheckbox = styled.div`
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
-
-  label {
-    ${({ theme }) => theme.typography.body3};
-    color: ${({ theme }) => theme.color.text.secondary};
-    cursor: pointer;
   }
 `;
 

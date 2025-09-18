@@ -1,3 +1,5 @@
+import type { RegionValue } from "@types";
+
 export type Posting = {
   id: number;
   space: string;
@@ -24,4 +26,12 @@ export type PostingPost = {
   priceType: "negotiable" | "paid" | "free";
   priceAmount?: number;
   date: Date;
+};
+
+export type PostingFilter = {
+  region?: string[];
+  categories?: string[];
+  dateFrom?: string;
+  dateTo?: string;
+  regions?: RegionValue[];
 };

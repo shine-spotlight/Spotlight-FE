@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import BottomSheet from "@components/BottomSheet";
 import * as S from "./index.styles";
-import type { RegionValue } from "@components/RegionPicker";
+import type { RegionValue } from "@/types";
 import RegionPicker from "@components/RegionPicker";
 import { CalendarColorIcon } from "@assets/svg/common";
 import SelectChipsGroup from "@components/SelectChipsGroup";
@@ -74,7 +74,15 @@ type RegionProps = {
 };
 
 function RegionSelector({ value, onChange, multiple = true }: RegionProps) {
-  return <RegionPicker value={value} onChange={onChange} multiple={multiple} />;
+  return (
+    <RegionPicker
+      value={value}
+      onChange={(next) => {
+        onChange(Array.isArray(next) ? next : [next]);
+      }}
+      multiple={multiple}
+    />
+  );
 }
 
 type PayRangeProps = {
@@ -84,6 +92,7 @@ type PayRangeProps = {
   onChange: (next: [number, number]) => void;
   freeOnly?: boolean;
   onToggleFreeOnly?: (next: boolean) => void;
+  label?: string;
 };
 
 function RangeSlider({
@@ -92,12 +101,14 @@ function RangeSlider({
   step = 1,
   value,
   onChange,
+  label = "만 원",
 }: {
   min: number;
   max: number;
   step?: number;
   value: [number, number];
   onChange: (next: [number, number]) => void;
+  label?: string;
 }) {
   const [lo, hi] = value;
 
@@ -108,7 +119,9 @@ function RangeSlider({
   return (
     <S.Wrap data-nodrag>
       <S.Label>
-        {lo.toLocaleString()}만 원 ~ {hi.toLocaleString()}만 원
+        {lo.toLocaleString()}
+        {label} ~ {hi.toLocaleString()}
+        {label}
       </S.Label>
 
       <S.Track
@@ -147,27 +160,15 @@ function RangeSlider({
   );
 }
 
-function PayRange({
-  min,
-  max,
-  value,
-  onChange,
-  freeOnly = false,
-  onToggleFreeOnly,
-}: PayRangeProps) {
+function PayRange({ min, max, value, onChange, label }: PayRangeProps) {
   return (
-    <>
-      <RangeSlider min={min} max={max} value={value} onChange={onChange} />
-      <S.FreeCheckbox>
-        <input
-          id="free-only"
-          type="checkbox"
-          checked={freeOnly}
-          onChange={(e) => onToggleFreeOnly?.(e.target.checked)}
-        />
-        <label htmlFor="free-only">무료 공연만</label>
-      </S.FreeCheckbox>
-    </>
+    <RangeSlider
+      min={min}
+      max={max}
+      value={value}
+      onChange={onChange}
+      label={label}
+    />
   );
 }
 
@@ -178,7 +179,12 @@ type DatePickerProps = {
   required?: boolean;
 };
 
-function DatePicker({ value, onChange, required = false }: DatePickerProps) {
+function DatePicker({
+  value,
+  label,
+  onChange,
+  required = false,
+}: DatePickerProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const openPicker = () => {
@@ -190,7 +196,8 @@ function DatePicker({ value, onChange, required = false }: DatePickerProps) {
   };
 
   return (
-    <S.Wrap data-nodrag>
+    <S.DatePickerWrap data-nodrag>
+      {label && <S.DateLabel>{label}</S.DateLabel>}
       <S.DateField>
         <S.DateInputWithPadding
           ref={inputRef}
@@ -204,7 +211,7 @@ function DatePicker({ value, onChange, required = false }: DatePickerProps) {
           <CalendarColorIcon />
         </S.CalendarBtn>
       </S.DateField>
-    </S.Wrap>
+    </S.DatePickerWrap>
   );
 }
 

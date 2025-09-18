@@ -6,10 +6,28 @@ import type {
 } from "@models/posting/posting.dto";
 import { formatDateYMD } from "@utils/formatDate";
 import type { PostingPost } from "@models/posting/posting.type";
+import { createUrl } from "@apis/api";
+import type { PostingFilter } from "@models/posting/posting.type";
+import { isPostingFilterActive } from "@utils/isFilterActive";
 
-// 공연 공고 전체 조회
-export function getPostingList() {
-  return sendRequest<PostingListResponse>(postingInstance, "GET", `/`);
+// 공연 공고 목록 조회 (필터 활성일 때만 쿼리스트링 부착)
+export function getPostingList(filter?: PostingFilter) {
+  const active = isPostingFilterActive(filter);
+
+  const url = active
+    ? createUrl("/", {
+        region:
+          filter?.region && filter.region.length ? filter.region : undefined,
+        categories:
+          filter?.categories && filter.categories.length
+            ? filter.categories
+            : undefined,
+        date_from: filter?.dateFrom || undefined,
+        date_to: filter?.dateTo || undefined,
+      })
+    : "/";
+
+  return sendRequest<PostingListResponse>(postingInstance, "GET", url);
 }
 
 // 공연 공고 전체 조회

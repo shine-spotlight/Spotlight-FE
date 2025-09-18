@@ -1,42 +1,46 @@
 import React, { useState, useMemo } from "react";
 import { useBottomSheet } from "@hooks/useBottomSheet";
 import { Filter } from "@components/Filter";
-import type { AnnouncementFilterType } from "./types";
 import { AnnouncementFilterSheet, AnnouncementCard } from "./components";
 import * as S from "./index.styles";
 import { usePostingListQuery } from "@queries/postings";
 import { useGlobalLoading } from "@hooks/useGlobalLoading";
+import type { PostingFilter } from "@models/posting/posting.type";
+import { isPostingFilterActive } from "@utils/isFilterActive";
 
-const defaultFilter: AnnouncementFilterType = {
-  regions: [],
-  eventTypes: [],
-  date: null,
+const defaultFilter: PostingFilter = {
+  region: [],
+  categories: [],
+  dateFrom: "",
+  dateTo: "",
 };
 
 const Announcements: React.FC = () => {
-  const { data, isLoading } = usePostingListQuery();
+  const sheet = useBottomSheet(false);
+  const [filter, setFilter] = useState<PostingFilter>(defaultFilter);
+  const [appliedFilter, setAppliedFilter] =
+    useState<PostingFilter>(defaultFilter);
+  const activeNow = useMemo(() => isPostingFilterActive(filter), [filter]);
+
+  // 적용된 UI필터를 API필터로 변환 → 쿼리 훅에 전달
+  const { data, isLoading } = usePostingListQuery(appliedFilter);
+
   useGlobalLoading(isLoading, "공연 공고 목록을 불러오는 중입니다...");
 
-  const sheet = useBottomSheet(false);
-  const [filter, setFilter] = useState<AnnouncementFilterType>(defaultFilter);
+  const handleReset = () => {
+    setFilter(defaultFilter);
+    setAppliedFilter(defaultFilter);
+  };
 
-  const isActive = useMemo(() => {
-    const hasRegions = filter.regions.length > 0;
-    const hasEvents = filter.eventTypes.length > 0;
-    const hasDate = filter.date;
-
-    return hasRegions || hasEvents || hasDate;
-  }, [filter]);
-
-  const handleReset = () => setFilter(defaultFilter);
   const handleApply = () => {
+    setAppliedFilter(filter);
     sheet.close();
   };
 
   return (
     <>
       <S.FilterSection>
-        <Filter isActive={!!isActive} onClick={sheet.open} />
+        <Filter isActive={activeNow} onClick={sheet.open} />
         <S.Sort>최근 등록순</S.Sort>
       </S.FilterSection>
       <S.Container>

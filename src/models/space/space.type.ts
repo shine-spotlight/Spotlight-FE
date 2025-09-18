@@ -1,3 +1,5 @@
+import type { RegionValue } from "@types";
+
 // 내부 모델 — space
 export type SpaceProfile = {
   id: number;
@@ -21,4 +23,12 @@ export type SpaceProfile = {
   equipmentsDisplay: string[];
   phoneNumber?: string;
   isLiked?: boolean;
+};
+
+export type SpaceFilter = {
+  region?: string[];
+  categories?: string[];
+  capMin?: number;
+  capMax?: number;
+  regions?: RegionValue[];
 };

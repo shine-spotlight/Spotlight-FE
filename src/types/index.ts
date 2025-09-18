@@ -6,3 +6,8 @@ export type NavMenuItem = {
   path: string;
   roles: UserRoleType[];
 };
+
+export type RegionValue = {
+  sido: string;
+  sigungu?: string | null;
+};

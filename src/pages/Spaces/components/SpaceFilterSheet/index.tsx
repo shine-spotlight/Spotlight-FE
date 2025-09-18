@@ -1,12 +1,13 @@
 import { FilterSheet } from "@/components/FilterSheet";
-import { EVENT_CATEGORIES, EQUIPMENT_CATEGORIES } from "@constants/categories";
-import type { SpaceFilterType } from "@pages/Spaces/types";
+import { EVENT_CATEGORIES } from "@constants/categories";
+import type { SpaceFilter } from "@models/space/space.type";
+import type { RegionValue } from "@types";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  value: SpaceFilterType;
-  onChange: (next: SpaceFilterType) => void;
+  value: SpaceFilter;
+  onChange: (next: SpaceFilter) => void;
   onReset: () => void;
   onApply: () => void;
 };
@@ -19,6 +20,8 @@ export default function SpaceFilterSheet({
   onReset,
   onApply,
 }: Props) {
+  const formatRegionKey = (v: RegionValue) =>
+    v.sigungu ? `${v.sido} ${v.sigungu}` : `${v.sido}`;
   return (
     <FilterSheet
       isOpen={isOpen}
@@ -29,24 +32,32 @@ export default function SpaceFilterSheet({
     >
       <FilterSheet.Section title="지역 필터링">
         <FilterSheet.RegionSelector
-          value={value.regions}
-          onChange={(regions) => onChange({ ...value, regions })}
+          value={value.regions ?? []}
+          onChange={(regions) => {
+            onChange({
+              ...value,
+              regions,
+              region: regions.map(formatRegionKey),
+            });
+          }}
         />
       </FilterSheet.Section>
-
       <FilterSheet.Section title="행사 형태">
         <FilterSheet.Chips
           items={EVENT_CATEGORIES}
-          selected={value.eventTypes}
-          onChange={(next) => onChange({ ...value, eventTypes: next })}
+          selected={value.categories ?? []}
+          onChange={(next) => onChange({ ...value, categories: next })}
         />
       </FilterSheet.Section>
-
-      <FilterSheet.Section title="보유 장비">
-        <FilterSheet.Chips
-          items={EQUIPMENT_CATEGORIES}
-          selected={value.equipments}
-          onChange={(next) => onChange({ ...value, equipments: next })}
+      <FilterSheet.Section title="수용 인원">
+        <FilterSheet.PayRange
+          min={0}
+          max={1_000}
+          value={[value.capMin ?? 0, value.capMax ?? 1000]}
+          onChange={([capMin, capMax]) =>
+            onChange({ ...value, capMin, capMax })
+          }
+          label="명"
         />
       </FilterSheet.Section>
     </FilterSheet>

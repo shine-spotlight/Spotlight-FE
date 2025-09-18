@@ -1,16 +1,12 @@
 import React, { useMemo, useState } from "react";
 import * as S from "./index.styles";
 import regionsData from "@assets/json/region.json";
+import type { RegionValue } from "@/types";
 
 type Sido = {
   code: string;
   name: string;
   sgg: string[];
-};
-
-export type RegionValue = {
-  sido: string;
-  sigungu?: string | null;
 };
 
 type Props = {
@@ -62,7 +58,7 @@ const RegionPicker: React.FC<Props> = ({
             key={`${v.sido}-${v.sigungu ?? "ALL"}`}
             onClick={() => removeChip(i)}
           >
-            {v.sigungu ? `${v.sido} ${v.sigungu}` : `${v.sido} 전체`}{" "}
+            {v.sigungu ? `${v.sido} ${v.sigungu}` : `${v.sido} 전체`}
             <span>✕</span>
           </S.Chip>
         ))}
