@@ -10,6 +10,7 @@ export const Container = styled.div`
   position: relative;
   gap: 12px;
   cursor: pointer;
+  width: 100%;
 `;
 
 export const WideContainer = styled.div`
@@ -18,11 +19,15 @@ export const WideContainer = styled.div`
   border-radius: 10px;
   padding: 12px;
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 200px 1fr;
   gap: 16px;
   align-items: center;
   cursor: pointer;
   width: 100%;
+
+  > * {
+    min-width: 0;
+  }
 `;
 
 export const Image = styled.img`
@@ -36,6 +41,11 @@ export const Image = styled.img`
 export const TitleText = styled.span`
   ${({ theme }) => theme.typography.h3};
   color: ${({ theme }) => theme.color.text.primary};
+
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const IconContentContainer = styled.div`
@@ -43,6 +53,9 @@ export const IconContentContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
   > svg {
     flex: 0 0 auto;
   }
@@ -61,6 +74,10 @@ export const ContentContainer = styled.div`
 export const ContentText = styled.p`
   ${({ theme }) => theme.typography.body4}
   color: ${({ theme }) => theme.color.text.secondary};
+  width: 100%;
+  flex: 1 1 auto;
+  margin: 0;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -73,7 +90,7 @@ export const RightSlot = styled.div`
 
 export const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
   width: 100%;
   box-sizing: border-box;

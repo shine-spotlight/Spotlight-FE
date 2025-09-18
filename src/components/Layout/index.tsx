@@ -6,18 +6,21 @@ import { Outlet, useLocation } from "react-router-dom";
 
 export const Layout: React.FC = () => {
   const location = useLocation();
-  const shouldHide =
-    location.pathname === "/" ||
-    location.pathname.startsWith("/login") ||
-    location.pathname.startsWith("/register");
+  const shouldShow =
+    location.pathname === "/home" ||
+    location.pathname === "/spaces" ||
+    location.pathname === "/artists" ||
+    location.pathname === "/proposals" ||
+    location.pathname === "/announcements" ||
+    location.pathname === "/mypage";
 
   return (
     <S.AppContainer>
-      {!shouldHide && <Header />}
-      <S.MainContent $shouldHide={shouldHide}>
+      {shouldShow && <Header />}
+      <S.MainContent $shouldShow={shouldShow}>
         <Outlet />
       </S.MainContent>
-      {!shouldHide && <BottomNavigationBar />}
+      {shouldShow && <BottomNavigationBar />}
     </S.AppContainer>
   );
 };

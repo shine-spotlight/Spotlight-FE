@@ -1,4 +1,5 @@
 import { useAuthStore } from "@stores/authStore";
+import { useErrorStore } from "@stores/useErrorStore";
 import axios from "axios";
 import type {
   AxiosInstance,
@@ -25,7 +26,7 @@ export const sendRequest = async <T = unknown, D = unknown>(
   url: string,
   data?: D,
   headers?: Record<string, string>
-): Promise<ApiResponse<T>> => {
+): Promise<T> => {
   try {
     const config: AxiosRequestConfig = {
       method,
@@ -35,21 +36,100 @@ export const sendRequest = async <T = unknown, D = unknown>(
     };
 
     const response = await instance.request(config);
+    const responseData = response.data;
 
-    return { status: true, data: response.data as T };
+    // ApiResponse 형태인지 확인 (status 필드가 있는지)
+    if (
+      responseData &&
+      typeof responseData === "object" &&
+      "status" in responseData
+    ) {
+      const apiResponse = responseData as ApiResponse<T>;
+
+      if (apiResponse.status) {
+        // 성공한 경우 데이터만 반환
+        return apiResponse.data as T;
+      } else {
+        // 실패한 경우 에러 throw
+        throw apiResponse.error;
+      }
+    }
+
+    // ApiResponse 형태가 아닌 경우 그대로 반환
+    return responseData as T;
   } catch (error: unknown) {
+    let errorToThrow: ApiFailure;
+
     if (axios.isAxiosError(error)) {
       const failure = error.response?.data as ApiFailure;
-      return { status: false, error: failure };
-    }
-    return {
-      status: false,
-      error: {
+      const statusCode = error.response?.status;
+
+      // 401 에러 처리 - 팝업 표시 후 시작 페이지로 리다이렉트
+      if (statusCode === 401) {
+        // 인증 상태 초기화
+        useAuthStore.getState().clear();
+
+        // 에러 팝업 표시
+        const { setErrorTitle, setErrorMessage, setButtonLabel } =
+          useErrorStore.getState();
+        setErrorTitle("인증 필요");
+        setErrorMessage("로그인 후 시도하세요");
+        setButtonLabel("확인");
+
+        // 확인 버튼 클릭 시 시작 페이지로 이동하는 핸들러 설정
+        const originalResetError = useErrorStore.getState().resetError;
+        useErrorStore.setState({
+          resetError: () => {
+            originalResetError();
+            window.location.href = "/";
+          },
+        });
+
+        errorToThrow = {
+          detail: "로그인 후 시도하세요",
+          code: "UNAUTHORIZED",
+          field: "",
+        };
+        throw errorToThrow;
+      }
+
+      // 404 에러는 팝업을 띄우지 않고 그대로 throw
+      if (statusCode === 404) {
+        errorToThrow = failure || {
+          detail: "요청한 리소스를 찾을 수 없습니다.",
+          code: "NOT_FOUND",
+          field: "",
+        };
+        // 404는 팝업 없이 그대로 throw
+        throw errorToThrow;
+      }
+
+      errorToThrow = failure || {
+        detail: error.message || "네트워크 오류가 발생했습니다.",
+        code: "NETWORK_ERROR",
+        field: "",
+      };
+    } else {
+      errorToThrow = {
         detail: "예상치 못한 오류가 발생했습니다.",
         code: "UNKNOWN",
         field: "",
-      },
-    };
+      };
+    }
+
+    // 404와 401이 아닌 에러만 전역 에러 상태 설정
+    if (
+      errorToThrow.code !== "NOT_FOUND" &&
+      errorToThrow.code !== "UNAUTHORIZED"
+    ) {
+      const { setErrorTitle, setErrorMessage, setButtonLabel } =
+        useErrorStore.getState();
+      setErrorTitle("요청 실패");
+      setErrorMessage(errorToThrow.detail);
+      setButtonLabel("확인");
+    }
+
+    throw errorToThrow;
   }
 };
 

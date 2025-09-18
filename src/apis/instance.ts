@@ -28,7 +28,7 @@ postingInstance.defaults.baseURL += "/postings";
 applyInterceptors(postingInstance);
 
 const suggestingInstance = axios.create(defaultInstance.defaults);
-suggestingInstance.defaults.baseURL += "/suggestings";
+suggestingInstance.defaults.baseURL += "/suggestions";
 applyInterceptors(suggestingInstance);
 
 const likeInstance = axios.create(defaultInstance.defaults);
@@ -40,7 +40,7 @@ notificationInstance.defaults.baseURL += "/notifications";
 applyInterceptors(notificationInstance);
 
 const pointInstance = axios.create(defaultInstance.defaults);
-pointInstance.defaults.baseURL += "/point";
+pointInstance.defaults.baseURL += "/points";
 applyInterceptors(pointInstance);
 
 const demandInstance = axios.create(defaultInstance.defaults);

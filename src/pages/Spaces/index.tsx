@@ -2,9 +2,11 @@ import React, { useState, useMemo } from "react";
 import { useBottomSheet } from "@hooks/useBottomSheet";
 import { SpaceCardGrid } from "./components";
 import { Filter } from "@components/Filter";
+import { useSpacesQuery } from "@queries/spaces";
 import SpaceFilterSheet from "./components/SpaceFilterSheet";
 import * as S from "./index.styles";
 import type { SpaceFilterType } from "./types";
+import { useGlobalLoading } from "@hooks/useGlobalLoading";
 
 const defaultFilter: SpaceFilterType = {
   regions: [],
@@ -13,6 +15,9 @@ const defaultFilter: SpaceFilterType = {
 };
 
 const Spaces: React.FC = () => {
+  const { data, isLoading } = useSpacesQuery();
+  useGlobalLoading(isLoading, "공간 목록을 불러오는 중입니다...");
+
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<SpaceFilterType>(defaultFilter);
 
@@ -44,7 +49,8 @@ const Spaces: React.FC = () => {
           onReset={handleReset}
           onApply={handleApply}
         />
-        <SpaceCardGrid />
+
+        <SpaceCardGrid data={data ?? []} />
       </S.Container>
     </>
   );

@@ -2,43 +2,48 @@ import { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogoIcon } from "@assets/svg/common";
 import { useKakaoExchange } from "../../hooks/useKakaoExchange";
-import { setUserRole } from "@apis/users";
 import { useUserStore } from "@stores/userStore";
 import * as S from "./index.styles";
 
 export default function KakaoBridge() {
   const navigate = useNavigate();
   const currentRole = useUserStore((s) => s.currentRole);
-
   const qs = useMemo(() => new URLSearchParams(window.location.search), []);
   const code = qs.get("code");
   const state = qs.get("state");
 
-  const { status, progress, token } = useKakaoExchange(code, state);
+  const { status, progress, token, nextPath } = useKakaoExchange(code, state);
 
-  const doneRef = useRef(false);
+  const jumpedRef = useRef(false);
 
   useEffect(() => {
-    if (status !== "success") return;
-    if (!token) return;
-    if (doneRef.current) return;
-    doneRef.current = true;
+    if (!nextPath || jumpedRef.current) return;
+    jumpedRef.current = true;
 
     (async () => {
-      try {
-        if (currentRole) {
-          await setUserRole(currentRole);
-        }
-      } catch (e) {
-        console.error("setUserRole 실패(진행 계속):", e);
-      } finally {
+      if (status !== "role_mismatch") {
         window.history.replaceState(null, "", location.pathname);
-        navigate("/register", { replace: true });
+        navigate(nextPath, { replace: true });
       }
     })();
-  }, [status, token, currentRole, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextPath, status, token, currentRole]);
+
+  // role 불일치 시 자동으로 메인 페이지로 이동
+  useEffect(() => {
+    if (status === "role_mismatch" && !jumpedRef.current) {
+      jumpedRef.current = true;
+      const timer = setTimeout(() => {
+        window.history.replaceState(null, "", location.pathname);
+        navigate("/", { replace: true });
+      }, 3000); // 3초 후 자동 이동
+
+      return () => clearTimeout(timer);
+    }
+  }, [status, navigate]);
 
   const isError = status === "error";
+  const isRoleMismatch = status === "role_mismatch";
 
   return (
     <S.Wrap role="status" aria-live="polite">
@@ -52,20 +57,19 @@ export default function KakaoBridge() {
         <S.Title>
           {isError
             ? "로그인 처리 중 문제가 발생했어요"
+            : isRoleMismatch
+            ? "이미 다른 역할로 가입된 계정입니다"
             : "카카오 로그인 처리 중…"}
         </S.Title>
-        <S.Hint>창을 닫지 말고 잠시만 기다려주세요.</S.Hint>
-        <S.Row>
-          <S.GhostButton onClick={() => navigate("/", { replace: true })}>
-            홈으로
-          </S.GhostButton>
-          <S.PrimaryButton
-            disabled={!isError && status !== "success"}
-            onClick={() => (window.location.href = "/register")}
-          >
-            회원가입 계속
-          </S.PrimaryButton>
-        </S.Row>
+        <S.Hint>
+          {isRoleMismatch
+            ? "이미 다른 역할로 회원가입이 되어있습니다. 시작 페이지로 이동합니다."
+            : "창을 닫지 말고 잠시만 기다려주세요."}
+        </S.Hint>
+
+        <S.GhostButton onClick={() => navigate("/", { replace: true })}>
+          {isRoleMismatch ? "시작 페이지로" : "홈으로"}
+        </S.GhostButton>
       </S.Card>
     </S.Wrap>
   );

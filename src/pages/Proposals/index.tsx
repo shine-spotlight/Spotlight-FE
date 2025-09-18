@@ -1,37 +1,20 @@
 import React, { useMemo, useState } from "react";
-import { useUserStore } from "@stores/userStore";
 import * as S from "./index.styles";
-import { dummyArtistProposalData, dummySpaceProposalData } from "./data";
 import { ProposalCardCol, ProposalsTabs, StatusFilter } from "./components";
-
-import type { ProposalsTab, StatusFilterType } from "./types";
 import { STATUS_FILTERS } from "./constants";
-import { filterByStatusLabel } from "./utils/filterByStatusLabel";
+import type { ProposalsTab, StatusFilterType } from "./types";
+import { filterSuggestionByStatusLabel } from "./utils/filterByStatusLabel";
+import { useSuggestionsOverview } from "@queries/suggestions";
 
 const Proposals: React.FC = () => {
-  const role = useUserStore((p) => p.currentRole);
-
   const [tab, setTab] = useState<ProposalsTab>("received");
-
   const [statusFilter, setStatusFilter] = useState<StatusFilterType>("전체");
 
-  const { sentList, receivedList } = useMemo(() => {
-    if (role === "artist") {
-      return {
-        sentList: dummySpaceProposalData, // 아티스트가 보낸(공간에게)
-        receivedList: dummyArtistProposalData, // 아티스트가 받은(공간으로부터)
-      };
-    }
-    return {
-      sentList: dummySpaceProposalData, // 공간이 보낸
-      receivedList: dummyArtistProposalData, // 공간이 받은
-    };
-  }, [role]);
+  const { sent, received } = useSuggestionsOverview();
 
-  const baseList = tab === "sent" ? sentList : receivedList;
-
+  const baseList = tab === "sent" ? sent : received;
   const filteredList = useMemo(
-    () => filterByStatusLabel(baseList, statusFilter),
+    () => filterSuggestionByStatusLabel(baseList, statusFilter),
     [baseList, statusFilter]
   );
 

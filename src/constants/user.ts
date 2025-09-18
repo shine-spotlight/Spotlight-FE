@@ -1,4 +1,4 @@
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 
 export const USER_ROLE_TYPES = [
   "artist",

@@ -31,7 +31,7 @@ function Root({
   children,
   onClick,
   variant = "vertical",
-  thumbCol = 120,
+  thumbCol = 200,
 }: RootProps) {
   if (variant === "horizontal") {
     return (
@@ -56,7 +56,19 @@ function Grid({ children }: { children: React.ReactNode }) {
 }
 
 function Image({ src, alt = "이미지" }: { src: string; alt?: string }) {
-  return <S.Image src={src} alt={alt} />;
+  const defaultImageUrl = "/defaultImage.png";
+  const [imgSrc, setImgSrc] = React.useState(src || defaultImageUrl);
+  return (
+    <S.Image
+      src={imgSrc}
+      alt={alt}
+      onError={() => {
+        if (imgSrc !== defaultImageUrl) {
+          setImgSrc(defaultImageUrl);
+        }
+      }}
+    />
+  );
 }
 
 function Title({ children }: { children: React.ReactNode }) {

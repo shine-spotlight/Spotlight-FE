@@ -5,7 +5,7 @@ import regionsData from "@assets/json/region.json";
 type Sido = {
   code: string;
   name: string;
-  sigungu: string[];
+  sgg: string[];
 };
 
 export type RegionValue = {
@@ -95,7 +95,7 @@ const RegionPicker: React.FC<Props> = ({
             {isSelected(activeSido.name, undefined) && <S.Check>✓</S.Check>}
           </S.SggItem>
 
-          {activeSido.sigungu.map((g) => (
+          {activeSido.sgg.map((g) => (
             <S.SggItem
               key={g}
               type="button"

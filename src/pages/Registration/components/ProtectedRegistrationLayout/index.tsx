@@ -1,5 +1,6 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import * as S from "./index.styles";
+import { useEffect } from "react";
 import { useRegistrationDraftStore } from "@stores/registrationStore";
 import { useAuthStore } from "@stores/authStore";
 import {
@@ -19,10 +20,16 @@ export default function ProtectedRegistrationLayout() {
   const isArtist = draft?.role === "artist";
   const steps = isArtist ? ARTIST_STEP_ORDER : SPACE_STEP_ORDER;
 
-  if (!verified) {
-    return <Navigate to="/register/verify" replace />;
-  }
-  if (!draft) return <Navigate to="/home" replace />;
+  useEffect(() => {
+    if (!verified) {
+      navigate("/register/verify", { replace: true });
+      return;
+    }
+    // draft가 없을 때는 RegisterIndexRedirect에서 처리하도록 제거
+  }, [verified, navigate]);
+
+  // 리다이렉트 중일 때 깜빡임 방지용 최소 UI
+  if (!verified || !draft) return null;
 
   return (
     <S.Container>

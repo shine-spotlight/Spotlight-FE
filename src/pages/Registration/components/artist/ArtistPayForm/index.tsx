@@ -9,7 +9,12 @@ import { ARTIST_STEP_MESSAGES } from "@pages/Registration/constants/messages";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
 import { setArtistInfo } from "@apis/artists";
 import NumberStepper from "../../NumberStepper";
+import CheckOption from "../../CheckOption";
 import { buildArtistInfoFromSteps } from "@pages/Registration/utils";
+import { toCamelCase } from "@utils/caseConvert";
+import { setUserPhone } from "@apis/users";
+import type { ArtistDetailResponse } from "@models/artist/artist.dto";
+import type { ArtistProfile } from "@models/artist/artist.type";
 
 function ArtistPayForm() {
   const draft = useRegistrationDraftStore((s) => s.draft);
@@ -30,11 +35,19 @@ function ArtistPayForm() {
     saveCurrent(form);
     submitAll(async () => {
       const cur = getDraft().draft;
-      if (!cur || cur.role !== "artist")
+      if (!cur || cur.role !== "artist") {
         throw new Error("등록 진행 상태가 유효하지 않습니다.");
+      }
 
       const dto = buildArtistInfoFromSteps(cur.data);
-      await setArtistInfo(dto);
+      await setUserPhone(dto.phone_number);
+
+      const savedProfile = await setArtistInfo(dto);
+      const profile = toCamelCase<ArtistDetailResponse, ArtistProfile>(
+        savedProfile
+      );
+      // role 필드 추가
+      return { ...profile, role: "artist" as const };
     });
   }, [form, saveCurrent, submitAll, getDraft]);
 
@@ -58,6 +71,11 @@ function ArtistPayForm() {
             unit="만 원"
           />
         </FormSection>
+        <CheckOption
+          label="무료 공연이 가능합니다"
+          checked={form.isFreeAllowed}
+          onChange={(next) => setForm((p) => ({ ...p, isFreeAllowed: next }))}
+        />
       </S.ContentContainer>
       <ActionFooter
         variant="double"

@@ -45,7 +45,7 @@ export default function ArtistFilterSheet({
       <FilterSheet.Section title="희망 페이">
         <FilterSheet.PayRange
           min={0}
-          max={1_000_000}
+          max={1_000}
           value={value.payRange}
           freeOnly={value.freeOnly}
           onToggleFreeOnly={(freeOnly) => onChange({ ...value, freeOnly })}

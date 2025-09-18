@@ -4,16 +4,21 @@ import { ArtistCardGrid } from "./components";
 import { Filter } from "@components/Filter";
 import type { ArtistFilterType } from "./types";
 import ArtistFilterSheet from "./components/ArtistFilterSheet";
+import { useArtistsQuery } from "@queries/artists";
 import * as S from "./index.styles";
+import { useGlobalLoading } from "@hooks/useGlobalLoading";
 
 const defaultFilter: ArtistFilterType = {
   regions: [],
   eventTypes: [],
-  payRange: [0, 1000000],
+  payRange: [0, 1000],
   freeOnly: false,
 };
 
 const Artists: React.FC = () => {
+  const { data, isLoading } = useArtistsQuery();
+  useGlobalLoading(isLoading, "공연 예술가 목록을 불러오는 중입니다...");
+
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<ArtistFilterType>(defaultFilter);
 
@@ -50,7 +55,7 @@ const Artists: React.FC = () => {
           onReset={handleReset}
           onApply={handleApply}
         />
-        <ArtistCardGrid />
+        <ArtistCardGrid artist={data ?? []} />
       </S.Container>
     </>
   );

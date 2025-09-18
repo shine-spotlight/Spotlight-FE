@@ -1,24 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import styled from "@emotion/styled";
+import { AnimatePresence } from "framer-motion";
 import * as S from "./index.styles";
-
-const MotionSheet = styled(motion.section)`
-  position: relative;
-  z-index: 10000;
-  width: 100%;
-  max-width: 500px;
-  background: ${({ theme }) => theme.color.background.surface};
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.24);
-  max-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overscroll-behavior: contain;
-  touch-action: none;
-  will-change: transform;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
-`;
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -46,6 +28,9 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const justOpenedRef = useRef(false);
   const draggingRef = useRef(false);
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
+    null
+  );
 
   const calculatedHeight = useMemo(() => {
     // 최대 높이 제한 (화면의 80% 이하로 제한)
@@ -113,7 +98,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     justOpenedRef.current = true;
     setTimeout(() => {
       justOpenedRef.current = false;
-    }, 300); // 300ms 후에 플래그 해제
+    }, 500); // 500ms 후에 플래그 해제
 
     return () => {
       document.body.style.overflow = prev;
@@ -127,9 +112,45 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     return () => window.removeEventListener("keydown", h);
   }, [isOpen, onClose]);
 
-  const handleOverlayDown = () => {
-    if (justOpenedRef.current) return; // 열자마자 닫힘 방지
-    if (draggingRef.current) return; // 드래그 중 닫힘 방지
+  // 터치 시작 처리
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (justOpenedRef.current) return;
+    if (draggingRef.current) return;
+
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now(),
+    };
+  };
+
+  // 터치 종료 처리
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+    if (justOpenedRef.current) return;
+    if (draggingRef.current) return;
+
+    const touch = e.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    const deltaTime = Date.now() - touchStartRef.current.time;
+
+    // 터치가 너무 짧거나 움직임이 크면 무시 (스크롤이나 드래그로 판단)
+    if (deltaTime < 100 || deltaX > 10 || deltaY > 10) {
+      touchStartRef.current = null;
+      return;
+    }
+
+    // 정적인 터치 (클릭으로 판단)만 닫기 처리
+    onClose();
+    touchStartRef.current = null;
+  };
+
+  // 마우스 다운 처리 (데스크톱용)
+  const handleMouseDown = () => {
+    if (justOpenedRef.current) return;
+    if (draggingRef.current) return;
     onClose();
   };
 
@@ -162,9 +183,11 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
-            onMouseDown={handleOverlayDown}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           />
-          <MotionSheet
+          <S.MotionSheet
             initial={{ y: closedY, opacity: 0 }} // 아래에서 등장
             animate={{ y: openY, opacity: 1 }} // 첫 스냅으로
             exit={{ y: closedY, opacity: 0 }} // 아래로 퇴장
@@ -181,12 +204,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             onDragEnd={handleDragEnd}
             onClick={(e: React.MouseEvent) => e.stopPropagation()}
             onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
+            onTouchStart={(e: React.TouchEvent) => e.stopPropagation()}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "20px",
-              padding: "0 20px",
               maxHeight: vh * 0.8,
             }}
             onPointerDownCapture={(e) => {
@@ -200,7 +219,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             {title ? <S.Header>{title}</S.Header> : null}
             <S.Content ref={contentRef}>{children}</S.Content>
             {footer ? <S.Footer>{footer}</S.Footer> : null}
-          </MotionSheet>
+          </S.MotionSheet>
         </S.Wrap>
       )}
     </AnimatePresence>

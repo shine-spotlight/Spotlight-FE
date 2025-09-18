@@ -89,7 +89,7 @@ type PayRangeProps = {
 function RangeSlider({
   min,
   max,
-  step = 1000,
+  step = 1,
   value,
   onChange,
 }: {
@@ -108,7 +108,7 @@ function RangeSlider({
   return (
     <S.Wrap data-nodrag>
       <S.Label>
-        {lo.toLocaleString()}원 ~ {hi.toLocaleString()}원
+        {lo.toLocaleString()}만 원 ~ {hi.toLocaleString()}만 원
       </S.Label>
 
       <S.Track

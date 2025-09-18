@@ -28,7 +28,8 @@
       "@styles/*": ["src/styles/*"],
       "@stores/*": ["src/stores/*"],
       "@routes/*": ["src/routes/*"],
-      "@guards/*": ["src/guards/*"]
+      "@guards/*": ["src/guards/*"],
+      "@models/*": ["src/models/*"]
     },
 
     /* Linting */

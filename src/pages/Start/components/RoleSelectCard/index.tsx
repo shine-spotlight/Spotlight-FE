@@ -1,5 +1,5 @@
 import * as S from "./index.styles";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 import { ArtistRoleIcon, SpaceRoleIcon } from "@assets/svg/role";
 import { useNavigate } from "react-router-dom";
 import { useRegistrationDraftStore } from "@/stores/registrationStore";

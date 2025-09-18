@@ -9,6 +9,7 @@ import { SPACE_STEP } from "@pages/Registration/types/steps";
 import type { SpaceVenueBasicPayload } from "@pages/Registration/types/payloads";
 import { useRegistrationStepNav } from "@pages/Registration/hooks/useRegistrationStepNav";
 import { EQUIPMENT_CATEGORIES, SPACE_CATEGORIES } from "@constants/categories";
+import CheckOption from "@pages/Registration/components/CheckOption";
 import { AmbienceInput } from "../../AmbienceInput";
 import NumberStepper from "../../NumberStepper";
 
@@ -24,7 +25,7 @@ export default function SpaceVenueBasicForm() {
       : undefined;
 
   const [form, setForm] = useState<SpaceVenueBasicPayload>({
-    placeImage: initial?.placeImage ?? "",
+    placeImage: initial?.placeImage ?? null,
     description: initial?.description ?? "",
     categories: initial?.categories ?? [],
     atmosphere: initial?.atmosphere ?? [],
@@ -34,7 +35,7 @@ export default function SpaceVenueBasicForm() {
     equipments: initial?.equipments ?? [],
   });
 
-  const canNext =
+  const ready =
     form.description.trim().length > 0 &&
     form.categories.length > 0 &&
     form.capacitySeated >= 0 &&
@@ -57,10 +58,8 @@ export default function SpaceVenueBasicForm() {
           helper="공간을 촬영한 사진을 업로드 해주세요."
         >
           <ProfileAvatarPicker
-            value={form.placeImage || null}
-            onChange={(url) =>
-              setForm((p) => ({ ...p, placeImage: url ?? "" }))
-            }
+            value={form.placeImage}
+            onChange={(file) => setForm((p) => ({ ...p, placeImage: file }))}
             size={220}
           />
         </FormSection>
@@ -78,29 +77,17 @@ export default function SpaceVenueBasicForm() {
             rows={5}
           />
         </FormSection>
-        <FormSection title="공간 카테고리" helper="하나만 선택 가능합니다.">
+        <FormSection title="공간 카테고리" helper="다중 선택이 가능합니다.">
           <SelectChipsGroup
             items={SPACE_CATEGORIES}
             selected={form.categories}
-            max={1}
             onChange={(categories) => setForm((p) => ({ ...p, categories }))}
           />
-          <S.Checkbox>
-            <input
-              id="free-only"
-              type="checkbox"
-              checked={form.isOkayNoise}
-              onChange={(e) =>
-                setForm((p) => ({
-                  ...p,
-                  isOkayNoise: e.target.checked,
-                }))
-              }
-            />
-            <label htmlFor="free-only">
-              마이크/스피커를 사용한 공연이 가능합니다.
-            </label>
-          </S.Checkbox>
+          <CheckOption
+            label="마이크/스피커를 사용한 공연이 가능합니다."
+            checked={form.isOkayNoise}
+            onChange={(next) => setForm((p) => ({ ...p, isOkayNoise: next }))}
+          />
         </FormSection>
 
         <FormSection title="공간 분위기" helper="최대 5개 입력이 가능합니다.">
@@ -156,7 +143,7 @@ export default function SpaceVenueBasicForm() {
         prevLabel="이전"
         nextLabel="다음"
         prevDisabled={false}
-        nextDisabled={!canNext}
+        nextDisabled={!ready}
         onPrev={onPrev}
         onNext={onNext}
       />

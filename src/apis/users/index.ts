@@ -1,6 +1,6 @@
 import { sendRequest } from "@apis/api";
 import { userInstance } from "@apis/instance";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 
 const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID!;
 const KAKAO_REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
@@ -8,6 +8,9 @@ const STATE_KEY = "kakao_oauth_state";
 
 export type KakaoLoginResponse = {
   accessToken: string;
+  isOnboarding: boolean;
+  is_artistonboarding: boolean | null;
+  is_spaceonboarding: boolean | null;
   user: {
     id: number;
     kakao_id: string;
@@ -56,4 +59,9 @@ export function setUserPhone(phoneNumber: string) {
   return sendRequest(userInstance, "POST", "/phone/", {
     phone_number: phoneNumber,
   });
+}
+
+// 내 정보 조회
+export function getUserInfo() {
+  return sendRequest<KakaoLoginResponse>(userInstance, "GET", "/me/");
 }

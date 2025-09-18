@@ -1,6 +1,6 @@
 import * as S from "../../index.styles";
 import { USER_ROLE_TYPE_LABELS } from "@constants/user";
-import type { UserRoleType } from "@types";
+import type { UserRoleType } from "@models/user/user.type";
 import { ArtistRoleIcon, SpaceRoleIcon } from "@assets/svg/role";
 import { ChargeIcon, ListIcon } from "@assets/svg/mypage";
 

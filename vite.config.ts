@@ -41,6 +41,7 @@ export default defineConfig({
       "@stores": path.resolve(__dirname, "./src/stores"),
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@guards": path.resolve(__dirname, "./src/guards"),
+      "@models": path.resolve(__dirname, "./src/models"),
     },
   },
 });
