@@ -1,24 +1,36 @@
 import * as S from "./index.styles";
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Topbar } from "@components/Topbar";
 import { ProfileDetail } from "@components/ProfileDetail";
 import ActionFooter from "@components/ActionFooter";
 import { useNavigate } from "react-router-dom";
-import { mockAnnouncements } from "./data";
 import { SpaceRoleIcon } from "@assets/svg/role";
 import { useBottomSheet } from "@hooks/useBottomSheet";
 import ProposalSheet from "@components/ProposalSheet";
 import ConfirmModal from "@components/ConfirmModal";
 import ProposalSuccessModal from "@components/ProposalSuccessModal";
-import { useState } from "react";
-
+import { usePostingDetailQuery } from "@queries/postings";
+import { useState, useEffect } from "react";
+import { useGlobalLoading } from "@hooks/useGlobalLoading";
+import { formatDate } from "@utils/formatDate";
 const AnnouncementDetail = () => {
-  // const { id } = useParams();
-  const announcementDetail = mockAnnouncements[0];
+  const { id } = useParams<{ id: string }>();
+  const { data: announcementDetail, isLoading } = usePostingDetailQuery(
+    Number(id)
+  );
+  useGlobalLoading(isLoading, "공연 공고를 조회중입니다...");
   const navigate = useNavigate();
   const { isOpen, open, close } = useBottomSheet();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && !announcementDetail) {
+      navigate("/404", { replace: true });
+    }
+  }, [isLoading, announcementDetail, navigate]);
+
+  if (!announcementDetail) return null;
 
   return (
     <>
@@ -33,24 +45,18 @@ const AnnouncementDetail = () => {
             <S.BriefContent>
               <S.Title>{announcementDetail.title}</S.Title>
               <S.CreateAt>
-                {announcementDetail.created_at.toLocaleString("ko-KR", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {formatDate(announcementDetail.createdAt)}
               </S.CreateAt>
             </S.BriefContent>
             <S.GotoButton
-              onClick={() => navigate(`/spaces/${announcementDetail.space_id}`)}
+              onClick={() => navigate(`/spaces/${announcementDetail.spaceId}`)}
             >
               바로가기
             </S.GotoButton>
           </S.BriefProfile>
 
           <ProfileDetail.Section title="공연 카테고리">
-            <ProfileDetail.Tags items={announcementDetail.categories} />
+            <ProfileDetail.Tags items={announcementDetail.categoryNames} />
           </ProfileDetail.Section>
 
           <ProfileDetail.Section title="상세 정보">
@@ -58,34 +64,30 @@ const AnnouncementDetail = () => {
               icon="pay"
               label="공연 페이"
               content={`${
-                announcementDetail.price_amount
-                  ? announcementDetail.price_amount
-                  : 0
-              }만 원`}
+                announcementDetail.priceType == "free"
+                  ? "무료 공연"
+                  : announcementDetail.priceType == "negotiable"
+                  ? "협의 가능"
+                  : `${announcementDetail.priceAmount}만 원`
+              }`}
             />
             <ProfileDetail.IconContent
               icon="calendar"
               label="공연 날짜"
-              content={announcementDetail.date.toLocaleString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              content={announcementDetail.date}
             />
             <ProfileDetail.IconContent
               icon="place"
               label="주소"
-              content={
-                announcementDetail.address ? announcementDetail.address : ""
-              }
+              content={announcementDetail.spaceAddress}
             />
           </ProfileDetail.Section>
           <ProfileDetail.Section title="공연 설명">
             {announcementDetail.description}
           </ProfileDetail.Section>
-          <ProfileDetail.Poster image="https://otr.co.kr/wp-content/uploads/mangboard/2022/12/20/F129154_%5B%ED%8F%AC%EC%8A%A4%ED%84%B0%5D2023_%EC%83%81%EC%83%81%EA%B7%B9%EC%9E%A5%20%EC%A0%95%EA%B8%B0%EA%B3%B5%EC%97%B0%20%EA%B3%B5%EB%AA%A8%20%282%29.jpg" />
+          <ProfileDetail.Poster
+            image={announcementDetail.postingImageUrl ?? ""}
+          />
         </ProfileDetail>
 
         <ActionFooter

@@ -7,6 +7,7 @@ export const Container = styled.div`
   gap: 16px;
   padding: 20px;
   border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
+  cursor: pointer;
 `;
 
 export const ImageContainer = styled.div`

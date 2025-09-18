@@ -1,7 +1,11 @@
 import * as S from "./index.styles";
+import React from "react";
 import { CalendarIcon, CategoryIcon, PlaceIcon } from "@assets/svg/common";
-import type { AnnouncementItemType } from "@pages/Announcements/types";
 import { timeAgo } from "@utils/timeAgo";
+import type { Posting } from "@models/posting/posting.type";
+import { formatDate } from "@utils/formatDate";
+import { printList } from "@utils/printList";
+import { useNavigate } from "react-router-dom";
 
 type IconKind = "category" | "calendar" | "place";
 
@@ -12,23 +16,40 @@ const iconMap: Record<IconKind, React.FC<React.SVGProps<SVGSVGElement>>> = {
 };
 
 interface AnnouncementCardProps {
-  announcement: AnnouncementItemType;
+  announcement: Posting;
 }
 
 export const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
+  const navigate = useNavigate();
+  const defaultImageUrl = "/defaultImage.png";
+  const [imgSrc, setImgSrc] = React.useState(
+    announcement.postingImageUrl || defaultImageUrl
+  );
+
   return (
-    <S.Container>
+    <S.Container onClick={() => navigate(`/announcements/${announcement.id}`)}>
       <S.ImageContainer>
-        <img src={announcement.posting_image_url} alt={announcement.title} />
+        <img
+          src={imgSrc}
+          alt={announcement.title}
+          onError={() => {
+            if (imgSrc !== defaultImageUrl) {
+              setImgSrc(defaultImageUrl);
+            }
+          }}
+        />
+        //
       </S.ImageContainer>
       <S.ContentContainer>
         <S.Title>{announcement.title}</S.Title>
         <IconContent type="category">
-          {announcement.categories.join(", ")}
+          {printList(announcement.categoryNames)}
         </IconContent>
-        <IconContent type="calendar">{announcement.date}</IconContent>
-        <IconContent type="place">{announcement.address}</IconContent>
-        <S.Time>{timeAgo(announcement.created_at)}</S.Time>
+        <IconContent type="calendar">
+          {formatDate(announcement.date)}
+        </IconContent>
+        <IconContent type="place">{announcement.spaceAddress}</IconContent>
+        <S.Time>{timeAgo(announcement.createdAt)}</S.Time>
       </S.ContentContainer>
     </S.Container>
   );
