@@ -27,7 +27,7 @@ const Proposals: React.FC = () => {
           value={statusFilter}
           onChange={setStatusFilter}
         />
-        <ProposalCardCol items={filteredList} onItemClick={() => {}} />
+        <ProposalCardCol items={filteredList} kind={tab} />
       </S.Page>
     </>
   );

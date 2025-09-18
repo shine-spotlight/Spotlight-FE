@@ -4,6 +4,7 @@ import type {
   SuggestionPostRequest,
   SuggestionDetailResponse,
   SuggestionListResponse,
+  SuggestionPhoneNumberResponse,
 } from "@models/suggestion/suggestion.dto";
 
 // suggestion 생성
@@ -31,5 +32,32 @@ export function getSentSuggestionList() {
     suggestingInstance,
     "GET",
     "/sent/"
+  );
+}
+
+// 제안 수락
+export function acceptSuggestion(id: number) {
+  return sendRequest<SuggestionDetailResponse>(
+    suggestingInstance,
+    "PATCH",
+    `/${id}/accept/`
+  );
+}
+
+// 제안 거절
+export function rejectSuggestion(id: number) {
+  return sendRequest<SuggestionDetailResponse>(
+    suggestingInstance,
+    "PATCH",
+    `/${id}/reject/`
+  );
+}
+
+// 제안 수락 이후 휴대폰 번호 받아오기
+export function getPhoneNumber(id: number) {
+  return sendRequest<SuggestionPhoneNumberResponse>(
+    suggestingInstance,
+    "GET",
+    `/${id}/share-phone/`
   );
 }
