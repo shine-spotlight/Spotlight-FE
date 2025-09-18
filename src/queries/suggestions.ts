@@ -1,14 +1,27 @@
-import { useQueries, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQueries,
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   getSentSuggestionList,
   getReceivedSuggestionList,
   postSuggestion,
+  acceptSuggestion,
+  rejectSuggestion,
+  getPhoneNumber,
 } from "@apis/suggestions";
-import type {
-  SuggestionListResponse,
-  SuggestionPostRequest,
+import {
+  type SuggestionListResponse,
+  type SuggestionPostRequest,
+  type SuggestionDetailResponse,
+  type SuggestionPhoneNumberResponse,
 } from "@models/suggestion/suggestion.dto";
-import type { Suggestion } from "@models/suggestion/suggestion.type";
+import type {
+  Suggestion,
+  SuggestionPhoneNumber,
+} from "@models/suggestion/suggestion.type";
 import { toCamelCase } from "@utils/caseConvert";
 import { pointsKeys } from "./points";
 import { useUserStore } from "@stores/userStore";
@@ -16,6 +29,7 @@ import { useUserStore } from "@stores/userStore";
 export const suggestionsKeys = {
   sent: ["suggestions", "sent"] as const,
   received: ["suggestions", "received"] as const,
+  phone: (id: number) => ["suggestions", "phone", id] as const,
 };
 
 export function useSuggestionsOverview() {
@@ -27,6 +41,7 @@ export function useSuggestionsOverview() {
           const res = await getSentSuggestionList();
           return toCamelCase<SuggestionListResponse, Suggestion[]>(res);
         },
+
         staleTime: 60_000,
       },
       {
@@ -35,6 +50,7 @@ export function useSuggestionsOverview() {
           const res = await getReceivedSuggestionList();
           return toCamelCase<SuggestionListResponse, Suggestion[]>(res);
         },
+
         staleTime: 60_000,
       },
     ],
@@ -114,4 +130,48 @@ export function useSuggestToSpaceMutation(spaceId: number) {
   };
 
   return { ...base, suggest };
+}
+
+export function useAcceptSuggestionMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await acceptSuggestion(id);
+      const list = toCamelCase<SuggestionDetailResponse, Suggestion>(res);
+
+      const phone = list.receiverPhone ?? null;
+      return phone;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: suggestionsKeys.received });
+    },
+  });
+}
+
+export function useRejectSuggestionMutation(id: number) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => rejectSuggestion(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: suggestionsKeys.received });
+    },
+  });
+}
+
+export function useSuggestionPhoneQuery(
+  id: number,
+  options?: { enabled?: boolean }
+) {
+  return useQuery<SuggestionPhoneNumber, Error>({
+    queryKey: suggestionsKeys.phone(id),
+    queryFn: async () => {
+      const res = await getPhoneNumber(id);
+      return toCamelCase<SuggestionPhoneNumberResponse, SuggestionPhoneNumber>(
+        res
+      );
+    },
+    enabled: !!id && !!options?.enabled,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
 }

@@ -30,7 +30,7 @@ export default function ImageUploader({
           <S.ImageUploadInput
             id="image-upload"
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg"
             onChange={onImageChange}
           />
         </S.ImageUploadArea>

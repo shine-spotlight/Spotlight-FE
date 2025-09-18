@@ -1,12 +1,13 @@
 import { FilterSheet } from "@/components/FilterSheet";
 import { EVENT_CATEGORIES } from "@constants/categories";
-import type { ArtistFilterType } from "@pages/Artists/types";
+import type { ArtistFilter } from "@models/artist/artist.type";
+import type { RegionValue } from "@/types";
 
 type ArtistFilterSheetProps = {
   isOpen: boolean;
   onClose: () => void;
-  value: ArtistFilterType;
-  onChange: (next: ArtistFilterType) => void;
+  value: ArtistFilter;
+  onChange: (next: ArtistFilter) => void;
   onReset: () => void;
   onApply: () => void;
 };
@@ -19,6 +20,8 @@ export default function ArtistFilterSheet({
   onReset,
   onApply,
 }: ArtistFilterSheetProps) {
+  const formatRegionKey = (v: RegionValue) =>
+    v.sigungu ? `${v.sido} ${v.sigungu}` : `${v.sido}`;
   return (
     <FilterSheet
       isOpen={isOpen}
@@ -29,16 +32,22 @@ export default function ArtistFilterSheet({
     >
       <FilterSheet.Section title="지역 필터링">
         <FilterSheet.RegionSelector
-          value={value.regions}
-          onChange={(regions) => onChange({ ...value, regions })}
+          value={value.regions ?? []}
+          onChange={(regions) => {
+            onChange({
+              ...value,
+              regions,
+              region: regions.map(formatRegionKey),
+            });
+          }}
         />
       </FilterSheet.Section>
 
       <FilterSheet.Section title="행사 형태">
         <FilterSheet.Chips
           items={EVENT_CATEGORIES}
-          selected={value.eventTypes}
-          onChange={(next) => onChange({ ...value, eventTypes: next })} // 배열 전체 반영
+          selected={value.categories ?? []}
+          onChange={(categories) => onChange({ ...value, categories })}
         />
       </FilterSheet.Section>
 
@@ -46,10 +55,10 @@ export default function ArtistFilterSheet({
         <FilterSheet.PayRange
           min={0}
           max={1_000}
-          value={value.payRange}
-          freeOnly={value.freeOnly}
-          onToggleFreeOnly={(freeOnly) => onChange({ ...value, freeOnly })}
-          onChange={(payRange) => onChange({ ...value, payRange })}
+          value={[value.payMin ?? 0, value.payMax ?? 1000]}
+          onChange={([payMin, payMax]) =>
+            onChange({ ...value, payMin, payMax })
+          }
         />
       </FilterSheet.Section>
     </FilterSheet>

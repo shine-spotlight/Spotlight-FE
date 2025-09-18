@@ -54,7 +54,6 @@ const ArtistDetail = () => {
         <ProfileDetail.Header
           title={data.name}
           description={data.bio}
-          categories={data.categoriesDisplay}
           isStar={liked}
           onToggle={toggle}
           disabled={likeIsPending}

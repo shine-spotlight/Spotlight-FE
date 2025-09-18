@@ -8,7 +8,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  gap: 12px;
+  gap: 16px;
   cursor: pointer;
   width: 100%;
 `;
@@ -18,15 +18,15 @@ export const WideContainer = styled.div`
   box-shadow: ${({ theme }) => theme.shadow.sm};
   border-radius: 10px;
   padding: 12px;
-  display: grid;
-  grid-template-columns: 200px 1fr;
+  display: flex;
+  flex-direction: row;
   gap: 16px;
   align-items: center;
   cursor: pointer;
   width: 100%;
-
-  > * {
+  > *:last-child {
     min-width: 0;
+    flex: 1 1 auto;
   }
 `;
 
@@ -35,7 +35,19 @@ export const Image = styled.img`
   border-radius: 8px;
   object-fit: cover;
   display: block;
-  width: 100%;
+  /* 기본: vertical 카드에서는 이미지가 가로를 꽉 채우도록 */
+  [data-variant="vertical"] & {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  /* horizontal 카드에서는 작은 썸네일로 고정(좌측) */
+  [data-variant="horizontal"] & {
+    flex: 0 0 auto;
+    width: 100px;
+    height: 100px;
+    aspect-ratio: auto;
+  }
 `;
 
 export const TitleText = styled.span`

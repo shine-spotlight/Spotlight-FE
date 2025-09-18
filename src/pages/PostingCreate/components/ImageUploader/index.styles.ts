@@ -20,7 +20,7 @@ export const ImageUploadInput = styled.input`
 export const ImagePreview = styled.div`
   position: relative;
   width: 100%;
-  height: 200px;
+  aspect-ratio: 1/1;
   border-radius: ${({ theme }) => theme.radius.sm};
   overflow: hidden;
   background-color: ${({ theme }) => theme.color.background.muted};

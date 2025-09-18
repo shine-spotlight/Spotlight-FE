@@ -3,10 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ActionFooter from "@components/ActionFooter";
 import type { PostingPost } from "@models/posting/posting.type";
 import { Topbar } from "@components/Topbar";
-import { postPosting } from "@apis/postings";
-import type { Posting } from "@models/posting/posting.type";
-import type { PostingDetailResponse } from "@models/posting/posting.dto";
-import { toCamelCase } from "@utils/caseConvert";
+import { usePostPostingMutation } from "@queries/postings";
 import { useGlobalLoading } from "@hooks/useGlobalLoading";
 import {
   PostingForm,
@@ -21,8 +18,8 @@ import ConfirmModal from "@components/ConfirmModal";
 
 export default function PostingCreate() {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  useGlobalLoading(isLoading, "공연 공고를 등록하는 중입니다...");
+  const { mutateAsync: createPosting, isPending } = usePostPostingMutation();
+  useGlobalLoading(isPending, "공연 공고를 등록하는 중입니다...");
 
   const [formData, setFormData] = useState<Partial<PostingPost>>({
     title: "",
@@ -50,6 +47,41 @@ export default function PostingCreate() {
     }
   };
 
+  const handlePriceAmountChange = (amount: number) => {
+    setFormData((prev) => {
+      const nextAmount = Number.isFinite(amount) ? amount : 0;
+      const nextType =
+        prev.priceType === "negotiable"
+          ? "negotiable"
+          : nextAmount > 0
+          ? "paid"
+          : "free";
+
+      return { ...prev, priceAmount: nextAmount, priceType: nextType };
+    });
+
+    if (errors.price_amount) {
+      setErrors((prev) => ({ ...prev, price_amount: "" }));
+    }
+  };
+
+  const handlePriceTypeChange = (type: "free" | "paid" | "negotiable") => {
+    setFormData((prev) => {
+      // 자식에서 협의 버튼만 토글하므로 type==="negotiable" 만 들어온다고 가정
+      if (type === "negotiable") {
+        const turningOff = prev.priceType === "negotiable";
+        if (turningOff) {
+          const amt = prev.priceAmount ?? 0;
+          return { ...prev, priceType: amt > 0 ? "paid" : "free" };
+        }
+        return { ...prev, priceType: "negotiable" };
+      }
+
+      const amt = prev.priceAmount ?? 0;
+      return { ...prev, priceType: amt > 0 ? "paid" : "free" };
+    });
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -75,8 +107,6 @@ export default function PostingCreate() {
     if (!formData.categories?.length)
       newErrors.categories = "카테고리를 선택해주세요.";
     if (!formData.date) newErrors.date = "날짜를 선택해주세요.";
-    if (formData.priceType === "paid" && !formData.priceAmount)
-      newErrors.price_amount = "가격을 입력해주세요.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -90,21 +120,14 @@ export default function PostingCreate() {
       description: formData.description!,
       postingImage: selectedImage!, // File
       categories: formData.categories!,
-      priceType: formData.priceType!,
-      priceAmount:
-        formData.priceType === "paid" ? formData.priceAmount : undefined,
+      priceType: formData.priceAmount ? "paid" : formData.priceType!,
+      priceAmount: formData.priceAmount,
       date: formData.date!, // Date
     };
 
-    try {
-      setIsLoading(true);
-      const savedPosting = await postPosting(payload);
-      const posting = toCamelCase<PostingDetailResponse, Posting>(savedPosting);
-      setSuccessPostingId(posting.id);
-      setIsSuccessOpen(true);
-    } finally {
-      setIsLoading(false);
-    }
+    const posting = await createPosting(payload);
+    setSuccessPostingId(posting.id);
+    setIsSuccessOpen(true);
   };
 
   const handleSuccessConfirm = () => {
@@ -140,10 +163,8 @@ export default function PostingCreate() {
             <PriceSelector
               priceType={formData.priceType ?? "free"}
               priceAmount={formData.priceAmount}
-              onPriceTypeChange={(type) => handleInputChange("priceType", type)}
-              onPriceAmountChange={(amount) =>
-                handleInputChange("priceAmount", amount)
-              }
+              onPriceTypeChange={handlePriceTypeChange}
+              onPriceAmountChange={handlePriceAmountChange}
             />
           </PostingForm.Section>
           <PostingForm.Section
@@ -167,7 +188,7 @@ export default function PostingCreate() {
         </PostingForm.Content>
         <ActionFooter
           nextLabel="등록하기"
-          nextDisabled={isLoading}
+          nextDisabled={isPending}
           onNext={handleSubmit}
         />
         <ConfirmModal
