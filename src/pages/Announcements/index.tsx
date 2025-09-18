@@ -3,8 +3,9 @@ import { useBottomSheet } from "@hooks/useBottomSheet";
 import { Filter } from "@components/Filter";
 import type { AnnouncementFilterType } from "./types";
 import { AnnouncementFilterSheet, AnnouncementCard } from "./components";
-import { dummyAnnouncements } from "./datas";
 import * as S from "./index.styles";
+import { usePostingListQuery } from "@queries/postings";
+import { useGlobalLoading } from "@hooks/useGlobalLoading";
 
 const defaultFilter: AnnouncementFilterType = {
   regions: [],
@@ -13,6 +14,9 @@ const defaultFilter: AnnouncementFilterType = {
 };
 
 const Announcements: React.FC = () => {
+  const { data, isLoading } = usePostingListQuery();
+  useGlobalLoading(isLoading, "공연 공고 목록을 불러오는 중입니다...");
+
   const sheet = useBottomSheet(false);
   const [filter, setFilter] = useState<AnnouncementFilterType>(defaultFilter);
 
@@ -45,9 +49,10 @@ const Announcements: React.FC = () => {
           onApply={handleApply}
         />
         <S.List>
-          {dummyAnnouncements.map((item, index) => {
-            return <AnnouncementCard key={index} announcement={item} />;
-          })}
+          {data &&
+            data.map((item, index) => {
+              return <AnnouncementCard key={index} announcement={item} />;
+            })}
         </S.List>
       </S.Container>
     </>

@@ -14,7 +14,7 @@ export function ArtistCardGrid({ artist }: ArtistCardGridProps) {
         <Card key={item.id} onClick={() => navigate(`/artists/${item.id}`)}>
           <Card.Image src={item.profileImageUrl ?? ""} alt={item.name} />
           <Card.Content>
-            <Card.StarIcon isStar={true} />
+            <Card.StarIcon isStar={item.isLiked ?? false} />
             <Card.Title>{item.name}</Card.Title>
             <Card.IconContent type="place">
               {printList(item.region)}
