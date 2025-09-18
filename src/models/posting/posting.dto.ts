@@ -1,5 +1,4 @@
 export type PostingDTO = {
-  space_id: number;
   title: string;
   description: string;
   posting_image: File;
