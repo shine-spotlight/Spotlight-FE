@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import * as path from "path";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
+import legacy from "@vitejs/plugin-legacy";
 
 export default defineConfig({
   plugins: [
@@ -11,6 +12,9 @@ export default defineConfig({
       svgrOptions: {
         icon: true,
       },
+    }),
+    legacy({
+      targets: ["defaults", "not IE 11"],
     }),
     react({
       plugins: [
