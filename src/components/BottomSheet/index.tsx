@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, useDragControls } from "framer-motion";
 import * as S from "./index.styles";
 
 interface BottomSheetProps {
@@ -28,9 +28,6 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const justOpenedRef = useRef(false);
   const draggingRef = useRef(false);
-  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
-    null
-  );
 
   const calculatedHeight = useMemo(() => {
     // 최대 높이 제한 (화면의 80% 이하로 제한)
@@ -112,51 +109,18 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     return () => window.removeEventListener("keydown", h);
   }, [isOpen, onClose]);
 
-  // 터치 시작 처리
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (justOpenedRef.current) return;
-    if (draggingRef.current) return;
-
-    const touch = e.touches[0];
-    touchStartRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: Date.now(),
-    };
-  };
-
-  // 터치 종료 처리
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStartRef.current) return;
-    if (justOpenedRef.current) return;
-    if (draggingRef.current) return;
-
-    const touch = e.changedTouches[0];
-    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
-    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
-    const deltaTime = Date.now() - touchStartRef.current.time;
-
-    // 터치가 너무 짧거나 움직임이 크면 무시 (스크롤이나 드래그로 판단)
-    if (deltaTime < 100 || deltaX > 10 || deltaY > 10) {
-      touchStartRef.current = null;
-      return;
-    }
-
-    // 정적인 터치 (클릭으로 판단)만 닫기 처리
-    onClose();
-    touchStartRef.current = null;
-  };
-
-  // 마우스 다운 처리 (데스크톱용)
-  const handleMouseDown = () => {
-    if (justOpenedRef.current) return;
-    if (draggingRef.current) return;
-    onClose();
-  };
-
   const handleDragStart = () => {
     draggingRef.current = true;
   };
+  const controls = useDragControls(); // ✅ 추가
+
+  // 그랩바에서만 드래그 시작
+  const onGrabberPointerDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    controls.start(e);
+  };
+
+  const handleOverlayClick = () => onClose();
 
   const handleDragEnd = (
     _: MouseEvent | TouchEvent | PointerEvent,
@@ -165,14 +129,12 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     const vy = info.velocity.y;
     const currentY = info.point.y;
 
-    const distanceFromOpen = currentY - openY;
-    const closeByDistance = distanceFromOpen > vh * 0.25;
-    const closeByVelocity = vy > 1200;
+    // 닫힘 임계치 완화 (오동작 줄이기)
+    const closeByVelocity = vy > 2000; // 기존 1200 → 2000
+    const closeByDistance = currentY > window.innerHeight * 0.35; // 거리 기준도 조금 완화
+    draggingRef.current = false;
 
-    if (currentY > closedY - 40 || closeByVelocity || closeByDistance) {
-      onClose();
-      return;
-    }
+    if (closeByVelocity || closeByDistance) onClose();
   };
 
   return (
@@ -183,9 +145,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
+            onClick={handleOverlayClick} // ✅ click만 사용
           />
           <S.MotionSheet
             initial={{ y: closedY, opacity: 0 }} // 아래에서 등장
@@ -193,6 +153,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             exit={{ y: closedY, opacity: 0 }} // 아래로 퇴장
             transition={{ type: "spring", stiffness: 380, damping: 36 }}
             drag="y"
+            dragControls={controls} // ✅ 추가
+            dragListener={false}
             dragConstraints={{
               top: 0,
               bottom: vh - calculatedHeight,
@@ -209,16 +171,15 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
               maxHeight: vh * 0.8,
             }}
             onPointerDownCapture={(e) => {
+              // 스크롤 가능한 곳에서의 드래그 시작 차단
               const el = e.target as HTMLElement;
-              if (el.closest("[data-nodrag]")) {
-                e.stopPropagation();
-              }
+              if (el.closest("[data-nodrag]")) e.stopPropagation();
             }}
           >
-            <S.Grabber />
+            <S.Grabber onPointerDown={onGrabberPointerDown} />
             {title ? <S.Header>{title}</S.Header> : null}
             <S.Content ref={contentRef}>{children}</S.Content>
-            {footer ? <S.Footer>{footer}</S.Footer> : null}
+            {footer ? <S.Footer data-nodrag>{footer}</S.Footer> : null}{" "}
           </S.MotionSheet>
         </S.Wrap>
       )}
