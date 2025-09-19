@@ -11,7 +11,7 @@ export interface ProposalSuccessModalProps {
 const ProposalSuccessModal: React.FC<ProposalSuccessModalProps> = ({
   isOpen,
   onClose,
-  deductedPoints = 100,
+  deductedPoints = 1000,
 }) => {
   return (
     <BaseModal
