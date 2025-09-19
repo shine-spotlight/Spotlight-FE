@@ -1,4 +1,4 @@
-import type { RegionValue } from "@components/RegionPicker";
+import type { RegionValue } from "@/types";
 
 export type ArtistBasicPayload = {
   name: string;
