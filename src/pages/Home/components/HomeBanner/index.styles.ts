@@ -22,12 +22,12 @@ export const SliderWrapper = styled.div<{
   img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 `;
 
 export const Slide = styled.div`
-  min-width: 100%;
+  width: 100%;
   height: 100%;
   flex-shrink: 0;
 `;
