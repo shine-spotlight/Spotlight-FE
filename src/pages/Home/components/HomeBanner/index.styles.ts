@@ -6,7 +6,7 @@ export const BannerContainer = styled.div`
   position: relative;
   overflow: hidden;
   aspect-ratio: 393/ 200;
-  width: 40%;
+  width: 100%;
 `;
 
 export const SliderWrapper = styled.div<{
@@ -22,7 +22,7 @@ export const SliderWrapper = styled.div<{
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 `;
 
