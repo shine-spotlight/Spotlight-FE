@@ -5,7 +5,8 @@ export const BannerContainer = styled.div`
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
-  height: 120px;
+  aspect-ratio: 393/ 200;
+  width: 100%;
 `;
 
 export const SliderWrapper = styled.div<{
