@@ -19,9 +19,14 @@ export const Footer = styled.div`
   gap: 12px;
 `;
 
-export const Button = styled.button<{ variant?: "primary" | "secondary" }>`
-  background: ${({ theme, variant }) =>
-    variant === "secondary"
+export const Button = styled.button<{
+  variant?: "primary" | "secondary";
+  isWithdraw?: boolean;
+}>`
+  background: ${({ theme, variant, isWithdraw }) =>
+    isWithdraw
+      ? theme.palette.red[500]
+      : variant === "secondary"
       ? theme.color.background.subtle
       : theme.color.brand.solid};
   color: ${({ theme, variant }) =>
@@ -34,15 +39,19 @@ export const Button = styled.button<{ variant?: "primary" | "secondary" }>`
   min-width: 80px;
 
   &:hover:not(:disabled) {
-    background: ${({ theme, variant }) =>
-      variant === "secondary"
+    background: ${({ theme, variant, isWithdraw }) =>
+      isWithdraw
+        ? theme.palette.red[600]
+        : variant === "secondary"
         ? theme.color.background.muted
         : theme.palette.sky[600]};
   }
 
   &:active:not(:disabled) {
-    background: ${({ theme, variant }) =>
-      variant === "secondary"
+    background: ${({ theme, variant, isWithdraw }) =>
+      isWithdraw
+        ? theme.palette.red[600]
+        : variant === "secondary"
         ? theme.color.background.muted
         : theme.palette.sky[600]};
   }

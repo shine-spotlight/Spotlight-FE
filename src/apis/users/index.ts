@@ -49,6 +49,11 @@ export async function exchangeCode(code: string) {
   );
 }
 
+// 로그아웃
+export function logout() {
+  return sendRequest<void>(userInstance, "POST", "/auth/kakao/logout/");
+}
+
 // role 저장 API
 export function setUserRole(role: UserRoleType) {
   return sendRequest(userInstance, "POST", "/type/", { role });
@@ -64,4 +69,9 @@ export function setUserPhone(phoneNumber: string) {
 // 내 정보 조회
 export function getUserInfo() {
   return sendRequest<KakaoLoginResponse>(userInstance, "GET", "/me/");
+}
+
+// 회원 탈퇴
+export function deleteUser() {
+  return sendRequest<void>(userInstance, "DELETE", "/withdraw/");
 }

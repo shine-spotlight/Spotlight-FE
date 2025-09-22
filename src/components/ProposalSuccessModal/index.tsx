@@ -27,11 +27,10 @@ const ProposalSuccessModal: React.FC<ProposalSuccessModalProps> = ({
           <S.SuccessText>
             제안서 전송이 성공적으로 완료되었습니다!
             <br />
-            3일 내 제안서 응답이 없을 시 사용한 포인트를 환분해드립니다.
+            3일 내 제안서 응답이 없을 시 사용한 포인트를 환불해드립니다.
           </S.SuccessText>
         </S.Message>
       </S.Content>
-
       <S.Footer>
         <S.Button onClick={onClose}>확인</S.Button>
       </S.Footer>

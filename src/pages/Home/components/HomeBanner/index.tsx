@@ -22,7 +22,7 @@ export const HomeBanner: React.FC = () => {
     <S.BannerContainer>
       <S.SliderWrapper $currentIndex={currentIndex} $count={images.length}>
         {images.map((img, i) => (
-          <S.Slide key={i}>
+          <S.Slide key={i} $count={images.length}>
             <img src={img} alt={`banner-${i}`} />
           </S.Slide>
         ))}

@@ -24,10 +24,16 @@ const Home: React.FC = () => {
           <DemandChart data={data.chartData} />
           <RecommendationSection
             data={data.recommendations}
-            // selectedRegion={regionValueToLabel(filters.region)}
-            // selectedCategory={genreValueToLabel(filters.genre)}
-            selectedRegion={regionValueToLabel("서울특별시")}
-            selectedCategory={genreValueToLabel("대중무용")}
+            selectedRegion={
+              regionValueToLabel(filters.region) !== "전체"
+                ? regionValueToLabel(filters.region)
+                : "서울"
+            }
+            selectedCategory={
+              genreValueToLabel(filters.genre) !== "전체"
+                ? regionValueToLabel(filters.genre)
+                : "대중무용"
+            }
           />
         </>
       ) : (
