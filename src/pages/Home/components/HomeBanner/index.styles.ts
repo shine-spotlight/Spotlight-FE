@@ -5,8 +5,6 @@ export const BannerContainer = styled.div`
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
-  aspect-ratio: 393/ 200;
-  width: 100%;
 `;
 
 export const SliderWrapper = styled.div<{
@@ -15,21 +13,21 @@ export const SliderWrapper = styled.div<{
 }>`
   display: flex;
   transition: transform 0.6s ease;
-  transform: translateX(-${({ $currentIndex }) => $currentIndex * 100}%);
-  width: 100%;
-  height: 100%;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  width: ${({ $count }) => $count * 100}%;
+  transform: translateX(
+    -${({ $currentIndex, $count }) => ($currentIndex * 100) / $count}%
+  );
 `;
 
-export const Slide = styled.div`
-  width: 100%;
-  height: 100%;
-  flex-shrink: 0;
+export const Slide = styled.div<{ $count: number }>`
+  width: ${({ $count }) => 100 / $count}%;
+  flex: 0 0 auto;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 `;
 
 export const BannerDots = styled.div`
