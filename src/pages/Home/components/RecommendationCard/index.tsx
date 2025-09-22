@@ -17,12 +17,12 @@ export const RecommendationCard: React.FC<RecommendationCardProps> = ({
   items,
   color,
 }) => {
-  const text = color === "blue" ? "장르" : "지역";
+  // const text = color === "blue" ? "장르" : "지역";
   return (
     <S.CardContainer $color={color}>
       <S.CardTitle $color={color}>{title}</S.CardTitle>
       <S.ItemList>
-        {items.length == 0 && <S.Empty>특정 {text}을 선택하세요</S.Empty>}
+        {/* {items.length == 0 && <S.Empty>특정 {text}을 선택하세요</S.Empty>} */}
         {items.map((item) => (
           <S.Item key={item.rank}>
             <S.RankBadge $color={color}>{item.rank}</S.RankBadge>

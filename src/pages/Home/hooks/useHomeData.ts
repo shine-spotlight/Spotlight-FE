@@ -35,8 +35,8 @@ export const useHomeData = () => {
 
   const recommendationParams = useMemo(
     () => ({
-      region: filters.region !== "(ALL)" ? filters.region : null,
-      genre: filters.genre !== "(ALL)" ? filters.genre : null,
+      region: filters.region !== "(ALL)" ? filters.region : "서울특별시",
+      genre: filters.genre !== "(ALL)" ? filters.genre : "대중무용",
     }),
     [filters.region, filters.genre]
   );

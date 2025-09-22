@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "@emotion/styled";
+import * as S from "./index.styles";
 import { RecommendationCard } from "../../components";
 import type { RecommendationData } from "../../types";
 
@@ -34,23 +34,17 @@ export const RecommendationSection: React.FC<RecommendationSectionProps> = ({
   );
 
   return (
-    <RecommendationSectionContainer>
-      <RecommendationCard
-        title={categoryTitle}
-        items={data.regions}
-        color="blue"
-      />
+    <S.RecommendationSectionContainer>
       <RecommendationCard
         title={regionTitle}
         items={data.genres}
         color="pink"
       />
-    </RecommendationSectionContainer>
+      <RecommendationCard
+        title={categoryTitle}
+        items={data.regions}
+        color="blue"
+      />
+    </S.RecommendationSectionContainer>
   );
 };
-
-const RecommendationSectionContainer = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-`;
