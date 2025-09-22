@@ -31,7 +31,6 @@ const ProposalSuccessModal: React.FC<ProposalSuccessModalProps> = ({
           </S.SuccessText>
         </S.Message>
       </S.Content>
-
       <S.Footer>
         <S.Button onClick={onClose}>확인</S.Button>
       </S.Footer>

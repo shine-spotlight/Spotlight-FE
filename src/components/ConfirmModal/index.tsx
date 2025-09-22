@@ -11,6 +11,7 @@ export interface ConfirmModalProps {
   confirmLabel?: string;
   cancelLabel?: string;
   isLoading?: boolean;
+  isWithdraw?: boolean;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -22,6 +23,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   confirmLabel = "확인",
   cancelLabel = "취소",
   isLoading = false,
+  isWithdraw = false,
 }) => {
   return (
     <BaseModal
@@ -38,7 +40,11 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <S.Button variant="secondary" onClick={onClose} disabled={isLoading}>
           {cancelLabel}
         </S.Button>
-        <S.Button onClick={onConfirm} disabled={isLoading}>
+        <S.Button
+          isWithdraw={isWithdraw}
+          onClick={onConfirm}
+          disabled={isLoading}
+        >
           {isLoading ? "처리 중..." : confirmLabel}
         </S.Button>
       </S.Footer>
