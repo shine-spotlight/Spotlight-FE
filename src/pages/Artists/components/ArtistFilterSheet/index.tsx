@@ -54,8 +54,8 @@ export default function ArtistFilterSheet({
       <FilterSheet.Section title="희망 페이">
         <FilterSheet.PayRange
           min={0}
-          max={1_000}
-          value={[value.payMin ?? 0, value.payMax ?? 1000]}
+          max={500}
+          value={[value.payMin ?? 0, value.payMax ?? 500]}
           onChange={([payMin, payMax]) =>
             onChange({ ...value, payMin, payMax })
           }
