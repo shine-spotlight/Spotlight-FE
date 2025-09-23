@@ -80,7 +80,7 @@ const ArtistDetail = () => {
           <ProfileDetail.IconContent
             icon="pay"
             label="공연 페이"
-            content={data.desiredPay}
+            content={`${data.desiredPay}만 원`}
           />
         </ProfileDetail.Section>
         {data.portfolioLinks.length > 0 && (

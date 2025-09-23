@@ -63,7 +63,7 @@ function ArtistPayForm() {
       <S.ContentContainer>
         <FormSection
           title="희망 페이(선택)"
-          helper="공간 보유자와의 원활한 협상을 위해 필요한 정보입니다!"
+          helper="공간 보유자와의 원활한 협상을 위해 필요한 정보입니다. 만 원 단위로 작성해주세요!"
         >
           <NumberStepper
             value={form.desiredPay}
