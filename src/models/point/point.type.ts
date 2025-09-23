@@ -10,3 +10,5 @@ export type PointTransaction = {
   transactionType: string;
   createdAt: string;
 };
+
+export type PointHistory = PointTransaction[];

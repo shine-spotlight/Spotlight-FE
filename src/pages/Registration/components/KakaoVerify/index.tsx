@@ -6,9 +6,11 @@ import { SpaceContentSvg, ArtistContentSvg } from "@assets/svg/role";
 import { PhoneSvg } from "@assets/svg/common";
 import { makeAuthorizeUrl } from "@apis/users";
 import * as S from "./index.styles";
+import { useUserStore } from "@stores/userStore";
+import { useAuthStore } from "@stores/authStore";
 
 const KakaoLoginButton = () => {
-  const onClick = () => {
+  const handleLoginClick = () => {
     try {
       const url = makeAuthorizeUrl();
       window.location.href = url;
@@ -16,9 +18,26 @@ const KakaoLoginButton = () => {
       alert("카카오 설정이 누락되었습니다.");
     }
   };
+  const nav = useNavigate();
+  const currentRole = useUserStore((s) => s.currentRole);
+  const setOnboardedForRole = useUserStore((s) => s.setOnboardedForRole);
+  const setTokens = useAuthStore((s) => s.setTokens);
+  const setSocialVerified = useAuthStore((s) => s.setSocialVerified);
+  const ACCESSTOKEN = import.meta.env.VITE_ACCESSTOKEN;
+
+  const handleTestClick = () => {
+    setTokens({ accessToken: ACCESSTOKEN });
+    setSocialVerified(true);
+    if (currentRole) {
+      setOnboardedForRole(currentRole, true);
+      nav("/home");
+    }
+  };
+
+  const testActive = false;
 
   return (
-    <S.KakaoButton onClick={onClick}>
+    <S.KakaoButton onClick={testActive ? handleTestClick : handleLoginClick}>
       <S.KakaoIcon aria-hidden />
       카카오톡으로 시작하기
     </S.KakaoButton>
