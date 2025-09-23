@@ -124,7 +124,7 @@ export function useSuggestToSpaceMutation(spaceId: number) {
     });
 
     if (currentRole) {
-      qc.invalidateQueries({ queryKey: pointsKeys.balance(currentRole) });
+      qc.invalidateQueries({ queryKey: pointsKeys.balance });
     }
     return res;
   };
