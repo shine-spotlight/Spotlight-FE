@@ -17,6 +17,7 @@ import {
   NotFound,
   Likes,
   ProposalDetail,
+  PointHistory,
 } from "@pages";
 import KakaoVerify from "@pages/Registration/components/KakaoVerify";
 import { StepGuard } from "@guards/StepGuard";
@@ -134,6 +135,7 @@ export const router = createBrowserRouter([
           { path: "posting/create", element: <PostingCreate /> },
           { path: "mypage", element: <Mypage /> },
           { path: "likes", element: <Likes /> },
+          { path: "/history", element: <PointHistory /> },
         ],
       },
 

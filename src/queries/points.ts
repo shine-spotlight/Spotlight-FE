@@ -1,14 +1,24 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getPointBalance, chargePoint, deductPoint } from "@apis/points";
+import type { UseQueryOptions, QueryKey } from "@tanstack/react-query";
+
+import {
+  getPointBalance,
+  chargePoint,
+  deductPoint,
+  getPointHistory,
+} from "@apis/points";
 import { useUserStore } from "@stores/userStore";
 import { toCamelCase } from "@utils/caseConvert";
-import type { PointTransaction } from "@models/point/point.type";
-import type { PointTransactionResponse } from "@models/point/point.dto";
+import type { PointTransaction, PointHistory } from "@models/point/point.type";
+import type {
+  PointTransactionResponse,
+  PointHistoryResponse,
+} from "@models/point/point.dto";
 
 export const pointsKeys = {
-  balance: (role: string) => ["point-balance", role] as const,
-  history: (role: string) => ["point-history", role] as const,
+  balance: ["point-balance"] as const,
+  history: ["point-history"] as const,
 };
 
 export function usePointBalanceQuery() {
@@ -16,7 +26,7 @@ export function usePointBalanceQuery() {
   const setPointForRole = useUserStore((s) => s.setPointForRole);
 
   const query = useQuery<number, Error>({
-    queryKey: pointsKeys.balance(currentRole || ""),
+    queryKey: pointsKeys.balance,
     queryFn: async () => {
       const res = await getPointBalance();
       return res.balance ?? 0;
@@ -32,6 +42,27 @@ export function usePointBalanceQuery() {
   return query;
 }
 
+export function usePointHistoryQuery(
+  options?: Omit<
+    UseQueryOptions<PointHistory, Error, PointHistory, QueryKey>,
+    "queryKey" | "queryFn"
+  >
+) {
+  const currentRole = useUserStore((s) => s.currentRole);
+
+  return useQuery<PointHistory, Error>({
+    queryKey: pointsKeys.history,
+    queryFn: async () => {
+      const res = await getPointHistory();
+      return toCamelCase<PointHistoryResponse, PointHistory>(res);
+    },
+    enabled: !!currentRole,
+    staleTime: 60_000,
+    placeholderData: (prev) => prev,
+    ...options,
+  });
+}
+
 export function useChargePointMutation() {
   const queryClient = useQueryClient();
   const currentRole = useUserStore((s) => s.currentRole);
@@ -44,7 +75,7 @@ export function useChargePointMutation() {
     onSuccess: () => {
       if (currentRole) {
         queryClient.invalidateQueries({
-          queryKey: pointsKeys.balance(currentRole),
+          queryKey: pointsKeys.balance,
         });
       }
     },
@@ -63,7 +94,7 @@ export function useDeductPointMutation() {
     onSuccess: () => {
       if (currentRole) {
         queryClient.invalidateQueries({
-          queryKey: pointsKeys.balance(currentRole),
+          queryKey: pointsKeys.balance,
         });
       }
     },
