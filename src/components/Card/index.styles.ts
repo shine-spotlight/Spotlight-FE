@@ -54,7 +54,7 @@ export const TitleText = styled.span`
   ${({ theme }) => theme.typography.h3};
   color: ${({ theme }) => theme.color.text.primary};
 
-  display: block;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -68,8 +68,11 @@ export const IconContentContainer = styled.div`
   min-width: 0;
   flex: 1 1 auto;
   overflow: hidden;
+
   > svg {
-    flex: 0 0 auto;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -87,12 +90,13 @@ export const ContentText = styled.p`
   ${({ theme }) => theme.typography.body4}
   color: ${({ theme }) => theme.color.text.secondary};
   width: 100%;
+
   flex: 1 1 auto;
-  margin: 0;
   min-width: 0;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: keep-all;
 `;
 
 export const RightSlot = styled.div`

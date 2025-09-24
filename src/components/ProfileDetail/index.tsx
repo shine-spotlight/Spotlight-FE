@@ -164,7 +164,7 @@ function Section({
   return (
     <S.Section>
       <S.SectionTitle>{title}</S.SectionTitle>
-      <div>{children}</div>
+      <S.SectionBody>{children}</S.SectionBody>
     </S.Section>
   );
 }
@@ -191,7 +191,7 @@ function IconContent({
         </S.ContentList>
       ) : (
         <S.ContentText>{content}</S.ContentText>
-      )}{" "}
+      )}
     </S.Content>
   );
 }
@@ -230,14 +230,16 @@ function PortfolioLink({ links }: { links: string[] }) {
       {links.map((t, index) => (
         <S.LinkRow>
           <IconRow icon="link">링크 {index + 1}</IconRow>
-          <S.ContentTextA
-            as="a"
-            href={t}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t}
-          </S.ContentTextA>
+          <S.Value>
+            <S.ContentTextA
+              href={t}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={t}
+            >
+              {t}
+            </S.ContentTextA>
+          </S.Value>
           <S.ShortcutButton
             onClick={() => window.open(t, "_blank", "noopener,noreferrer")}
           >
