@@ -37,7 +37,7 @@ function ArtistCardItem({ item }: { item: ArtistProfile }) {
         />
         <Card.Title>{item.name}</Card.Title>
         <Card.IconContent type="place">
-          {printList(item.region)}
+          {printList(item.regionDisplay)}
         </Card.IconContent>
         <Card.IconContent type="category">
           {printList(item.categoriesDisplay)}

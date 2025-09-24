@@ -70,7 +70,7 @@ const ArtistDetail = () => {
           <ProfileDetail.IconContent
             icon="place"
             label="활동 지역"
-            content={data.region}
+            content={data.regionDisplay}
           />
           <ProfileDetail.IconContent
             icon="equipment"
@@ -83,7 +83,7 @@ const ArtistDetail = () => {
             content={`${data.desiredPay}만 원`}
           />
         </ProfileDetail.Section>
-        {data.portfolioLinks.length > 0 && (
+        {data.portfolioLinksDisplay.length > 0 && (
           <ProfileDetail.Section title="포트폴리오 자료">
             <ProfileDetail.PortfolioLink links={data.portfolioLinks} />
           </ProfileDetail.Section>

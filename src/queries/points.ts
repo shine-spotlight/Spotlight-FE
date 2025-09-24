@@ -11,10 +11,7 @@ import {
 import { useUserStore } from "@stores/userStore";
 import { toCamelCase } from "@utils/caseConvert";
 import type { PointTransaction, PointHistory } from "@models/point/point.type";
-import type {
-  PointTransactionResponse,
-  PointHistoryResponse,
-} from "@models/point/point.dto";
+import type { PointHistoryResponse } from "@models/point/point.dto";
 
 export const pointsKeys = {
   balance: ["point-balance"] as const,
@@ -63,40 +60,95 @@ export function usePointHistoryQuery(
   });
 }
 
+// export function useChargePointMutation() {
+//   const queryClient = useQueryClient();
+
+//   return useMutation<PointTransaction, Error, number>({
+//     mutationFn: async (amount: number) => {
+//       const res = await chargePoint(amount);
+//       return toCamelCase<PointTransactionResponse, PointTransaction>(res);
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({
+//         queryKey: pointsKeys.balance,
+//       });
+//       queryClient.invalidateQueries({
+//         queryKey: pointsKeys.history,
+//       });
+//     },
+//   });
+// }
+
 export function useChargePointMutation() {
-  const queryClient = useQueryClient();
-  const currentRole = useUserStore((s) => s.currentRole);
+  const qc = useQueryClient();
+  const role = useUserStore((s) => s.currentRole);
+  const setPointForRole = useUserStore((s) => s.setPointForRole);
 
   return useMutation<PointTransaction, Error, number>({
-    mutationFn: async (amount: number) => {
+    mutationFn: async (amount) => {
       const res = await chargePoint(amount);
-      return toCamelCase<PointTransactionResponse, PointTransaction>(res);
+      return toCamelCase(res);
     },
-    onSuccess: () => {
-      if (currentRole) {
-        queryClient.invalidateQueries({
-          queryKey: pointsKeys.balance,
-        });
-      }
+    onMutate: async (amount) => {
+      if (!role) return;
+
+      await qc.cancelQueries({ queryKey: pointsKeys.balance });
+
+      const prev = qc.getQueryData<number>(pointsKeys.balance);
+
+      qc.setQueryData<number>(pointsKeys.balance, (old) => (old ?? 0) + amount);
+
+      setPointForRole(role, (prev ?? 0) + amount);
+
+      return { prev, amount };
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: pointsKeys.balance });
+      qc.invalidateQueries({ queryKey: pointsKeys.history });
     },
   });
 }
 
+// export function useDeductPointMutation() {
+//   const queryClient = useQueryClient();
+
+//   return useMutation<PointTransaction, Error, number>({
+//     mutationFn: async (amount: number) => {
+//       const res = await deductPoint(amount);
+//       return toCamelCase<PointTransactionResponse, PointTransaction>(res);
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({
+//         queryKey: pointsKeys.balance,
+//       });
+//       queryClient.invalidateQueries({
+//         queryKey: pointsKeys.history,
+//       });
+//     },
+//   });
+// }
+
 export function useDeductPointMutation() {
-  const queryClient = useQueryClient();
-  const currentRole = useUserStore((s) => s.currentRole);
+  const qc = useQueryClient();
+  const role = useUserStore((s) => s.currentRole);
+  const setPointForRole = useUserStore((s) => s.setPointForRole);
 
   return useMutation<PointTransaction, Error, number>({
-    mutationFn: async (amount: number) => {
+    mutationFn: async (amount) => {
       const res = await deductPoint(amount);
-      return toCamelCase<PointTransactionResponse, PointTransaction>(res);
+      return toCamelCase(res);
     },
-    onSuccess: () => {
-      if (currentRole) {
-        queryClient.invalidateQueries({
-          queryKey: pointsKeys.balance,
-        });
-      }
+    onMutate: async (amount) => {
+      if (!role) return;
+      await qc.cancelQueries({ queryKey: pointsKeys.balance });
+      const prev = qc.getQueryData<number>(pointsKeys.balance);
+      qc.setQueryData<number>(pointsKeys.balance, (old) => (old ?? 0) - amount);
+      setPointForRole(role, (prev ?? 0) - amount);
+      return { prev, amount };
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: pointsKeys.balance });
+      qc.invalidateQueries({ queryKey: pointsKeys.history });
     },
   });
 }

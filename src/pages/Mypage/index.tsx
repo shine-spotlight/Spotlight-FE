@@ -59,7 +59,7 @@ const Mypage: React.FC = () => {
             name={profile.name}
             point={profile.point}
             onEditProfile={() => {}}
-            onPointHistory={() => {}}
+            onPointHistory={() => navigate("/history")}
             onPointCharge={handleCharge}
           />
         ) : isSpaceProfile(profile) ? (
