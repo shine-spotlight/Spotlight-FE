@@ -41,7 +41,11 @@ export const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
         //
       </S.ImageContainer>
       <S.ContentContainer>
-        <S.Title>{announcement.title}</S.Title>
+        <S.Row>
+          <S.Title>{announcement.title}</S.Title>
+          <S.Time>{timeAgo(announcement.createdAt)}</S.Time>
+        </S.Row>
+
         <IconContent type="category">
           {printList(announcement.categoryNames)}
         </IconContent>
@@ -49,7 +53,6 @@ export const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
           {formatDate(announcement.date)}
         </IconContent>
         <IconContent type="place">{announcement.spaceAddress}</IconContent>
-        <S.Time>{timeAgo(announcement.createdAt)}</S.Time>
       </S.ContentContainer>
     </S.Container>
   );

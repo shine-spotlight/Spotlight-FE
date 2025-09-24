@@ -47,9 +47,7 @@ const ArtistDetail = () => {
     <S.Container>
       <Topbar title="공연 예술가 상세" goBack={() => navigate(-1)} />
       <ProfileDetail>
-        <ProfileDetail.Media
-          image={data.profileImageUrl ? data.profileImageUrl[0] : ""}
-        />
+        <ProfileDetail.Media image={data.profileImageUrl ?? ""} />
         {/* 프론트 단에서는 하나의 사진만 가능하도록 제한 */}
         <ProfileDetail.Header
           title={data.name}
