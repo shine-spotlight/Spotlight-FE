@@ -1,11 +1,10 @@
 import * as S from "./index.styles";
 import { Topbar } from "@components/Topbar";
 import { useUserStore } from "@stores/userStore";
-// import { useGlobalLoading } from "@hooks/useGlobalLoading";
-// import { usePointHistoryQuery } from "@queries/points";
+import { useGlobalLoading } from "@hooks/useGlobalLoading";
+import { usePointHistoryQuery } from "@queries/points";
 import { useNavigate } from "react-router-dom";
 import { HistoryItem, CurrentPointSection } from "./components";
-import { mockPointHistory } from "./data";
 import CheckModal from "@components/CheckModal";
 import { useState } from "react";
 
@@ -13,14 +12,12 @@ const PointHistory = () => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const currentRole = useUserStore((s) => s.currentRole);
+  const pointByRole = useUserStore((s) => s.pointByRole);
+  const { data, isLoading } = usePointHistoryQuery();
 
-  //   const { data, isLoading } = usePointHistoryQuery();
+  useGlobalLoading(isLoading, "내가 찜한 목록을 불러오는 중입니다...");
 
-  //   useGlobalLoading(isLoading, "내가 찜한 목록을 불러오는 중입니다...");
-
-  // 비어있는 상태
-  //   const isEmpty = !isLoading && Array.isArray(data) && data.length === 0;
-  const isEmpty = false;
+  const isEmpty = !isLoading && Array.isArray(data) && data.length === 0;
 
   if (!currentRole) {
     setOpenModal(true);
@@ -29,18 +26,20 @@ const PointHistory = () => {
   return (
     <>
       <Topbar title="포인트 거래 내역" goBack={() => navigate(-1)} />
-      <CurrentPointSection />
+      <CurrentPointSection
+        point={currentRole ? pointByRole[currentRole] : null}
+      />
       <S.Container>
         <S.Row>
           <S.Title>거래 내역 조회</S.Title>
           <S.Sort>최신순</S.Sort>
         </S.Row>
 
-        {isEmpty ? (
+        {isEmpty || !data ? (
           <S.Empty>포인트 거래 내역이 없습니다.</S.Empty>
         ) : (
           <S.HistoryContainer>
-            {mockPointHistory.map((item) => (
+            {data.map((item) => (
               <HistoryItem item={item} />
             ))}
           </S.HistoryContainer>

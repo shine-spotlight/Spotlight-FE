@@ -1,19 +1,24 @@
 import * as S from "./index.styles";
-import { useUserStore } from "@stores/userStore";
 import { useState } from "react";
 import { useChargePointMutation } from "@queries/points";
 import { PointChargeModal } from "@pages/Mypage/components";
 import { PointChargeSuccessModal } from "@pages/Mypage/components";
 
-export const CurrentPointSection = () => {
-  const currentRole = useUserStore((s) => s.currentRole);
+interface CurrentPointSectionProps {
+  point?: number | null;
+}
+
+export const CurrentPointSection = ({ point }: CurrentPointSectionProps) => {
   const [isChargeModalOpen, setIsChargeModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const chargePointMutation = useChargePointMutation();
-  const pointByRole = useUserStore((s) => s.pointByRole);
   const [chargedAmount, setChargedAmount] = useState(0);
+  const [modalKey, setModalKey] = useState(0);
 
-  const currentPoints = currentRole ? pointByRole[currentRole] : null;
+  const openChargeModal = () => {
+    setModalKey((k) => k + 1);
+    setIsChargeModalOpen(true);
+  };
 
   const handleChargeSubmit = async (amount: number) => {
     try {
@@ -27,21 +32,20 @@ export const CurrentPointSection = () => {
   };
 
   const handleSuccessModalClose = () => {
-    setIsSuccessModalOpen(false);
     setChargedAmount(0);
+    setIsSuccessModalOpen(false);
   };
 
   return (
     <S.Container>
       <S.TitleContainer>
         <S.Title>내 포인트 조회</S.Title>
-        <S.Button onClick={() => setIsChargeModalOpen(true)}>
-          포인트 충전
-        </S.Button>
+        <S.Button onClick={openChargeModal}>포인트 충전</S.Button>
       </S.TitleContainer>
 
-      <S.Points>{currentPoints} P</S.Points>
+      <S.Points>{point} P</S.Points>
       <PointChargeModal
+        key={modalKey}
         isOpen={isChargeModalOpen}
         onClose={() => setIsChargeModalOpen(false)}
         onCharge={handleChargeSubmit}
