@@ -34,7 +34,7 @@ const KakaoLoginButton = () => {
     }
   };
 
-  const testActive = true;
+  const testActive = false;
 
   return (
     <S.KakaoButton onClick={testActive ? handleTestClick : handleLoginClick}>
