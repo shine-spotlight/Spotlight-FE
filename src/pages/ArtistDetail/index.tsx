@@ -81,7 +81,7 @@ const ArtistDetail = () => {
             content={`${data.desiredPay}만 원`}
           />
         </ProfileDetail.Section>
-        {data.portfolioLinksDisplay.length > 0 && (
+        {data.portfolioLinks.length > 0 && (
           <ProfileDetail.Section title="포트폴리오 자료">
             <ProfileDetail.PortfolioLink links={data.portfolioLinks} />
           </ProfileDetail.Section>
