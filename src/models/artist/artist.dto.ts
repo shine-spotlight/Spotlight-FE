@@ -9,9 +9,11 @@ export type ArtistProfileDTO = {
   equipments: string[];
   equipments_display?: string[];
   portfolio_links: string[];
+  portfolio_links_display?: string[];
   profile_image_url?: string | null;
   profile_image: File | null;
   region: string[];
+  region_display?: string[];
   desired_pay: number;
   is_free_allowed: boolean;
   phone_number: string;

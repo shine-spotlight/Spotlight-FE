@@ -12,8 +12,10 @@ export type ArtistProfile = {
   // equipments: string[];
   equipmentsDisplay: string[];
   portfolioLinks: string[];
+  portfolioLinksDisplay: string[];
   profileImageUrl?: string;
   region: string[];
+  regionDisplay: string[];
   desiredPay: number;
   isFreeAllowed: boolean;
   phoneNumber?: string;

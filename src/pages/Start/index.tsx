@@ -16,8 +16,6 @@ const Start: React.FC = () => {
           return <RoleSelectCard role={role} />;
         })}
       </S.ButtonContainer>
-      {/*잔여 상태로 인한 에러 해결을 위해 넣어놓은 버튼입니다. 삭제 예정 */}
-      {/* <button onClick={() => resetAllStores()}>reset</button> */}
     </S.Container>
   );
 };
