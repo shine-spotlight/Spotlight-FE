@@ -103,7 +103,8 @@ self.addEventListener("fetch", (event) => {
   const sameOrigin = url.origin === self.location.origin;
 
   if (isHTMLRequest(request)) {
-    event.respondWith(networkFirstWithOffline(request));
+    event.respondWith(networkFirstWithOffline(event));
+
     return;
   }
 
