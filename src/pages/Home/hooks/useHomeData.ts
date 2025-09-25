@@ -20,8 +20,8 @@ export const useHomeData = () => {
   // API 요청 파라미터
   const forecastParams = useMemo(
     () => ({
-      region: filters.region,
-      genre: filters.genre,
+      region: "(ALL)",
+      genre: "(ALL)",
       ageGroup: filters.age,
       gender: filters.gender,
       asOf: convertToFirstDayOfMonth(filters.asOf),
