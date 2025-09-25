@@ -60,7 +60,8 @@ export const Value = styled.div`
 `;
 
 export const Section = styled.section`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   width: 100%;
   min-width: 0;
@@ -74,14 +75,16 @@ export const SectionTitle = styled.h2`
 
 export const Content = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   width: 100%;
   min-width: 0;
 `;
 
 export const SectionBody = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
 
   > * {
@@ -90,24 +93,17 @@ export const SectionBody = styled.div`
 `;
 
 export const ContentText = styled.p`
-  white-space: nowrap;
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
 export const ContentTextA = styled.a`
-  white-space: nowrap;
   flex: 1 1 auto;
   min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   width: 100%;
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.color.text.secondary};
@@ -133,17 +129,25 @@ export const LinkRow = styled.div`
 
 export const IconRow = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
-  align-items: start;
-  padding: 8px 0;
   flex: 0 0 auto;
+
+  & > svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex: 0 0 18px;
+    --lh: 20px;
+    margin-top: calc((var(--lh) - 18px) / 2);
+  }
 `;
 
 export const RowContent = styled.div`
   flex: 0 0 80px;
   ${({ theme }) => theme.typography.body3};
   color: ${({ theme }) => theme.color.text.secondary};
+  line-height: 20px;
 `;
 
 export const RightSlot = styled.div`
