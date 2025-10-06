@@ -47,12 +47,15 @@
 
 ---
 ## Frontend Tech Stack
-|React + Vite + TypeScript|빠른 개발 환경, 타입 안정성|
-|Emotion|컴포넌트 단위 스타일링, 동적 테마 적용|
-|Zustand|가벼운 전역 상태 관리|
-|Tanstack Query|서버 상태 관리 및 API 캐싱 최적화|
-|PWA (Service Worker)|오프라인 접근성 제공, 앱과 같은 사용자 경험 제공|
-|Vercel|빌드/배포 자동화|
+
+| 사용 기술 | description |
+|------------|-------------|
+| **React + Vite + TypeScript** | 빠른 개발 환경과 빌드 속도, 타입 안정성 |
+| **Emotion** | 컴포넌트 단위 스타일링 |
+| **Zustand** | 가벼운 전역 상태 관리 |
+| **Tanstack Query** | 서버 상태 관리 및 API 캐싱 |
+| **PWA (Service Worker)** | 오프라인 접근성, 앱 같은 사용자 경험 제공 |
+| **Vercel** | CI/CD 기반 자동 배포 |
 
 ---
 
