@@ -59,6 +59,12 @@
 
 ---
 
+## Service Architecture 
+
+<img width="1920" height="1080" alt="47" src="https://github.com/user-attachments/assets/bc268406-9493-429b-85d3-80bb5385a66a" />
+
+---
+
 ## 폴더 구조
 ```
 spotlight-FE/
